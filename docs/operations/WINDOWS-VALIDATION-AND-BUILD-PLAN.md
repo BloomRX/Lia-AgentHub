@@ -695,14 +695,25 @@ provar que o `.exe` é autossuficiente.
 | D-08 | Sem segredo no pacote | `strings`/`Select-String` no `.exe` | nenhum token, senha, chave | **sim** |
 | D-09 | Sem telemetria | monitorar rede | nenhuma conexão de saída | **sim** |
 
-D-08 na prática:
+D-08 na prática. **`scripts/validate.sh` não serve aqui:** ele ignora
+deliberadamente `.exe`/`.zip` (linha dos `suffix` excluídos). Como o artefato é
+justamente um `.exe`, a varredura tem de ser feita à parte:
 
 ```powershell
-Select-String -Path dist\LiaAgentHub.exe -Pattern "sk-","ghp_","BEGIN PRIVATE","password=" -SimpleMatch
+Select-String -Path dist\LiaAgentHub.exe `
+    -Pattern 'sk-[A-Za-z0-9]{20,}','ghp_[A-Za-z0-9]{30,}','AKIA[0-9A-Z]{16}','BEGIN [A-Z ]*PRIVATE KEY' `
+    -Encoding Byte
 ```
 
-Esperado: nada. (Um `.exe` onefile é comprimido; se o teste der falso negativo,
-unpack com `pyinstxtractor` e repita.)
+Mesmos padrões do `validate.sh`, para os dois lados concordarem. Esperado: nada.
+
+**Limitação real desta checagem:** o `.exe` onefile é comprimido (zlib), então
+uma varredura de bytes **pode não encontrar** um segredo que esteja lá dentro.
+Resultado vazio é necessário, não suficiente. Para prova forte, extraia com
+`pyinstxtractor` e repita a busca nos arquivos extraídos. O que o projeto
+**pode** afirmar de antemão: nenhum segredo é passado para o bundle — ele não
+empacota `.env`, config do usuário nem credencial, e o token de sessão é gerado
+em memória a cada execução. A varredura confirma; não é a única defesa.
 
 D-09: use o Monitor de Recursos → aba Rede, ou `netstat -anob | findstr LiaAgentHub`.
 
@@ -833,12 +844,19 @@ Critério de saída: `dist\LiaAgentHub.exe` existe, 15–40 MB, inicia com
 Verificação de conteúdo:
 
 ```bat
-python -m PyInstaller.utils.cliutils.archive_viewer dist\LiaAgentHub.exe -l > build\contents.txt
+python -m PyInstaller.utils.cliutils.archive_viewer dist\LiaAgentHub.exe -r -b > build\contents.txt
 findstr /i "webview bottle lia_agenthub" build\contents.txt
+findstr /i "PyQt PySide gtk tkinter" build\contents.txt
 ```
 
-Esperado: `webview`, `bottle`, `lia_agenthub` presentes; `PyQt`, `gtk`,
-`pyside` **ausentes** (se presentes, `excludes` falhou).
+Use `-r` (recursivo) — com só `-l` você vê os arquivos do pacote externo, mas
+não o conteúdo do PYZ, e os módulos Python ficam invisíveis. `-b` mostra só
+nomes. Confirmado que a CLI aceita esses flags **[EXECUTADO]**:
+`archive_viewer.py [-h] [-l] [-r] [-b] [--log-level LEVEL] pyi_archive`.
+
+Esperado: primeira busca acha `webview`, `bottle`, `lia_agenthub`; a segunda
+**não acha nada**. Se `PyQt`/`gtk` aparecerem, os `excludes` não pegaram e o
+`.exe` vai ficar grande.
 
 ### Estágio 6 — Distribuição
 
@@ -1209,17 +1227,21 @@ ESTÁGIO 5 — BUILD
    python -m PyInstaller --noconfirm --clean packaging\lia_agenthub.spec
    e registre o conserto que você fez no script.)
   SAÍDA: dist\LiaAgentHub.exe, 15-40 MB.
-  Verifique o conteúdo:
-    python -m PyInstaller.utils.cliutils.archive_viewer dist\LiaAgentHub.exe -l > build\contents.txt
+  Verifique o conteúdo (-r recursivo; -l sozinho nao mostra o PYZ):
+    python -m PyInstaller.utils.cliutils.archive_viewer dist\LiaAgentHub.exe -r -b > build\contents.txt
     findstr /i "webview bottle lia_agenthub" build\contents.txt
-  Confirmar: webview, bottle, lia_agenthub presentes; PyQt/gtk/pyside AUSENTES.
+    findstr /i "PyQt PySide gtk tkinter" build\contents.txt
+  1a busca: webview, bottle, lia_agenthub presentes.
+  2a busca: VAZIA. Se achar algo, excludes falhou e o .exe ficou grande.
 
 ESTÁGIO 6 — DISTRIBUIÇÃO
   Máquina SEM Python (ou VM limpa). Copie o .exe para C:\teste\. Rode D-01 a
   D-09 (seção 5.5).
   OBRIGATÓRIO: prove que nenhum segredo foi para o pacote:
-    Select-String -Path dist\LiaAgentHub.exe -Pattern "sk-","ghp_","BEGIN PRIVATE","password=" -SimpleMatch
-  Vazio = correto. Prove que o .exe não procura o repositório: mova-o para uma
+    Select-String -Path dist\LiaAgentHub.exe -Pattern 'sk-[A-Za-z0-9]{20,}','ghp_[A-Za-z0-9]{30,}','AKIA[0-9A-Z]{16}','BEGIN [A-Z ]*PRIVATE KEY' -Encoding Byte
+  Vazio = correto (necessario, nao suficiente: o onefile e comprimido; para
+  prova forte, extraia com pyinstxtractor e repita nos arquivos extraidos).
+  Obs: scripts/validate.sh NAO cobre isto -- ele ignora .exe de proposito. Prove que o .exe não procura o repositório: mova-o para uma
   pasta onde o repo não exista e rode.
   Se não houver máquina limpa, marque D-* BLOQUEADO. NÃO declare validado.
 
