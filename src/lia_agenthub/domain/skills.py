@@ -157,6 +157,53 @@ def validate_skill(text: str, *, folder_name: str | None = None) -> list[Issue]:
     return sorted(issues, key=lambda i: (order[i.severity], i.code))
 
 
+#: Referências a arquivos no corpo: links Markdown relativos e caminhos citados
+#: em código. Só o que aponta para DENTRO do recurso — URL e âncora ficam fora.
+_MD_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
+_CODE_PATH_RE = re.compile(r"`([\w./-]+\.(?:md|py|js|ts|json|ya?ml|txt|sh|csv|toml))`")
+
+
+def referenced_files(text: str) -> list[str]:
+    """Caminhos relativos citados no corpo. Ignora URL, âncora e absoluto."""
+    achados: list[str] = []
+    for padrao in (_MD_LINK_RE, _CODE_PATH_RE):
+        for bruto in padrao.findall(text):
+            alvo = bruto.strip()
+            if not alvo or alvo.startswith(("#", "http://", "https://", "mailto:",
+                                            "/", "<")):
+                continue
+            alvo = alvo.split("#", 1)[0].rstrip(".,;:")
+            if not alvo or alvo.startswith(".."):
+                continue
+            achados.append(alvo)
+    # dedup preservando ordem
+    vistos, saida = set(), []
+    for a in achados:
+        if a not in vistos:
+            vistos.add(a)
+            saida.append(a)
+    return saida
+
+
+def check_references(text: str, available: set[str] | frozenset[str]) -> list[Issue]:
+    """Confere que cada arquivo citado existe no recurso.
+
+    Referência quebrada é aviso, não erro: o autor pode ter citado um arquivo
+    que o host gera, ou escrito o caminho como exemplo. Bloquear por isso
+    recusaria skills legítimas.
+    """
+    issues: list[Issue] = []
+    normalizados = {a.replace("\\", "/").lstrip("./").lower() for a in available}
+    for alvo in referenced_files(text):
+        chave = alvo.replace("\\", "/").lstrip("./").lower()
+        if chave not in normalizados:
+            issues.append(Issue(
+                Severity.WARNING, "REFERENCE_MISSING",
+                f"O corpo cita `{alvo}`, que não está no recurso. Se for um arquivo "
+                f"de apoio, ele precisa ser importado junto.", alvo))
+    return issues
+
+
 def has_blocking(issues: list[Issue]) -> bool:
     return any(i.severity is Severity.ERROR for i in issues)
 

@@ -17,7 +17,9 @@ from ..domain.model import (
     Capability, License, LicenseStatus, ResourceType, Source, Trust, new_id,
 )
 from ..domain.paths import looks_like_script
-from ..domain.skills import has_blocking, summarize, validate_skill
+from ..domain.skills import (
+    check_references, has_blocking, summarize, validate_skill,
+)
 from ..domain.unicode_policy import Context, has_bom, scan, strip_bom
 from .repository import Repository
 from .safe_extract import Extraction, inspect_directory, inspect_package, inspect_zip
@@ -237,6 +239,8 @@ class Importer:
             text = skill_text.decode("utf-8", "replace")
             folder = next((p.split("/")[0] for p in files if "/" in p), None)
             issues = validate_skill(text, folder_name=folder)
+            # Referências a arquivos: só faz sentido com o pacote completo em mãos.
+            issues.extend(check_references(text, set(files)))
             report.issues.extend(i.as_dict() for i in issues)
             if has_blocking(issues):
                 report.blocked_reason = "O arquivo SKILL.md é estruturalmente inválido."

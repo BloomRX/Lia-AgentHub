@@ -16,7 +16,7 @@ from .domain.errors import LiaError
 from .domain.integrity import sha256_bytes
 from .domain.model import Capability, Lifecycle, Trust
 from .domain.risk import assess
-from .domain.skills import validate_skill
+from .domain.skills import check_references, has_blocking, validate_skill
 
 log = logging.getLogger("lia_agenthub")
 
@@ -151,7 +151,9 @@ class AgentHub:
                               "caminho e o Unicode foram verificados."}
         else:
             folder = next((p.split("/")[0] for p in files if "/" in p), None)
-            issues = validate_skill(primary.decode("utf-8", "replace"), folder_name=folder)
+            texto = primary.decode("utf-8", "replace")
+            issues = validate_skill(texto, folder_name=folder)
+            issues.extend(check_references(texto, set(files)))
             report = {
                 "issues": [i.as_dict() for i in issues],
                 "summary": {

@@ -114,3 +114,48 @@ def test_issue_traz_mensagem_e_acao():
     issues = validate_skill("sem nada")
     assert issues
     assert all(i.message for i in issues)
+
+
+def test_referencia_a_arquivo_existente_passa():
+    from lia_agenthub.domain.skills import check_references
+    texto = "Leia `guia.md` antes."
+    assert check_references(texto, {"SKILL.md", "guia.md"}) == []
+
+
+def test_referencia_a_arquivo_ausente_gera_aviso():
+    from lia_agenthub.domain.skills import check_references
+    issues = check_references("Leia `guia.md`.", {"SKILL.md"})
+    assert [i.code for i in issues] == ["REFERENCE_MISSING"]
+    assert issues[0].severity.value == "warning"
+
+
+def test_referencia_quebrada_nao_bloqueia():
+    from lia_agenthub.domain.skills import check_references
+    assert not has_blocking(check_references("Leia `nao-existe.md`.", {"SKILL.md"}))
+
+
+def test_url_nao_e_tratada_como_referencia_local():
+    from lia_agenthub.domain.skills import check_references, referenced_files
+    texto = "[site](https://exemplo.com/x.md) e [mail](mailto:a@b.c)"
+    assert referenced_files(texto) == []
+    assert check_references(texto, {"SKILL.md"}) == []
+
+
+def test_ancora_nao_e_referencia():
+    from lia_agenthub.domain.skills import referenced_files
+    assert referenced_files("[secao](#introducao)") == []
+
+
+def test_referencia_com_ponto_ponto_e_ignorada():
+    from lia_agenthub.domain.skills import referenced_files
+    assert referenced_files("[fora](../outro.md)") == []
+
+
+def test_link_markdown_relativo_detectado():
+    from lia_agenthub.domain.skills import check_references
+    assert check_references("[ver](docs/guia.md)", {"SKILL.md"})
+
+
+def test_referencia_com_barra_invertida_normaliza():
+    from lia_agenthub.domain.skills import check_references
+    assert check_references("`scripts\\run.py`", {"SKILL.md", "scripts/run.py"}) == []

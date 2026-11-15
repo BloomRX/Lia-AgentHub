@@ -256,3 +256,23 @@ def test_skill_sem_dominio_nao_ganha_dominio_inventado(hub, skill_dir):
     det = hub.detail(r.capability_id)
     assert det["domain"] in ("", None)
     assert det["tags"] == ["teste", "exemplo"]
+
+
+def test_referencia_ausente_aparece_no_relatorio_de_importacao(hub, tmp_path):
+    d = tmp_path / "ref"
+    d.mkdir()
+    (d / "SKILL.md").write_text(
+        "---\nname: com-ref\ndescription: d\n---\n\nLeia `apoio.md`.\n", encoding="utf-8")
+    r = hub.import_path(str(d))
+    assert r.ok                       # aviso, não bloqueio
+    assert any(i["code"] == "REFERENCE_MISSING" for i in r.issues)
+
+
+def test_recurso_completo_nao_gera_aviso_de_referencia(hub, tmp_path):
+    d = tmp_path / "completo"
+    d.mkdir()
+    (d / "SKILL.md").write_text(
+        "---\nname: completo\ndescription: d\n---\n\nLeia `apoio.md`.\n", encoding="utf-8")
+    (d / "apoio.md").write_text("# apoio", encoding="utf-8")
+    r = hub.import_path(str(d))
+    assert not any(i["code"] == "REFERENCE_MISSING" for i in r.issues)
