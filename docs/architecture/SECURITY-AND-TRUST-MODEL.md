@@ -95,10 +95,94 @@ Formato: ameaça → vetor → impacto → detecção → mitigação → limite
 | **Ameaça** | Instruções invisíveis embutidas em `SKILL.md` (faixa Unicode Tags `U+E0000–U+E007F`, zero-width, bidi override) |
 | **Vetor** | Corpo, `description`, nome de arquivo |
 | **Impacto** | Bypass completo de revisão humana — o revisor "lê" um arquivo e enxerga outra coisa |
-| **Detecção automática** | **Sim, e é determinística.** Normalização NFKC + remoção/flag de: `U+E0000–E007F`, `U+200B–U+200F`, `U+2060–U+2064`, `U+202A–U+202E`, `U+FEFF` (fora de posição inicial) |
-| **Mitigação** | Rejeitar arquivo (não apenas avisar) quando houver caractere de controle invisível fora de whitespace conhecido; exibir relatório por linha/coluna |
-| **Limite** | Homóglifos visuais (cirílico `а` vs latino `a`) **não** são cobertos de forma confiável; exigiria confusables-mapping |
-| **Classificação** | `Automático: forte` — **este é o mecanismo de maior valor por menor custo** |
+| **Detecção automática** | **Sim, e é determinística** — mas **por categoria e por contexto**, não por faixa. Ver §3.2.1 a §3.2.5 |
+| **Mitigação** | Quatro categorias: **Rejeitar** / **Sinalizar e exigir revisão** / **Preservar** / **Exibir escapado**. Nunca rejeição indiscriminada |
+| **Limite** | Homóglifos visuais (cirílico `а` vs latino `a`) **não** são cobertos de forma confiável; exigiria `confusables.txt` do Unicode. Não coberto nesta fase |
+| **Classificação** | `Automático: forte` para os caracteres perigosos **no contexto certo** — **este é o mecanismo de maior valor por menor custo** |
+
+> **Correção da Fase 0.1.** A Fase 0 especificava rejeitar `U+200B–U+200F` indiscriminadamente,
+> o que inclui **ZWNJ e ZWJ** — obrigatórios em persa, malaiala, sinhala e em toda sequência de
+> emoji ZWJ. Ver `docs/research/PHASE-0-1-CONSISTENCY-REVIEW.md` §3.2. A política correta está
+> abaixo; a proteção **aumentou**, não diminuiu (passou a cobrir `U+061C` e `U+2066–2069`, que a
+> lista antiga não cobria).
+
+#### 3.2.1 As quatro categorias
+
+| Categoria | Semântica | Efeito na importação | Efeito na interface |
+|---|---|---|---|
+| **A — Rejeitar** | Não existe uso legítimo naquele contexto | Arquivo retorna à quarentena; importação bloqueada | Erro por linha/coluna, com codepoint e nome Unicode |
+| **B — Sinalizar e exigir revisão** | Pode ser legítimo; precisa de olho humano | Importa para quarentena; **promoção à biblioteca bloqueada** até revisão registrada | Destaque escapado, contagem e ±40 caracteres de contexto |
+| **C — Preservar** | Legítimo e comum | Importa sem atrito | Nenhum aviso |
+| **D — Preservar e exibir escapado** | Legítimo, mas invisível — o usuário **precisa ver** | Importa; byte preservado exatamente | Sempre exibido como `<U+200B>`, nunca renderizado |
+
+#### 3.2.2 Catálogo por codepoint
+
+| Codepoint(s) | Nome | Uso legítimo | Risco | Categoria (prosa) | Categoria (código) | Categoria (identificador) |
+|---|---|---|---|---|---|---|
+| `U+200B` | ZERO WIDTH SPACE | Quebra de palavra em tailandês/lao/khmer e CJK | Esconde texto; quebra busca | **B** | B | **A** |
+| `U+200C` | ZWNJ | **Persa** (UTS #39 Fig. 1), **malaiala** (Fig. 2), escritas índicas | Pode esconder texto onde não é gramatical | **D** | B | B só nas condições A1/A2 |
+| `U+200D` | ZWJ | **Todas as sequências de emoji ZWJ**, **sinhala** (Fig. 3), indic | Idem | **D** | B | B só na condição B |
+| `U+200E` | LRM | Texto latino dentro de parágrafo RTL | Trojan Source em código | **B** | **A** | A |
+| `U+200F` | RLM | Texto RTL dentro de parágrafo LTR | Idem | **B** | **A** | A |
+| `U+061C` | ALM | Contraparte árabe de LRM/RLM — **ausente na lista da Fase 0** | Idem | **B** | **A** | A |
+| `U+202A`–`U+202E` | LRE, RLE, PDF, LRO, RLO | Formatação direcional legada | **Trojan Source (CVE-2021-42574)** | **A** | **A** | A |
+| `U+2066`–`U+2069` | LRI, RLI, FSI, PDI | **Forma moderna recomendada pelo UAX #9** — **ausente na lista da Fase 0** | Isolamento direcional malicioso | **B** | **A** | A |
+| `U+2060` | WORD JOINER | Manter `R$ 1.000` junto | Esconde texto | **B** | B | A |
+| `U+2061`–`U+2064` | FUNCTION APPLICATION, INVISIBLE TIMES/SEPARATOR/PLUS | Notação matemática | Fórmula escondida | **B** | B | A |
+| `U+FEFF` | BOM / ZWNBSP | **BOM legítimo** de editor Windows | Quebra o parser de frontmatter | **byte 0: normaliza e remove (registrado)** · meio: **A** | A | A |
+| `U+E0000`–`U+E007F` | TAG characters | **Apenas as 3 bandeiras RGI** (§3.2.3) | **ASCII smuggling** — `U+E0020`–`U+E007E` espelham ASCII e são invisíveis | **A**, exceto as 3 RGI exatas | **A** | A |
+| `U+3164`, `U+115F`, `U+1160` | HANGUL FILLER, CHOSEONG/JUNGSEONG FILLER | Composição Hangul | Nome que parece vazio | **B** | B | **A** |
+| `U+00AD` | SOFT HYPHEN | **Hifenização em pt-BR** e dezenas de idiomas | Esconde caractere | **C** | C | A |
+| `U+00A0` | NO-BREAK SPACE | `R$ 1.000`, `10 km` | Nenhum relevante | **C** | C | A |
+| `U+180E` | MONGOLIAN VOWEL SEPARATOR | Histórico | Marginal | **B** | B | A |
+| `U+FFF9`–`U+FFFB` | Interlinear annotation | Anotação interlinear | Esconde texto | **B** | **A** | A |
+
+**Regra de precedência:** `A` em qualquer contexto vence. Se o mesmo texto é prosa legítima mas
+contém `U+202A–202E`, e o arquivo tem bloco de código, a análise é **por região**, não por
+arquivo — rejeitar o arquivo inteiro por um caractere legítimo em prosa seria o erro da Fase 0
+de novo, em escala menor.
+
+#### 3.2.3 As três exceções de bandeira — allowlist literal, não regex
+
+```
+🏴 + U+E0067 U+E0062 U+E0065 U+E006E U+E0067 + U+E007F   → Inglaterra    (gbeng)
+🏴 + U+E0067 U+E0062 U+E0073 U+E0063 U+E0074 + U+E007F   → Escócia       (gbsct)
+🏴 + U+E0067 U+E0062 U+E0077 U+E006C U+E0073 + U+E007F   → País de Gales (gbwls)
+```
+
+O UTS #51 define `tag_spec` como **qualquer** caractere de `U+E0020` a `U+E007E`. Portanto
+`🏴 + tags("qualquer frase") + U+E007F` é **bem-formada** e carrega texto invisível. Aceitar
+"sequência bem-formada" é aceitar o ataque.
+
+**Regra:** a única tag aceita é a **string literal exata** das três bandeiras acima. Toda outra
+ocorrência em `U+E0000–U+E007F` é categoria **A** — inclusive uma tag solta, inclusive uma
+sequência bem-formada.
+
+**Custo declarado:** se o Unicode adicionar uma quarta bandeira de subdivisão, a allowlist exige
+atualização de código. É o mesmo trade-off que um projeto público documentou após ser explorado
+pelo padrão permissivo (`RESEARCH` externo, não verificação desta sessão).
+
+#### 3.2.4 Normalização — NFC sim, NFKC não
+
+A Fase 0 dizia "Normalização NFKC". **NFKC altera conteúdo legítimo**: converte `ﬁ` em `fi`, `①`
+em `1`. Aplicá-la ao texto gravado **muda o trabalho do autor** — viola a regra de marca "o
+trabalho do usuário pertence ao usuário".
+
+| Operação | Quando | Persiste? |
+|---|---|---|
+| **NFC** | Sempre, para comparação | Não altera conteúdo canônico |
+| **NFKC** | **Somente** para detectar homóglifo | **Nunca** |
+| **Remoção de BOM** (`U+FEFF` no byte 0) | No import | Sim, registrada no relatório |
+| **Qualquer outro stripping** | **Nunca** | — |
+
+#### 3.2.5 O que esta política **não** faz
+
+| Não faz | Consequência honesta |
+|---|---|
+| Não detecta homóglifos entre escritas | `раypal` (cirílico) passa. Exigiria `confusables.txt` — fora desta fase |
+| Não detecta texto branco sobre branco | Não é propriedade do arquivo, é da renderização |
+| Não detecta instrução maliciosa **em texto visível** | Nenhum caráter invisível envolvido; é problema de §3.1, não de §3.2 |
+| Não substitui revisão humana | É **evidência** que reduz o espaço de busca, não veredito |
 
 ### 3.3 Travessia de caminho e escape de raiz
 
@@ -148,17 +232,45 @@ Formato: ameaça → vetor → impacto → detecção → mitigação → limite
 | **Limite** | **Determinar licença não é trabalho automatizável de forma confiável.** Revisão humana é o gate |
 | **Classificação** | `Automático: triagem` · `Humano: decisão` |
 
-### 3.7 Integridade, senha e assinatura
+### 3.7 Integridade, hash e assinatura (não implementada)
 
 | | |
 |---|---|
 | **Ameaça** | Pacote adulterado em trânsito ou em repouso; pacote trocado por outro com mesmo nome |
 | **Vetor** | Disco, download, sincronização de nuvem, outro processo |
 | **Impacto** | A4 |
-| **Detecção automática** | Sim — SHA-256 por arquivo + `treeHash` do conjunto |
+| **Detecção automática** | Sim — SHA-256 por arquivo (`contentHash`) + hash da árvore (`treeHash`) |
 | **Mitigação** | Verificação obrigatória na carga; `formatVersion` + `hubVersion` no manifest |
-| **Limite** | **Hash detecta alteração, não origem.** Para provar autoria é necessário assinatura (Sigstore/minisign) — **não pesquisado nesta fase** (`RESEARCH` pendente) |
-| **Classificação** | `Automático: forte para adulteração` · `Assinatura: fase futura` |
+| **Limite** | **Hash detecta alteração, não origem.** Provar autoria exige assinatura criptográfica (Sigstore/minisign) — **não pesquisada nesta fase**, **não implementada**, **fora do MVP** |
+| **Classificação** | `Automático: forte para adulteração` · `Assinatura: fase futura, RESEARCH` |
+
+#### 3.7.1 Seis conceitos, seis nomes — vocabulário obrigatório
+
+A Fase 0 usou "índice **assinado**" na arquitetura enquanto a assinatura era fase futura. Isso
+é uma alegação falsa sobre o produto. Vocabulário corrigido na Fase 0.1:
+
+| Conceito | Nome no Hub | O que **prova** | O que **não** prova | Estado |
+|---|---|---|---|---|
+| Hash por arquivo | `contentHash` (SHA-256) | Que aquele arquivo não mudou desde a importação | Nada sobre origem ou intenção | **MVP** |
+| Hash da árvore | `treeHash` | Que o **conjunto** de arquivos não mudou (pega arquivo adicionado ou removido) | Nada sobre origem | **MVP** |
+| Integridade do pacote | `packageHash` | Que o ZIP não corrompeu no transporte | Nada sobre origem | **MVP** |
+| Assinatura criptográfica | `signature` | Que quem assinou tinha a chave privada | Nada sobre segurança do conteúdo | **Fora do MVP**, `RESEARCH` |
+| Identidade do autor | `author` | **O que o autor declara sobre si** | **Nada** — é texto livre | **MVP, como declaração** |
+| Proveniência | `provenance` | De onde o Hub **diz** que veio, rastreável na fonte | Nada, se a fonte mudou ou é privada | **MVP** |
+
+**Termos proibidos em todo o repositório enquanto a assinatura não existir:**
+
+| Proibido | Usar |
+|---|---|
+| "índice assinado" | "índice com hashes" / "índice verificável" |
+| "assinatura verificada" | — (não existe) |
+| "pacote autêntico" | "pacote com integridade verificada" |
+| "autor verificado" | "autor declarado" |
+| "proveniência verificada" | "proveniência declarada, rastreável em `<URL>`" |
+
+**Nota sobre a pasta `signatures/`:** o formato `.lia-capability` a reserva, mas **reservar um
+diretório não é implementar assinatura**. Nenhum código do MVP lê essa pasta. Um arquivo lá
+dentro é ignorado, não verificado — e o manifest **não** pode declarar `signed: true`.
 
 ### 3.8 Exfiltração por egress
 
@@ -332,7 +444,7 @@ Nunca: "validado", "aprovado", "seguro", "passou nos testes".
 2. ANALISAR (somente leitura, em área temporária isolada)
    ├─ descompactar em temp com C10/C11 aplicados
    ├─ validar frontmatter contra spec
-   ├─ varrer Unicode invisível  ← rejeita se encontrar
+   ├─ varrer Unicode por categoria e contexto ← rejeita só categoria A (§3.2)
    ├─ validar caminhos (C1–C12)
    ├─ inventariar arquivos + hashes
    ├─ extrair URLs, comandos, imports declarados
