@@ -353,24 +353,29 @@ A Fase 1 continua **não autorizada**.
 | Branch | `arena/a92004be-lia-agenthub` |
 | Branch-base | `main` @ `34a27f484e5f85987390a27fe7e0c0b3cd205bb2` |
 | Commit de partida | `d6c303313a4b36aa5defe73f54044c08d1d43d3d` |
-| **Commit final** | `7db9a3a` — *docs: registra hash final da Fase 0.1.1* (após os dois commits de conteúdo) |
-| Commits da rodada | `139986a` (correções), `26506bd` (este relatório), `7db9a3a` (hash) |
+| Commits desta rodada | `139986a` (correções) → `26506bd` (relatório) → `cff6536` (hash) → este commit |
+| **Commit final** | o valor de `git rev-parse HEAD` na branch, no momento da leitura |
 | Push | `origin/arena/a92004be-lia-agenthub` |
 | PR | **Nenhum** |
 | Merge | **Nenhum** |
 | Alteração de `main` | **Nenhuma** |
 
-> **Sobre o hash final.** Este relatório está no **segundo** commit da rodada; o hash do `HEAD`
-> final foi gravado no **terceiro**, que só toca esta tabela. Um documento não pode gravar o
-> hash do commit que o contém — o hash depende do conteúdo do documento. Por isso o valor acima
-> é o hash do **commit seguinte**, e a cadeia é verificável.
->
-> **Verificação reproduzível, para qualquer revisão futura:**
->
-> ```bash
-> git log --oneline d6c3033..HEAD      # os commits desta rodada, em ordem
-> git rev-parse HEAD                   # o HEAD final
-> ```
->
-> A entrega informa o hash no corpo da mensagem de commit final e na resposta ao usuário; o
-> histórico do Git é a fonte de verdade.
+### 8.1 Por que "commit final" não tem um literal aqui
+
+Um documento não pode registrar o hash do commit que o contém: o hash é calculado **sobre** o
+conteúdo do arquivo, incluindo o próprio hash. Qualquer literal aqui estaria errado no instante
+em que fosse gravado.
+
+Tentei resolver prevendo o hash do commit seguinte. **Errei** — o hash inclui o timestamp, e o
+valor estimado (`7db9a3a`) não foi o observado (`cff6536`). Este parágrafo é o registro desse
+erro, não a sua ocultação.
+
+**Como verificar a entrega, sem depender deste texto:**
+
+```bash
+git log --oneline d6c3033..HEAD    # os quatro commits, em ordem
+git rev-parse HEAD                 # o HEAD final
+git diff --stat d6c3033..HEAD      # 6 arquivos, docs apenas
+```
+
+A resposta ao usuário desta sessão informa o hash observado do `HEAD` final.
