@@ -235,16 +235,26 @@ adverte contra.
 
 #### 3.2.3 Os caracteres, um por um
 
-Legenda de decisão:
-`REJEITAR` = bloqueia a importação · `REVISAR` = aceita na quarentena, bloqueia a promoção até
-um humano aprovar · `PRESERVAR` = aceito sem atrito · `ESCAPAR` = preservado no arquivo, exibido
-com escape na UI
+Legenda de decisão — **mapeamento unívoco para as categorias A/B/C/D** de
+`SECURITY-AND-TRUST-MODEL.md` §3.2.1:
+
+| Nesta tabela | Categoria | Efeito na importação | Efeito na interface |
+|---|---|---|---|
+| `REJEITAR` | **A** | Bloqueia a importação | Erro por linha/coluna |
+| `REVISAR` | **B** | Aceita na quarentena; bloqueia a promoção até revisão humana | Destaque escapado com contexto |
+| `PRESERVAR` | **C** | Aceita sem atrito | Nenhum aviso — tratado como texto comum |
+| `ESCAPAR` | **D** | Aceita; **byte preservado exatamente** | **Sempre exibido escapado**, nunca renderizado |
+
+**A distinção entre `PRESERVAR` (C) e `ESCAPAR` (D) é o que a Fase 0.1.2 corrigiu nos dois
+primeiros caracteres desta tabela.** Ambos preservam o conteúdo — a diferença é se o usuário
+**vê** o caractere na tela. Um caractere invisível que ninguém vê é exatamente o vetor que esta
+seção existe para fechar.
 
 | Codepoint(s) | Nome | Uso legítimo real | Risco | **Decisão** |
 |---|---|---|---|---|
 | `U+200B` | ZERO WIDTH SPACE | Separador de linha em tailandês/lao/khmer; quebra de palavra em CJK; usado em URLs longas para permitir quebra | Esconde texto; quebra busca e igualdade de string; usado para inflar tokens | **REVISAR** — nunca rejeitar. Preserva o arquivo; exibe escapado; conta no relatório |
-| `U+200C` | ZERO WIDTH NON-JOINER (ZWNJ) | **Obrigatório em persa** (รูป `نام` vs `نامه`, UTS #39 Fig. 1), **malaiala** (Fig. 2), e em várias escritas índicas para evitar conjunção | Pode esconder texto em contexto onde não é gramatical | **PRESERVAR** em prosa. **REJEITAR** apenas quando forma sequência anômala (ver §3.2.5) |
-| `U+200D` | ZERO WIDTH JOINER (ZWJ) | **Todas as sequências de emoji ZWJ** (👨‍👩‍👧‍👦, 🏳️‍🌈), **sinhala** (UTS #39 Fig. 3), escrita indic | Idem | **PRESERVAR** em prosa. **REJEITAR** apenas em sequência anômala |
+| `U+200C` | ZERO WIDTH NON-JOINER (ZWNJ) | **Obrigatório em persa** (รูป `نام` vs `نامه`, UTS #39 Fig. 1), **malaiala** (Fig. 2), e em várias escritas índicas para evitar conjunção | Pode esconder texto em contexto onde não é gramatical | **ESCAPAR** em prosa (**categoria D**): conteúdo preservado byte a byte, exibido como `<U+200C>` na interface. **REJEITAR** apenas quando forma sequência anômala — condições **A1/A2** do [UTS #39 §3.1.1](https://www.unicode.org/reports/tr39/#Joining_Controls), resumidas em §3.2.2 acima |
+| `U+200D` | ZERO WIDTH JOINER (ZWJ) | **Todas as sequências de emoji ZWJ** (👨‍👩‍👧‍👦, 🏳️‍🌈), **sinhala** (UTS #39 Fig. 3), escrita indic | Idem | **ESCAPAR** em prosa (**categoria D**): conteúdo preservado byte a byte, exibido como `<U+200D>` na interface. **REJEITAR** apenas em sequência anômala — condição **B** do [UTS #39 §3.1.1](https://www.unicode.org/reports/tr39/#Joining_Controls), resumida em §3.2.2 acima |
 | `U+200E` | LEFT-TO-RIGHT MARK (LRM) | Marca direcional para texto latino dentro de parágrafo RTL (árabe/hebraico) — **muito usado em Israel e no mundo árabe** | Trojan Source quando em código | **REVISAR** — legítimo em prosa; nunca legítimo em bloco de código |
 | `U+200F` | RIGHT-TO-LEFT MARK (RLM) | Mesmo, invertido | Idem | **REVISAR** |
 | `U+061C` | ARABIC LETTER MARK (ALM) | Contraparte de LRM/RLM para texto árabe | Idem | **REVISAR** — **ausente da lista da Fase 0**, é lacuna |
@@ -277,9 +287,14 @@ distintas**, aplicadas por **contexto** (prosa vs. identificador vs. bloco de c�
 
 | Contexto | Lista aplicada |
 |---|---|
-| **Prosa** (`description`, corpo do `SKILL.md`, `README`) | **A** = apenas `U+E0000–E007F` fora das 3 RGI. **B** = `U+202A–202E`, `U+2066–2069`, `U+200B`, `U+200E/200F/061C`, `U+2060–2064`, `U+3164`, `U+115F/1160`, `U+180E`, `U+FFF9–FFFB`. **C/D** = ZWNJ, ZWJ, NBSP, soft hyphen. **BOM** no byte 0 normaliza e remove |
+| **Prosa** (`description`, corpo do `SKILL.md`, `README`) | **A** = apenas `U+E0000–E007F` fora das 3 RGI. **B** = `U+202A–202E`, `U+2066–2069`, `U+200B`, `U+200E/200F/061C`, `U+2060–2064`, `U+3164`, `U+115F/1160`, `U+180E`, `U+FFF9–FFFB`. **C** = `U+00A0` (NBSP), `U+00AD` (soft hyphen). **D** = `U+200C` (ZWNJ), `U+200D` (ZWJ) — preservados, exibidos escapados. **BOM** no byte 0 normaliza e remove |
 | **Identificador** (`name`, `id`, nome de arquivo, chave de frontmatter) | Perfil UTS #39 **General Security Profile**: só `Identifier_Status=Allowed` + Exception documentada. **A** = `U+202A–202E`, `U+2066–2069`, `U+200B`, `U+200E/200F/061C`, `U+FEFF`, `U+E0000–E007F`. ZWNJ/ZWJ só nas condições A1/A2/B |
 | **Bloco de código** (cerca ``` e conteúdo de `scripts/`) | **A (rejeitar)** = `U+202A–202E`, `U+2066–2069`, `U+200E/200F/061C`, `U+FEFF`, `U+E0000–E007F`, `U+FFF9–FFFB`. São a assinatura de Trojan Source |
+
+**Por que ZWNJ e ZWJ são `D` e não `C`:** ambos são **legítimos e invisíveis**. `C` significa
+"aceito sem atrito, nenhum aviso" — e um caractere que o revisor humano não consegue ver é
+precisamente o que precisa ser mostrado. `D` preserva o byte exatamente (o texto persa, malaiala
+e o emoji continuam íntegros) e o exibe como `<U+200C>` / `<U+200D>` na interface de revisão.
 
 **Fonte única da verdade:** a tabela normativa das duas faixas bidi está em
 `SECURITY-AND-TRUST-MODEL.md` §3.2.2.1 e é **idêntica** a esta. Verificação registrada em

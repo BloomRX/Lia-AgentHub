@@ -105,6 +105,21 @@ Formato: ameaça → vetor → impacto → detecção → mitigação → limite
 > emoji ZWJ. Ver `docs/research/PHASE-0-1-CONSISTENCY-REVIEW.md` §3.2. A política correta está
 > abaixo; a proteção **aumentou**, não diminuiu (passou a cobrir `U+061C` e `U+2066–2069`, que a
 > lista antiga não cobria).
+>
+> **Correção da Fase 0.1.2 — C vs. D.** A documentação de revisão classificou ZWNJ e ZWJ como
+> "PRESERVAR" ao mesmo tempo que esta tabela os classificava como **D**. A classificação correta
+> é **D** (preservar **e exibir escapado**), por dois motivos independentes:
+>
+> 1. **A definição de D os alcança literalmente:** "legítimo, mas invisível — o usuário precisa
+>    ver". ZWNJ e ZWJ não têm glifo próprio; um campo que os contém renderiza igual a um campo
+>    sem eles.
+> 2. **C ("nenhum aviso") contradiria o propósito desta seção.** Se o revisor humano não
+>    consegue distinguir `خانه` de `خان‌ه`, a revisão de conteúdo — que é o único controle que
+>    resta depois da categoria B — fica cega justamente no ponto que o atacante escolheria.
+>
+> **O que não mudou:** o uso legítimo continua permitido. O byte é preservado exatamente, texto
+> em persa, malaiala, sinhala e emoji ZWJ continuam íntegros, e nada é rejeitado. A única
+> diferença é **como a interface mostra** o caractere: escapado, não invisível.
 
 #### 3.2.1 As quatro categorias
 
@@ -120,8 +135,8 @@ Formato: ameaça → vetor → impacto → detecção → mitigação → limite
 | Codepoint(s) | Nome | Uso legítimo | Risco | Categoria (prosa) | Categoria (código) | Categoria (identificador) |
 |---|---|---|---|---|---|---|
 | `U+200B` | ZERO WIDTH SPACE | Quebra de palavra em tailandês/lao/khmer e CJK | Esconde texto; quebra busca | **B** | B | **A** |
-| `U+200C` | ZWNJ | **Persa** (UTS #39 Fig. 1), **malaiala** (Fig. 2), escritas índicas | Pode esconder texto onde não é gramatical | **D** | B | B só nas condições A1/A2 |
-| `U+200D` | ZWJ | **Todas as sequências de emoji ZWJ**, **sinhala** (Fig. 3), indic | Idem | **D** | B | B só na condição B |
+| `U+200C` | ZWNJ | **Persa** (UTS #39 Fig. 1), **malaiala** (Fig. 2), escritas índicas | Pode esconder texto onde não é gramatical | **D** — preserva o byte, exibe `<U+200C>` | B | B só nas condições A1/A2 |
+| `U+200D` | ZWJ | **Todas as sequências de emoji ZWJ**, **sinhala** (Fig. 3), indic | Idem | **D** — preserva o byte, exibe `<U+200D>` | B | B só na condição B |
 | `U+200E` | LRM | Texto latino dentro de parágrafo RTL | Trojan Source em código | **B** | **A** | A |
 | `U+200F` | RLM | Texto RTL dentro de parágrafo LTR | Idem | **B** | **A** | A |
 | `U+061C` | ALM | Contraparte árabe de LRM/RLM — **ausente na lista da Fase 0** | Idem | **B** | **A** | A |

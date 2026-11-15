@@ -26,7 +26,7 @@ mesma regra. Nenhuma decisão foi promovida a `APPROVED`.
 |---|---|
 | Correção 1 — `D-17` vs. `D-27` | Auditoria global de todas as 26 ocorrências; 12 estavam ou ambíguas ou erradas; corrigidas |
 | Correção 2 — Política Unicode | Comparação lado a lado de três fontes; 1 divergência de conteúdo e 2 ambiguidades; reconciliadas em tabela normativa única |
-| Verificação | Script de 16 asserções cruzando os três documentos — **16/16 PASS** |
+| Verificação | Script de asserções cruzando os documentos — **16/16 PASS** na redação original. A Fase 0.1.2 substituiu por `docs/research/verify-consistency.py` (**30/30 PASS**), executável e com verificação de que falha quando deve. Ver `PHASE-0-1-2-PRECISION-FIXES.md` §2 |
 | Relatório | Este documento |
 
 ### 1.2 O que **não** foi feito
@@ -176,8 +176,8 @@ Resultado final, idêntico nos três documentos. `A` = rejeitar · `B` = sinaliz
 | Codepoint(s) | Nome | Prosa | Código | Identificador |
 |---|---|---|---|---|
 | `U+200B` | ZERO WIDTH SPACE | B | B | A |
-| `U+200C` | ZWNJ | **D** | B | B (só A1/A2) |
-| `U+200D` | ZWJ | **D** | B | B (só B) |
+| `U+200C` | ZWNJ | **D** — preserva, exibe `<U+200C>` | B | B (só A1/A2) |
+| `U+200D` | ZWJ | **D** — preserva, exibe `<U+200D>` | B | B (só B) |
 | `U+200E` | LRM | B | **A** | A |
 | `U+200F` | RLM | B | **A** | A |
 | `U+061C` | ALM | B | **A** | A |
@@ -192,6 +192,20 @@ Resultado final, idêntico nos três documentos. `A` = rejeitar · `B` = sinaliz
 | `U+00A0` | NO-BREAK SPACE | **C** | C | A |
 | `U+180E` | MONGOLIAN VOWEL SEPARATOR | B | B | A |
 | `U+FFF9`–`U+FFFB` | Interlinear annotation | B | **A** | A |
+
+**Legenda das categorias** (idêntica em `SECURITY-AND-TRUST-MODEL.md` §3.2.1):
+
+| Categoria | Semântica | Interface |
+|---|---|---|
+| **A** | Não existe uso legítimo no contexto | Bloqueia a importação |
+| **B** | Pode ser legítimo; precisa de olho humano | Destaque escapado com contexto; promoção bloqueada |
+| **C** | Legítimo e comum | **Nenhum aviso** |
+| **D** | Legítimo, **mas invisível** — o usuário precisa ver | **Sempre escapado** (`<U+200C>`) |
+
+> **Correção da Fase 0.1.2:** `U+200C` (ZWNJ) e `U+200D` (ZWJ) são **D**, não **C**. A versão
+> anterior deste relatório já os listava como D, mas a tabela de revisão os chamava de
+> "PRESERVAR" — que a legenda daquela tabela definia como **C**. Ver
+> `PHASE-0-1-2-PRECISION-FIXES.md`.
 
 ### 3.5 Justificativa normativa — por que as duas faixas não são idênticas
 
@@ -243,6 +257,12 @@ o que contradiria a análise por região. Agora não pode.
 ## 4. Verificações realizadas
 
 ### 4.1 Script de consistência cruzada — 16 asserções
+
+> **Atualizado na Fase 0.1.2.** A contagem correta do script vigente é **30**, em
+> `docs/research/verify-consistency.py`. A divergência 16 vs. 15 que existia entre este
+> relatório e a mensagem de commit está explicada em `PHASE-0-1-2-PRECISION-FIXES.md` §2: era o
+> **mesmo** script, com duas asserções fundidas em uma. A tabela abaixo é a da redação
+> original, preservada como registro histórico.
 
 | # | Verificação | Resultado |
 |---:|---|---|
