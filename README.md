@@ -2,7 +2,7 @@
 
 **Plataforma independente para criar, descobrir, validar, organizar, versionar, empacotar e distribuir capacidades para agentes de IA.**
 
-> **Estado atual: Fase 0 — pesquisa, auditoria e especificação CONCLUÍDA.**
+> **Estado atual: Fase 0 concluída e Fase 0.1 (revisão de consistência) concluída.**
 > Aguardando revisão e aprovação humana. **Este repositório ainda não autoriza implementação de produto.**
 
 O Lia Agent Hub é um produto de escopo transversal: deve atender Game Development, programação, arte e design, pesquisa, produtividade, automação, mídia, lazer e outros domínios que utilizem agentes compatíveis.
@@ -27,7 +27,8 @@ A auditoria encontrou **oito lacunas** que nenhum dos produtos Lia atende hoje �
 - [x] Armazenamento, portabilidade e backup
 - [x] Comparação de plataforma com 8 critérios ponderados
 - [x] MVP de 8 capacidades e roadmap em 6 fases
-- [x] 24 decisões registradas com recomendação — **0 aprovadas**
+- [x] 27 decisões registradas com recomendação — **0 aprovadas**
+- [x] Revisão de consistência (Fase 0.1): piso de Python corrigido, política Unicode por categoria, terminologia de integridade, exportação por destino
 
 ### Não iniciado (e proposital)
 
@@ -55,12 +56,15 @@ Três que merecem destaque porque a pesquisa mostrou que são fáceis de perder:
 1. **Nada é executado no MVP.** Sem sandbox comprovado em Windows, prometer "testado" seria alegação falsa.
 2. **Confiança é decisão humana registrada**, não score. Scanner verde produz evidência, nunca aprovação.
 3. **Nenhum segredo tem lugar no schema.** `secrets.envVars` aceita apenas nomes de variáveis.
+4. **Integridade não é assinatura.** O Hub verifica hashes; não assina nada. "Índice assinado" é vocabulário proibido até existir assinatura de verdade.
+5. **Privado e público não são a mesma operação.** Backup local nunca é bloqueado; redistribuição pública exige direitos comprovados.
 
 ## Documentação
 
 ### Research
 - [Auditoria de repositórios e branches](docs/research/REPOSITORY-AND-BRANCH-AUDIT.md)
 - [Candidatos de integração e pesquisa externa](docs/research/INTEGRATION-CANDIDATES.md)
+- [Revisão de consistência da Fase 0.1](docs/research/PHASE-0-1-CONSISTENCY-REVIEW.md)
 
 ### Architecture
 - [Fronteiras de produto, arquitetura e modelo de dados](docs/architecture/PRODUCT-BOUNDARIES-AND-ARCHITECTURE.md)
@@ -77,10 +81,14 @@ Três que merecem destaque porque a pesquisa mostrou que são fáceis de perder:
 - [Visão de produto e direção arquitetural](docs/PRODUCT-VISION.md)
 - [Mandato de pesquisa da Fase 0](docs/PHASE-0-ARENA-BRIEF.md)
 - [Fluxo de branches e releases](docs/BRANCH-AND-RELEASE-FLOW.md)
+- [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) — nenhum código de terceiros incorporado
+- [`.gitignore`](.gitignore) — higiene adaptada do kit Lia
 
 ## Próximo passo
 
 A Fase 1 depende de quatro decisões humanas (`D-13` escopo do MVP, `D-14` stack, `D-03` formato, `D-06` armazenamento) e de uma quinta que pode correr em paralelo: pesquisa de isolamento em Windows (`D-05`/`D-18`), que determina se o produto terá Test Lab algum dia.
+
+`D-16` — a **licença deste repositório** — continua aberta e é decisão humana. O `LICENSE` **não** foi criado, de propósito.
 
 A implementação só começa após revisão humana e aprovação explícita da especificação resultante.
 

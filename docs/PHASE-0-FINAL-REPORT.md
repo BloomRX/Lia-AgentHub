@@ -5,6 +5,11 @@
 **Data:** 2026-11-15 (UTC)
 **Natureza:** relatório executivo consolidado. **Nenhuma implementação foi realizada.** A Fase 1 não foi iniciada.
 
+> **Revisado na Fase 0.1** (2026-11-15). Correções que afetam este relatório: piso de Python
+> (3.9 → **3.11**), escopo de M8 (publicar/validar/referência), terminologia de integridade
+> (hash ≠ assinatura), política de exportação por destino, política Unicode por categoria.
+> Detalhe em `docs/research/PHASE-0-1-CONSISTENCY-REVIEW.md`.
+
 ---
 
 ## 1. Identificação da entrega
@@ -41,7 +46,7 @@
 | 2 | **O escopo correto é registro, não runtime** | Teste T1–T5 (`PRODUCT-BOUNDARIES-AND-ARCHITECTURE.md` §1.3) rejeita execução, orquestração, credencial e assets |
 | 3 | **O formato Agent Skills é a única interoperabilidade gratuita** | Padrão aberto, 6 campos, `.agents/skills/` já usado pelo Studio |
 | 4 | **Desktop Windows, núcleo Python stdlib, UI web local, PyInstaller** | Única combinação que passa K1 (sem runtime para o usuário) e K2 (domínio puro) |
-| 5 | **O MVP entrega valor sem executar nada** | M1–M8: biblioteca, import, validação, contenção, proveniência, versão, pacote, índice |
+| 5 | **O MVP entrega valor sem executar nada** | M1–M8: biblioteca, import, validação, contenção, proveniência, versão, pacote, índice publicável + leitor de referência (a integração real com hosts é Fase 3) |
 | 6 | **Test Lab não pertence ao MVP** | Não há sandbox comprovado em Windows; `D-05` e `D-18` abertos |
 
 ### 2.2 O que isso muda em relação à visão inicial
@@ -152,7 +157,7 @@ Isso não é conservadorismo — é a leitura de que **o Hub resolve um problema
 | Dimensão | Recomendação |
 |---|---|
 | **Plataforma** | Aplicativo **desktop Windows**, instalador por usuário, sem admin |
-| **Núcleo** | **Python 3.9+ biblioteca padrão apenas** (domínio puro, sem I/O, sem framework, sem rede) |
+| **Núcleo** | **Python 3.11+ biblioteca padrão apenas** (domínio puro, sem I/O, sem framework, sem rede). Alvo do bundle: **3.13.x**. Correção da Fase 0.1 — 3.9 e 3.10 estão em EOL |
 | **Interface** | **Web local** (HTML/CSS/JS) servida pelo próprio processo, em janela **WebView2** |
 | **Empacotamento** | **PyInstaller**; instalação em `%LOCALAPPDATA%\Programs\Lia\AgentHub` |
 | **Distribuição** | Fonte (`run.py`) e `.exe` com **comportamento e pastas idênticos** |
@@ -242,7 +247,7 @@ Uma máquina Windows limpa, **sem internet, sem conta, sem Python**: importar um
 | M5 | Proveniência + licença por camada | L-01, L-04 |
 | M6 | Versionamento + diff entre versões | L-07 |
 | M7 | Empacotar/exportar `.lia-capability` | L-03 |
-| M8 | Catálogo `index.json` que o host lê | L-05 |
+| M8 | Catálogo `index.json` **publicável + validável + leitor de referência**; integração real com hosts é Fase 3 | L-05 |
 
 **Opcionais com folga:** criar a partir de template; coleções; declarar diretório de conhecimento.
 
@@ -310,7 +315,7 @@ Registradas para que nenhuma sessão futura as trate como resolvidas:
 | L3 | **Nenhum teste foi executado** em nenhum repositório | Suítes existem (Studio: 26 arquivos em `tests/`, 25 Python; Forge: 47 arquivos, 41 `*smoke*`); resultado é `UNKNOWN` | Sim, com autorização |
 | L4 | **Nenhuma validação Windows observada diretamente** | Os relatórios `ALPHA-*-WINDOWS-*.txt` e `DESKTOP-WINDOWS-*` são `EXECUTED` segundo eles mesmos, não re-verificados | Sim, pelo Dev |
 | L5 | **Lia-Project tem 6.189 arquivos / ~366 MB na branch de desenvolvimento** | Inspeção dirigida, não exaustiva. Stage, voz e áudio não auditados por não tocarem o escopo do Hub | Aceitável para esta fase |
-| L6 | **Nenhuma pesquisa de SBOM nem de assinatura de pacote** | `D-11` fica com recomendação parcial; assinatura é Fase 3+ | Sim, sessão dedicada |
+| L6 | **Nenhuma pesquisa de SBOM nem de assinatura de pacote** | `D-11` fica com recomendação parcial; assinatura é Fase 3+. **O produto não deve usar a palavra "assinado" até lá** (`D-26`/§3.7.1 do doc de segurança) | Sim, sessão dedicada |
 | L7 | **Isolamento/sandbox em Windows não pesquisado a fundo** | `D-05` e `D-18` permanecem `OPEN` sem recomendação técnica forte | Sim, sessão dedicada — **necessária** |
 | L8 | **Números de incidentes de segurança são `RESEARCH` herdado** (Snyk ToxicSkills, Liu et al.) | Citados do relatório do Agent 6 no Studio, não verificados nas fontes primárias | Parcial |
 | L9 | **Não houve subagentes** | Toda a investigação foi feita pela sessão principal, sequencialmente | Superado — o trabalho foi concluído |
