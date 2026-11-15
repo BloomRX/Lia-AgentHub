@@ -115,7 +115,7 @@
 
 ### 3.4 Lia-AgentHub
 
-`main` @ `34a27f48` — 1 commit, 7 arquivos, sem código. **O `KIT-PROJETO-NOVO.zip` foi lido integralmente** (23 arquivos, 188 KB), confirmado presente.
+`main` @ `34a27f48` — 1 commit, 7 arquivos, sem código. **O `KIT-PROJETO-NOVO.zip` foi lido integralmente** (25 arquivos, 117.176 B descomprimido), confirmado presente.
 
 ---
 
@@ -307,7 +307,7 @@ Registradas para que nenhuma sessão futura as trate como resolvidas:
 |---|---|---|---|
 | L1 | **HTTP direto para sites de terceiros bloqueado no sandbox** | Não li `obsidian.md/license`, `docs.astral.sh/uv`, `docs.graphify.com`, `modelcontextprotocol.io` diretamente. Usei GitHub API (fonte primária dos projetos) e extração de busca | Parcial — o licenciamento do Obsidian precisa de reverificação humana |
 | L2 | **`canirunai.kc1t.com` não alcançável e ausente da busca** | Não sei se o briefing refere-se a `canirun.ai` ou a outro serviço | **Não** — pergunta ao usuário |
-| L3 | **Nenhum teste foi executado** em nenhum repositório | Suítes existem (Studio: 30 arquivos; Forge: 45); resultado é `UNKNOWN` | Sim, com autorização |
+| L3 | **Nenhum teste foi executado** em nenhum repositório | Suítes existem (Studio: 26 arquivos em `tests/`, 25 Python; Forge: 47 arquivos, 41 `*smoke*`); resultado é `UNKNOWN` | Sim, com autorização |
 | L4 | **Nenhuma validação Windows observada diretamente** | Os relatórios `ALPHA-*-WINDOWS-*.txt` e `DESKTOP-WINDOWS-*` são `EXECUTED` segundo eles mesmos, não re-verificados | Sim, pelo Dev |
 | L5 | **Lia-Project tem 6.189 arquivos / ~366 MB na branch de desenvolvimento** | Inspeção dirigida, não exaustiva. Stage, voz e áudio não auditados por não tocarem o escopo do Hub | Aceitável para esta fase |
 | L6 | **Nenhuma pesquisa de SBOM nem de assinatura de pacote** | `D-11` fica com recomendação parcial; assinatura é Fase 3+ | Sim, sessão dedicada |
@@ -424,6 +424,6 @@ Os commits são organizados por assunto nesta branch. O hash final é o `HEAD` d
 
 A Fase 0 está concluída como **trabalho documental**. O produto **Lia Agent Hub é viável e justificável**, com um escopo estreito e verificável: registrar, validar estrutura, registrar decisão humana, versionar e empacotar capacidades.
 
-O que torna essa conclusão defensável não é a quantidade de documentos — é que **cada recomendação tem evidência rastreável em branch e commit**, e que **cada afirmação que não pude verificar está marcada como tal**. As dez limitações da §9 são parte da entrega, não uma nota de rodapé.
+O que torna essa conclusão defensável não é a quantidade de documentos — é que **cada recomendação tem evidência rastreável em branch e commit**, e que **cada afirmação que não pude verificar está marcada como tal**. As onze limitações da §9 são parte da entrega, não uma nota de rodapé.
 
 A Fase 1 não foi iniciada. Aguardo revisão e aprovação humana.

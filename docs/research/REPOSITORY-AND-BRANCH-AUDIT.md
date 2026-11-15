@@ -93,7 +93,7 @@ Todos os caminhos abaixo foram lidos no commit `4868a18e`. Tamanhos em bytes/lin
 | `app/lia/execution.py` | 4.849 B / 100 linhas | Execução **explicitamente SIMULADA**; resultado prefixado `[RESULTADO SIMULADO — nenhuma inferência real foi executada]` | `IMPLEMENTED` (como simulação) |
 | `app/lia/agent_cli.py` | — | Transporte CLI experimental, validado **só com executável falso**; documenta que `--allowedTools` **não é sandbox** | `IMPLEMENTED` com escopo estreito |
 | `.agents/skills/` | 16 Skills | 4 originais + 12 adaptadas de fontes MIT, com origem e licença citadas em cada `SKILL.md` | `IMPLEMENTED` |
-| `tests/` | 30 arquivos | Suíte ampla (`test_core`, `test_permissions`, `test_tool_registry`, `test_skills_progressive`, `test_dependency_layers`…) | `IMPLEMENTED` — **não executada nesta auditoria** |
+| `tests/` | 26 arquivos (25 `test_*.py`) | Suíte ampla (`test_core`, `test_permissions`, `test_tool_registry`, `test_skills_progressive`, `test_dependency_layers`…) | `IMPLEMENTED` — **não executada nesta auditoria** |
 
 ### 1.3 O que **não** existe no Studio
 
@@ -257,7 +257,7 @@ Outros módulos relevantes (`IMPLEMENTED`, na branch de desenvolvimento): `brain
 | Branch desta sessão | `arena/a92004be-lia-agenthub` |
 | Código de produto | **Nenhum.** Correto para a Fase 0 |
 
-O `KIT-PROJETO-NOVO.zip` **está presente e foi lido integralmente** nesta sessão (23 arquivos, 188 KB). Conteúdo confirmado: `LEIA-ME.md`, `APP-WINDOWS/{GUIA-APP-NOVO, PADRAO-DA-MARCA, GLOSSARIO}.md`, `APP-MOBILE-OU-WEB/{GUIA-APP-NOVO, PADRAO-MOBILE-WEB, GLOSSARIO}.md`, e `arquivos-prontos/` com `CLAUDE.md`, `AGENTS.md`, `ONDE-VAI-CADA-ARQUIVO.md`, `gitignore-acrescentar.txt`, `memory-bank--{estado,padroes,decisoes}.md`, `rule-exemplo--interface.md`, `skill-exemplo--SKILL.md`.
+O `KIT-PROJETO-NOVO.zip` **está presente e foi lido integralmente** nesta sessão (25 arquivos; 60.924 B comprimido / 117.176 B descomprimido). Conteúdo confirmado: `LEIA-ME.md`, `APP-WINDOWS/{GUIA-APP-NOVO, PADRAO-DA-MARCA, GLOSSARIO}.md`, `APP-MOBILE-OU-WEB/{GUIA-APP-NOVO, PADRAO-MOBILE-WEB, GLOSSARIO}.md`, e `arquivos-prontos/` com `CLAUDE.md`, `AGENTS.md`, `ONDE-VAI-CADA-ARQUIVO.md`, `gitignore-acrescentar.txt`, `memory-bank--{estado,padroes,decisoes}.md`, `rule-exemplo--interface.md`, `skill-exemplo--SKILL.md`.
 
 ---
 
