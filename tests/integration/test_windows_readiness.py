@@ -3,6 +3,7 @@
 Estes testes travam comportamentos que QUEBRAM especificamente no Windows e
 que passariam despercebidos em Linux/macOS. Cada um aponta o motivo.
 """
+import json
 import os
 import socket
 import sys
@@ -18,6 +19,23 @@ from lia_agenthub.adapters import atomic
 from lia_agenthub.adapters.paths_resolver import resolve_locations
 from lia_agenthub.app import AgentHub
 from lia_agenthub.interface.server import _LocalServer, create_server
+
+
+RAIZ = Path(__file__).resolve().parents[2]
+
+
+def _fixtures(destino: Path) -> Path:
+    """Gera as fixtures sintéticas em `destino` (idempotente por diretório)."""
+    import subprocess
+    alvo = Path(destino) / "fx"
+    if (alvo / "MANIFESTO.json").is_file():
+        return alvo
+    env = {**os.environ, "PYTHONPATH": str(RAIZ / "src")}
+    r = subprocess.run(
+        [sys.executable, str(RAIZ / "scripts" / "make_fixtures.py"), str(alvo)],
+        capture_output=True, text=True, env=env, timeout=180)
+    assert r.returncode == 0, r.stderr
+    return alvo
 
 
 # ---------------- escrita atômica ----------------
@@ -179,3 +197,36 @@ def test_dados_do_usuario_ficam_fora_dos_arquivos_da_aplicacao(tmp_path):
     app_src = Path(__file__).resolve().parents[2] / "src"
     assert not str(locs.library.resolve()).startswith(str(app_src.resolve()))
     assert not str(locs.quarantine.resolve()).startswith(str(app_src.resolve()))
+
+
+def test_duas_instancias_nao_corrompem_o_indice(tmp_path):
+    """Cenário real: usuário abre o .exe duas vezes.
+
+    A pergunta é se `publish_index()` de uma instância descarta o trabalho da
+    outra. Não descarta: `build_index()` percorre o repositório em disco, não
+    um cache em memória. Se este teste falhar, há risco de perda de dados e
+    `dir_lock` (hoje código morto) passaria a ser necessário.
+    """
+    from lia_agenthub.adapters.paths_resolver import resolve_locations
+    from lia_agenthub.app import AgentHub
+
+    home = tmp_path / "h"
+    uma = AgentHub(resolve_locations(home))
+
+    for nome in ("01-skill-valida", "02-skill-sem-licenca"):
+        base = _fixtures(tmp_path)
+        r = uma.import_path(str(base / nome))
+        assert r.ok
+        uma.promote(r.capability_id)
+
+    indice = home / "Comum" / "Capacidades" / "index.json"
+    antes = json.loads(indice.read_text(encoding="utf-8"))
+
+    # Segunda instância, aberta como um segundo .exe seria
+    duas = AgentHub(resolve_locations(home))
+    duas.publish_index()
+
+    depois = json.loads(indice.read_text(encoding="utf-8"))
+    assert len(depois["capabilities"]) == len(antes["capabilities"])
+    assert ([c["id"] for c in depois["capabilities"]]
+            == [c["id"] for c in antes["capabilities"]])
