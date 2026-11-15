@@ -5,7 +5,9 @@
 > **Estado atual: MVP implementado e testado.** Fase 0 e Fase 0.1 concluídas;
 > Fase 1 (implementação do MVP) executada nesta rodada. 214 testes automatizados
 > passando. Ver [docs/MVP-GUIA.md](docs/MVP-GUIA.md) para instalar e usar e
-> [docs/DESENVOLVIMENTO.md](docs/DESENVOLVIMENTO.md) para desenvolver.
+> [docs/DESENVOLVIMENTO.md](docs/DESENVOLVIMENTO.md) para desenvolver e
+> [docs/MVP-RELATORIO-FINAL.md](docs/MVP-RELATORIO-FINAL.md) para o relatório
+> honesto do que foi e não foi validado.
 
 O Lia Agent Hub é um produto de escopo transversal: deve atender Game Development, programação, arte e design, pesquisa, produtividade, automação, mídia, lazer e outros domínios que utilizem agentes compatíveis.
 
@@ -44,7 +46,7 @@ A auditoria encontrou **oito lacunas** que nenhum dos produtos Lia atende hoje �
 - [x] SHA-256 por arquivo e de árvore; deduplicação por conteúdo
 - [x] Exportação `.lia-capability` com verificação de adulteração
 - [x] `index.json` portátil, validável, sem segredos
-- [x] 214 testes: funcional, segurança, persistência e interface
+- [x] 258 testes: funcional, segurança, persistência e interface
 - [x] Build configurado para Windows via PyInstaller
 - [ ] **Executável Windows gerado e testado** — não validado neste ambiente
       (sem Windows nem WebView2); o script de build roda testes e aborta se
