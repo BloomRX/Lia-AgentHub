@@ -124,11 +124,36 @@ check("D-26 exige fixar a versao do Unicode",
 check("D-17 = sistemas operacionais", "### D-17 — Sistemas operacionais" in REG)
 check("D-27 = biblioteca de interface", "### D-27 — Biblioteca de interface" in REG)
 
+def decision_state(text, decision_id):
+    """Estado real de uma decisão, lido do bloco dela.
+
+    Antes esta verificação só conferia se o título existia — o que passava
+    mesmo se a decisão tivesse sido marcada APPROVED. Corrigido na Fase 1.
+    """
+    m = re.search(rf"^### {re.escape(decision_id)} —.*?$", text, re.M)
+    if not m:
+        return None
+    block = text[m.end():]
+    nxt = re.search(r"^### D-\d{2}", block, re.M)
+    if nxt:
+        block = block[:nxt.start()]
+    m2 = re.search(r"\|\s*\*\*Estado\*\*\s*\|\s*(.+?)\s*\|", block)
+    if not m2:
+        return None
+    return m2.group(1).strip("`").split("`")[0].split("—")[0].strip()
+
+
+
 # ---- 9. Nenhuma decisao aprovada ---------------------------------------
-estados = re.findall(r"\| \*\*Estado\*\* \| `([A-Z]+)`", REG)
-check("0 decisoes APPROVED", estados.count("APPROVED") == 0)
-check("D-01, D-05, D-16, D-18 continuam OPEN",
-      all(f"### {d} —" in REG for d in ("D-01", "D-05", "D-16", "D-18")))
+all_states = [decision_state(REG, f"D-{i:02d}") for i in range(1, 28)]
+check("0 decisoes APPROVED (por bloco de decisao)",
+      all(s != "APPROVED" for s in all_states))
+check("todas as 27 decisoes tem estado legivel",
+      all(s is not None for s in all_states))
+MUST_BE_OPEN = ("D-01", "D-05", "D-16", "D-18")
+estados_abertas = {d: decision_state(REG, d) for d in MUST_BE_OPEN}
+check("D-01, D-05, D-16, D-18 marcadas OPEN (estado, não título)",
+      all(v == "OPEN" for v in estados_abertas.values()))
 
 # ---- 10. LICENSE ausente ------------------------------------------------
 check("LICENSE ausente", not (ROOT / "LICENSE").exists())
