@@ -21,7 +21,18 @@ WINDOWS_RESERVED = {
 
 # C3: o que nunca entra, em qualquer profundidade. `.git.` e `.git ` são
 # equivalentes a `.git` no Windows — daí a canonicalização antes do teste.
-DENY_NAMES = {"node_modules", "thumbs.db", "desktop.ini"}
+DENY_NAMES = {
+    "node_modules", "thumbs.db", "desktop.ini",
+    # Credenciais e chaves: um pacote não transporta segredo, nem para
+    # "só documentar". Não há uso legítimo num acervo de capacidades.
+    ".ssh", ".gnupg", ".aws", ".azure", ".kube", ".docker", ".netrc",
+    ".git-credentials", ".npmrc", ".pypirc", "id_rsa", "id_ed25519",
+    "credentials", "credentials.json", ".env",
+}
+
+# C13: fluxos alternativos NTFS (`arquivo.txt:oculto`). O `:` também nomeia
+# drive, então rejeitamos qualquer ocorrência fora da posição 1.
+_NTFS_STREAM_RE = re.compile(r":")
 
 # C10: extensões executáveis. Não bloqueiam por si: registram para exibição.
 EXEC_EXTS = {
@@ -54,6 +65,12 @@ def _canonical_name(name: str) -> str:
     exatos é trivialmente contornável no Windows.
     """
     return name.rstrip(" .").lower()
+
+
+def index_ntfs(part: str) -> int | None:
+    """Posição de um `:` que indicaria fluxo alternativo NTFS, se houver."""
+    i = part.find(":")
+    return i if i >= 0 else None
 
 
 def validate_relative(raw: str) -> SafePath:
@@ -113,6 +130,12 @@ def validate_relative(raw: str) -> SafePath:
                 "Esse nome não pode ser criado no Windows, mesmo que o pacote venha do Linux.",
                 code="C4",
             )
+        if index_ntfs(part) is not None:
+            raise SecurityError(
+                f"`:` não é permitido em nome de arquivo: `{part}`.",
+                "No Windows, `arquivo:fluxo` cria um fluxo alternativo oculto. "
+                "Pacotes não usam esse recurso.", code="C13",
+            )
         if part.endswith((" ", ".")):
             raise SecurityError(
                 f"Nome termina em espaço ou ponto: `{part}`.",
@@ -157,3 +180,29 @@ def looks_like_script(parts: tuple[str, ...]) -> bool:
     if any(p.lower() == "scripts" for p in parts[:-1]):
         return True
     return bool(parts) and is_executable(parts[-1])
+
+
+@dataclass(frozen=True)
+class Verdict:
+    """Resultado de uma checagem de caminho, sem exceção.
+
+    `validate_relative` levanta; esta forma é para relatórios e para a UI,
+    onde "recusado" é um dado a mostrar, não um fluxo de exceção.
+    """
+
+    ok: bool
+    code: str = ""
+    message: str = ""
+
+    @property
+    def posix(self) -> str:
+        return self.message if self.ok else ""
+
+
+def check_relative_path(raw: str) -> Verdict:
+    """Versão sem exceção de `validate_relative`."""
+    try:
+        safe = validate_relative(raw)
+    except SecurityError as e:
+        return Verdict(False, getattr(e, "code", "") or "C?", e.message)
+    return Verdict(True, "", safe.posix)

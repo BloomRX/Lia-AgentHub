@@ -20,7 +20,7 @@ from ..domain.paths import looks_like_script
 from ..domain.skills import has_blocking, summarize, validate_skill
 from ..domain.unicode_policy import Context, has_bom, scan, strip_bom
 from .repository import Repository
-from .safe_extract import Extraction, inspect_directory, inspect_zip
+from .safe_extract import Extraction, inspect_directory, inspect_package, inspect_zip
 
 MANIFEST_NAME = "manifest.json"
 
@@ -45,6 +45,7 @@ class ImportReport:
     contains_scripts: bool = False
     hashes: dict[str, str] = field(default_factory=dict)
     staged_at: str | None = None
+    already_present: bool = False
 
     def as_dict(self) -> dict:
         return {
@@ -64,6 +65,7 @@ class ImportReport:
             "containsScripts": self.contains_scripts,
             "hashes": self.hashes,
             "stagedAt": self.staged_at,
+            "alreadyPresent": self.already_present,
             "note": (
                 "Hashes verificam integridade, não autoria. Nenhum arquivo foi "
                 "executado. Confiança é decisão humana."
@@ -130,7 +132,12 @@ class Importer:
         try:
             if path.is_dir():
                 extraction = inspect_directory(path)
-            elif path.suffix.lower() == ".zip" or path.name.endswith(".lia-capability"):
+            elif path.name.endswith(".lia-capability"):
+                # Pacote do Hub: o conteúdo vive sob payload/. Desembrulhar antes
+                # de tudo — senão o reimport produziria payload/payload/SKILL.md
+                # e o hash nunca casaria com a origem.
+                extraction = inspect_package(path)
+            elif path.suffix.lower() == ".zip":
                 extraction = inspect_zip(path.read_bytes())
             else:
                 # arquivo solto: vira um pacote de um arquivo só
@@ -219,7 +226,9 @@ class Importer:
                 tags = [t.strip() for t in fm["metadata"].split("tags:")[-1].split(",") if t.strip()]
 
         # ---- 4. manifesto de pacote .lia-capability ----------------------
-        manifest = _read_manifest(files)
+        # Preferir o manifesto lido pelo extrator de pacotes: ele não está em
+        # `files` porque `payload/` foi desembrulhado.
+        manifest = extraction.manifest or _read_manifest(files)
         if manifest:
             declared = manifest.get("files") or manifest.get("payload", {}).get("files") or []
             for entry in declared:
@@ -256,6 +265,18 @@ class Importer:
         cap_id = new_id(display, salt=tree_hash({k: sha256_bytes(v) for k, v in files.items()}))
         report.capability_id = cap_id
         report.name = display
+
+        # Conteúdo idêntico já na biblioteca: o id é derivado do conteúdo,
+        # então isto é IDENTIDADE, não conflito. Reportar como tal é mais
+        # honesto do que fingir que é uma importação nova.
+        if self.repo.exists(cap_id):
+            report.ok = True
+            report.already_present = True
+            report.blocked_reason = ""
+            report.warnings.append(
+                "Conteúdo idêntico já está na sua biblioteca. Nada foi duplicado.")
+            report.hint = "Se quiser outra cópia, altere o conteúdo ou renomeie o recurso."
+            return report
 
         if dry_run:
             report.ok = True

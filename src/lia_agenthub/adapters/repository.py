@@ -91,7 +91,12 @@ class Repository:
         return out
 
     def payload_files(self, cap_id: str) -> dict[str, bytes]:
-        st = self.load(cap_id)
+        """Lê o payload de onde a capacidade estiver: biblioteca ou quarentena.
+
+        Validação e detalhe acontecem ANTES da promoção, então procurar só na
+        biblioteca faria a quarentena parecer vazia.
+        """
+        st = self._load_any(cap_id)
         files: dict[str, bytes] = {}
         if not st.payload.is_dir():
             return files
@@ -144,21 +149,21 @@ class Repository:
         return st
 
     def append_history(self, cap_id: str, entry: dict) -> None:
-        st = self.load(cap_id)
+        st = self._load_any(cap_id)
         hist = read_json(st.meta / "history.json", default=[]) or []
         hist.append(entry)
         atomic_write_json(st.meta / "history.json", hist)
 
     def save_validation(self, cap_id: str, report: dict) -> None:
-        st = self.load(cap_id)
+        st = self._load_any(cap_id)
         atomic_write_json(st.meta / "validation.json", report)
 
     def read_validation(self, cap_id: str) -> dict | None:
-        st = self.load(cap_id)
+        st = self._load_any(cap_id)
         return read_json(st.meta / "validation.json")
 
     def history(self, cap_id: str) -> list[dict]:
-        st = self.load(cap_id)
+        st = self._load_any(cap_id)
         return read_json(st.meta / "history.json", default=[]) or []
 
     def delete(self, cap_id: str, *, confirmed: bool = False) -> None:
@@ -184,14 +189,30 @@ class Repository:
             "treeHash": combined,
         }
 
+    def _load_any(self, cap_id: str) -> StoredCapability:
+        """Carrega de onde estiver. Duplicata importa ANTES de promover."""
+        for base in (self.locations.library, self.locations.quarantine):
+            data = read_json(base / cap_id / ".lia" / "capability.json")
+            if data is not None:
+                return StoredCapability(Capability.from_dict(data), base / cap_id)
+        raise NotFound(
+            f"Capacidade `{cap_id}` não encontrada.",
+            "Ela pode ter sido removida. Recarregue a lista.")
+
     def find_duplicates(self, cap_id: str) -> list[str]:
-        """Mesmo treeHash de outra capacidade. Detecta reimportação disfarçada."""
-        st = self.load(cap_id)
-        target = st.capability.tree_hash
+        """Mesmo treeHash de outra capacidade, na biblioteca ou na quarentena.
+
+        Detecta reimportação disfarçada e avisa antes de o usuário promover
+        algo que já tem.
+        """
+        target = self._load_any(cap_id).capability.tree_hash
         if not target:
             return []
-        return [
+        # Só IDs diferentes contam como duplicata: mesmo ID é a MESMA capacidade,
+        # e o importador já reporta isso como `alreadyPresent`.
+        others = self.list_all() + self.list_quarantine()
+        return sorted({
             other.capability.id
-            for other in self.list_all()
+            for other in others
             if other.capability.id != cap_id and other.capability.tree_hash == target
-        ]
+        })

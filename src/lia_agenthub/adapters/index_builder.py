@@ -185,10 +185,14 @@ def check_consistency(index: dict, packages_dir: Path, library_dir: Path) -> dic
             if (entry / ".lia" / "capability.json").is_file():
                 on_disk.add(entry.name)
 
+    fantasmas = sorted(indexed - on_disk)
+
     return {
-        "ok": not missing_packages and not orphan_packages,
+        # Uma capacidade indexada que não existe no disco é inconsistência:
+        # o índice estaria prometendo algo que o usuário não tem.
+        "ok": not missing_packages and not orphan_packages and not fantasmas,
         "missingPackages": missing_packages,
         "orphanPackages": orphan_packages,
         "notIndexed": sorted(on_disk - indexed),
-        "indexedButMissingOnDisk": sorted(indexed - on_disk),
+        "indexedButMissingOnDisk": fantasmas,
     }

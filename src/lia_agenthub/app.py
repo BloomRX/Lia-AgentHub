@@ -83,7 +83,9 @@ class AgentHub:
         }
 
     def detail(self, cap_id: str) -> dict:
-        stored = self.repo.load(cap_id)
+        # Aceita item na quarentena: o detalhe é justamente onde o usuário
+        # decide se promove.
+        stored = self.repo._load_any(cap_id)
         cap = stored.capability
         risk = assess(cap)
         return {
@@ -119,7 +121,7 @@ class AgentHub:
 
     # ---- C4 validação ----------------------------------------------------
     def validate(self, cap_id: str) -> dict:
-        stored = self.repo.load(cap_id)
+        stored = self.repo._load_any(cap_id)
         files = self.repo.payload_files(cap_id)
         primary = files.get("SKILL.md") or files.get("skill.md")
         if primary is None:
@@ -147,7 +149,7 @@ class AgentHub:
     def set_trust(self, cap_id: str, trust: str, *, decided_by: str = "humano") -> dict:
         if trust not in {t.value for t in Trust}:
             raise LiaError(f"Confiança inválida: {trust}", "Use um valor da escala.")
-        stored = self.repo.load(cap_id)
+        stored = self.repo._load_any(cap_id)
         before = stored.capability.trust.value
         stored.capability.trust = Trust(trust)
         from .adapters.atomic import atomic_write_json
@@ -162,7 +164,7 @@ class AgentHub:
                     basis: str = "") -> dict:
         from .adapters.atomic import atomic_write_json
         from .domain.model import LicenseStatus
-        stored = self.repo.load(cap_id)
+        stored = self.repo._load_any(cap_id)
         lic = stored.capability.license
         lic.code = code or None
         lic.status = LicenseStatus.DECLARED if code else LicenseStatus.UNKNOWN
@@ -181,6 +183,9 @@ class AgentHub:
 
     def duplicates(self, cap_id: str) -> list[str]:
         return self.repo.find_duplicates(cap_id)
+
+    def already_present(self, cap_id: str) -> bool:
+        return self.repo.exists(cap_id)
 
     def diff_versions(self, cap_a: str, cap_b: str) -> dict:
         a, b = self.repo.payload_files(cap_a), self.repo.payload_files(cap_b)

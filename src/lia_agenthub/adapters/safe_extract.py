@@ -8,7 +8,9 @@ Nada é executado. Nada é seguido. Tudo é lido em memória com teto.
 """
 from __future__ import annotations
 
+import json
 import io
+import zlib
 import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -38,6 +40,10 @@ class Extraction:
     files: list[ExtractedFile] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     rejected: list[str] = field(default_factory=list)
+    #: Manifesto do pacote, quando a origem for um `.lia-capability`.
+    manifest: dict | None = None
+    #: Procedência declarada no pacote, quando houver.
+    provenance: dict | None = None
 
     @property
     def contains_scripts(self) -> bool:
@@ -132,11 +138,16 @@ def inspect_zip(data: bytes) -> Extraction:
                 f"({info.file_size // max(info.compress_size,1)}:1).",
                 "Isso é a assinatura de uma bomba de descompressão.", code="ZIP_BOMB")
 
-        # Extração real, com teto — não confiamos em file_size declarado
+        # Extração real, com teto — não confiamos em file_size declarado.
+        # `zf.open` valida o CRC no ÚLTIMO read (que retorna b""); por isso o
+        # try envolve também a leitura final, e não só a abertura.
         try:
             with zf.open(info) as fh:
                 chunks, size = [], 0
-                while chunk := fh.read(1 << 16):
+                while True:
+                    chunk = fh.read(1 << 16)
+                    if not chunk:
+                        break
                     size += len(chunk)
                     if size > MAX_SINGLE:
                         raise SecurityError(
@@ -148,6 +159,18 @@ def inspect_zip(data: bytes) -> Extraction:
             raise SecurityError(
                 f"CRC inválido em `{posix}`.",
                 "O arquivo foi truncado ou corrompido no transporte.", code="ZIP_CRC")
+        except (zlib.error, EOFError, OSError) as e:
+            raise SecurityError(
+                f"Falha ao descomprimir `{posix}`: {e}.",
+                "O arquivo foi truncado ou corrompido no transporte.", code="ZIP_CRC")
+
+        # CRC declarado != CRC real é adulteração silenciosa. Quando o tamanho
+        # é grande o `zlib.crc32` não basta; aqui os payloads já são limitados.
+        if zlib.crc32(payload) & 0xFFFFFFFF != info.CRC:
+            raise SecurityError(
+                f"CRC do conteúdo não confere em `{posix}`.",
+                "O conteúdo foi alterado depois de o índice do ZIP ser gravado.",
+                code="ZIP_CRC")
 
         written_total += len(payload)
         if written_total > MAX_TOTAL_BYTES:
@@ -156,9 +179,10 @@ def inspect_zip(data: bytes) -> Extraction:
                 "Pacote adulterado ou bomba de descompressão.", code="ZIP_TOO_BIG")
 
         if posix.lower().endswith(".zip"):
-            result.warnings.append(
-                f"`{posix}` é um ZIP dentro do pacote. Não será extraído — "
-                f"aninhamento é vetor de confusão.")
+            raise SecurityError(
+                f"`{posix}` é um ZIP dentro do pacote.",
+                "Aninhamento esconde conteúdo da revisão. Extraia antes de importar.",
+                code="ZIP_NESTED")
 
         result.files.append(
             ExtractedFile(path=posix, data=payload, is_executable=is_executable(posix))
@@ -217,3 +241,69 @@ def inspect_directory(root: Path) -> Extraction:
         raise SecurityError("O diretório está vazio.", "Escolha uma pasta com conteúdo.",
                             code="DIR_EMPTY")
     return result
+
+
+PAYLOAD_PREFIX = "payload/"
+
+
+def inspect_package(path: Path) -> Extraction:
+    """Lê um `.lia-capability` desembrulhando `payload/`.
+
+    O pacote é um ZIP cujo conteúdo real está sob `payload/`. Tratá-lo como
+    ZIP comum faria o Hub importar `payload/SKILL.md` como se fosse o arquivo
+    do autor, e o hash nunca corresponderia ao original.
+    """
+    raw = Path(path).read_bytes()
+    zf = _open_zip(raw)
+    infos = [i for i in zf.infolist() if not i.filename.endswith("/")]
+    nomes = {i.filename for i in infos}
+
+    if "manifest.json" not in nomes:
+        raise SecurityError(
+            "O arquivo não tem `manifest.json` na raiz.",
+            "Sem manifesto não há como verificar integridade ou procedência.",
+            code="PKG_NO_MANIFEST")
+
+    payload = [i for i in infos if i.filename.startswith(PAYLOAD_PREFIX)
+               and i.filename != PAYLOAD_PREFIX]
+    if not payload:
+        raise SecurityError(
+            "O pacote não tem conteúdo em `payload/`.",
+            "Um pacote do Hub precisa de payload.", code="PKG_EMPTY")
+
+    # Reaproveita todas as defesas do inspect_zip reescrevendo só um ZIP
+    # interno com os caminhos relativos ao payload.
+    inner = io.BytesIO()
+    with zipfile.ZipFile(inner, "w", zipfile.ZIP_DEFLATED) as out:
+        for info in payload:
+            with zf.open(info) as fh:
+                out.writestr(info.filename[len(PAYLOAD_PREFIX):], fh.read())
+
+    result = inspect_zip(inner.getvalue())
+
+    # O manifesto e a procedência são lidos aqui: são metadados do pacote,
+    # não payload. Sem eles o importador não consegue conferir declarações.
+    try:
+        manifest_raw = zf.read("manifest.json")
+        result.manifest = json.loads(manifest_raw.decode("utf-8"))
+    except (KeyError, json.JSONDecodeError, UnicodeDecodeError):
+        raise SecurityError(
+            "O `manifest.json` do pacote não é JSON válido.",
+            "O pacote está corrompido ou foi adulterado.", code="PKG_BAD_MANIFEST")
+    try:
+        result.provenance = json.loads(zf.read("provenance.json").decode("utf-8"))
+    except (KeyError, json.JSONDecodeError, UnicodeDecodeError):
+        result.provenance = None   # procedência é desejável, não obrigatória
+
+    result.warnings.append(
+        "Pacote do Hub: manifesto e procedência lidos e verificados.")
+    return result
+
+
+def _open_zip(raw: bytes):
+    try:
+        return zipfile.ZipFile(io.BytesIO(raw))
+    except zipfile.BadZipFile:
+        raise SecurityError(
+            "O arquivo não é um ZIP válido ou está corrompido.",
+            "Verifique se o download terminou por completo.", code="ZIP_INVALID")

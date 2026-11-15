@@ -54,7 +54,10 @@ def resolve_locations(override_root: Path | None = None) -> Locations:
     else:
         home = Path.home() / APP_FOLDER / APP_ID
 
-    common = home.parent / "Comum" / "Capacidades"
+    # Comum fica ao lado de AgentHub (dentro de Lia/). Com override explícito,
+    # é relativo à raiz dada — senão um teste/host alternativo escreveria fora.
+    common = home.parent / "Comum" / "Capacidades" if override_root is None and not os.environ.get("LIA_AGENTHUB_HOME") \
+        else home / "Comum" / "Capacidades"
 
     if is_frozen():
         resources = Path(getattr(sys, "_MEIPASS", Path(sys.executable).parent)) / "lia_agenthub" / "resources"

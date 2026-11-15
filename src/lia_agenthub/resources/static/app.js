@@ -388,7 +388,7 @@ async function runImport(dryRun) {
         el("ul", { class: "issues" }, r.unicodeFindings.map(f =>
           el("li", { class: f.category === "A" ? "error" : f.category === "B" ? "review" : "info" },
             el("strong", { text: `${f.category} · ${f.name} (${f.codePoint})` }),
-            el("div", { text: `${f.file} · posição ${f.offset} · ${f.note}` }))))));
+            el("div", { text: `${f.file} · linha ${f.line}, coluna ${f.column} · ${f.context}` }))))));
     }
     if (r.warnings?.length) {
       out.append(el("div", { class: "section" }, el("h3", { text: "Avisos" }),

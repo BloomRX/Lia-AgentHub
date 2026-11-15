@@ -35,16 +35,22 @@ class RiskAssessment:
     #: O que este modelo NÃO avaliou. Sempre não-vazio, por honestidade.
     not_evaluated: list[str] = field(default_factory=list)
 
+    DISCLAIMER = (
+        "Avaliação heurística por regras explícitas. Não executa o código "
+        "e não verifica se o conteúdo é malicioso. Não é aprovação."
+    )
+
+    @property
+    def disclaimer(self) -> str:
+        return self.DISCLAIMER
+
     def as_dict(self) -> dict:
         return {
             "level": self.level.value,
             "score": sum(f.weight for f in self.factors),
             "factors": [f.as_dict() for f in self.factors],
             "notEvaluated": list(self.not_evaluated),
-            "disclaimer": (
-                "Avaliação heurística por regras explícitas. Não executa o código "
-                "e não verifica se o conteúdo é malicioso. Não é aprovação."
-            ),
+            "disclaimer": self.DISCLAIMER,
         }
 
 
