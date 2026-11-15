@@ -97,7 +97,8 @@ Cada domínio tem **exatamente um dono**. "Consome" não é "possui".
                     │  Biblioteca local + proveniência         │
                     │  Ponteiro p/ recursos externos           │
                     │  Pacote .lia-capability                  │
-                    │  Índice assinado (manifest + hashes)     │
+                    │  Índice com hashes — NÃO assinado        │
+                    │  (contentHash + treeHash)                │
                     └───────────────┬──────────────────────────┘
                                     │  arquivos em disco
                                     │  (sem API obrigatória,
@@ -472,9 +473,14 @@ payload/                      ← a capacidade, no formato do seu tipo
 provenance.json
 NOTICE                        ← só se licença exigir (Apache-2.0)
 THIRD_PARTY_NOTICES.md
-signatures/                    ← opcional (fase posterior)
-  └── manifest.sig
+signatures/                    ← RESERVADO, não usado no MVP
+  └── (nenhum código lê esta pasta)
 ```
+
+> **Sobre `signatures/`:** reservar o diretório **não é** implementar assinatura. No MVP, um
+> arquivo colocado ali é **ignorado**, não verificado — e o manifest **não** pode declarar
+> `signed: true`. Assinatura criptográfica é Fase 3+ e está `RESEARCH` pendente. Ver
+> `SECURITY-AND-TRUST-MODEL.md` §3.7.1 para o vocabulário obrigatório.
 
 **Por que ZIP:** inspecionável com qualquer ferramenta, sem runtime, sem criptografia proprietária. Um usuário pode abrir com o Explorer do Windows e ver o conteúdo. Isso satisfaz a regra nº 3 da marca (o trabalho é dele) e T3.
 

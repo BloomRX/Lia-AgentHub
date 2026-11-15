@@ -166,21 +166,63 @@ Se dois processos do Hub (duas janelas) escreverem na biblioteca:
 
 | Saída | Formato | Para quem |
 |---|---|---|
-| **Capacidade individual** | `.lia-capability` (ZIP + `manifest.json`) | Compartilhar com outra pessoa ou outro host |
-| **Coleção** | `.lia-collection` (ZIP com N capacidades + índice) | Levar a biblioteca inteira |
+| **Capacidade individual** | `.lia-capability` (ZIP + `manifest.json`) | Compartilhar com outra pessoa, outro host, ou guardar |
+| **Coleção** | `.lia-collection` (ZIP com N capacidades + `index.json` próprio, **não assinado**) | Levar a biblioteca inteira |
 | **Biblioteca crua** | Diretório `Biblioteca\` copiado | Quem não quer o Hub: são arquivos |
 
 **Regra dura:** a terceira saída **precisa funcionar sem o Hub**. Se o usuário copiar `Biblioteca\` para um pendrive e abrir num editor de texto, ele vê Markdown e JSON legíveis. É o teste de T3 da arquitetura.
 
-### 5.2 O que a exportação **recusa** fazer
+### 5.2 Política de exportação por **destino** — correção da Fase 0.1
 
-| Situação | Comportamento |
-|---|---|
-| `license` não revisada (`null`) | **Recusa** exportar, com mensagem explicando qual camada falta |
-| Capacidade em `unreviewed` | Exporta, mas `manifest.json` marca `trust: unreviewed` e o nome do arquivo ganha sufixo `-NAO-REVISADO` |
-| Capacidade com `scripts/` | Exporta, com aviso explícito e campo `containsScripts: true` no manifest |
-| Capacidade que declara `secrets.envVars` | Exporta os **nomes**; nunca os valores |
-| Capacidade com `egress.destinations` | Exporta; `manifest.json` inclui a lista, e a interface mostra |
+A Fase 0 recusava exportar qualquer capacidade com `license: null`. Isso **punha no mesmo balde**
+quatro operações com implicações jurídicas completamente diferentes — inclusive fazer backup do
+próprio arquivo. Ver `PHASE-0-1-CONSISTENCY-REVIEW.md` §3.5.
+
+A pergunta correta não é *"tem licença?"*, é **"para onde vai?"**.
+
+| Destino | Quem recebe | Natureza | Política |
+|---|---|---|---|
+| **`private`** — backup local | Ninguém; cópia no disco/pendrive do próprio usuário | Privada | **Sempre permitido.** O Hub não interfere |
+| **`self`** — outra máquina do usuário | O próprio usuário | Privada | **Permitido**, sem bloqueio. `target: self` no manifest |
+| **`shared`** — uma pessoa identificada | Um terceiro | Limitada | **Permitido com aviso explícito** e confirmação de leitura. Nunca bloqueado por licença desconhecida |
+| **`public`** — redistribuição | Qualquer um | Pública | **Bloqueado** sem `redistributable: true` **e** base de redistribuição registrada |
+
+```
+permitido_exportar(capacidade, destino):
+    destino == private → SEMPRE sim
+    destino == self    → SEMPRE sim
+    destino == shared  → sim, com aviso; registra target e timestamp
+    destino == public  → só se capacidade.redistributable is True
+                         e capacidade.license.redistribution_basis != null
+```
+
+**Por que `private` e `self` não bloqueiam nunca:** a regra nº 3 da marca diz que o trabalho do
+usuário é dele e deve ser "acessível, copiável, exportável e removível". Um Hub que impede o
+usuário de fazer backup do que já está no disco dele falha essa regra e não protege ninguém — a
+cópia de arquivo é possível fora do Hub de qualquer forma (`Ctrl+C` no Explorer).
+
+### 5.3 O que a exportação **sempre avisa ou recusa**
+
+| Situação | `private` / `self` | `shared` | `public` |
+|---|---|---|---|
+| `license: null` | Exporta; manifest leva `license: null` | Exporta **com aviso**; usuário confirma leitura | **Recusa** |
+| `license` não revisada | Exporta; manifest marca | Exporta com aviso | **Recusa** |
+| `redistributable: true` sem base | — | — | **Recusa** |
+| Capacidade em `unreviewed` | Exporta; sufixo `-NAO-REVISADO` | Idem + aviso | **Recusa** |
+| Capacidade com `scripts/` | Exporta; `containsScripts: true` | Idem + aviso | Exporta, com aviso destacado |
+| `secrets.envVars` | Exporta só os **nomes** | Idem | Idem |
+| `egress.destinations` | Exporta; manifest inclui a lista | Idem | Idem |
+
+**O aviso de `shared` — texto que o usuário precisa ter visto:**
+
+> Esta capacidade não tem licença registrada ou tem licença não revisada. **Você** está decidindo
+> compartilhá-la. O Lia Agent Hub não verificou se você tem o direito de redistribuí-la, e não
+> pode verificar. O pacote leva `license: null` para que quem receber saiba o mesmo que você sabe.
+
+**Limite declarado — não é parecer jurídico:** o Hub **não avalia** se o usuário tem direito de
+redistribuir. Registra o que o autor declarou e impede a única operação de alto risco
+(publicação) na ausência de declaração. A incerteza jurídica residual está registrada como
+decisão humana em `D-25`.
 
 ### 5.3 Importação — o que é aceito
 
