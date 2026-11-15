@@ -6,6 +6,7 @@ quando executado como `__main__` sem contexto de pacote. Nenhum teste cobria
 isso, então passou. Esta suíte fecha essa lacuna.
 """
 import ast
+import os
 import re
 import subprocess
 import sys
@@ -45,7 +46,9 @@ def test_main_usa_import_relativo_e_por_isso_nao_serve_como_entrypoint():
 
 def test_launcher_roda_como_script_sem_contexto_de_pacote():
     """A prova direta: executar o launcher como o PyInstaller faria."""
-    env = {"PYTHONPATH": str(RAIZ / "src"), "PATH": "/usr/bin:/bin"}
+    # Copia o ambiente real: um PATH fixo como "/usr/bin:/bin" não existe no
+    # Windows e faria este teste falhar lá por motivo errado.
+    env = {**os.environ, "PYTHONPATH": str(RAIZ / "src")}
     r = subprocess.run([sys.executable, str(LAUNCHER), "--version"],
                        capture_output=True, text=True, env=env, timeout=60)
     assert r.returncode == 0, f"launcher falhou: {r.stderr}"
@@ -58,7 +61,7 @@ def test_main_executado_direto_falha_sem_pacote():
     Se este teste passar a falhar, o Python mudou o comportamento de execução
     de script e o launcher pode ser reavaliado.
     """
-    env = {"PYTHONPATH": str(RAIZ / "src"), "PATH": "/usr/bin:/bin"}
+    env = {**os.environ, "PYTHONPATH": str(RAIZ / "src")}
     r = subprocess.run([sys.executable, str(MAIN), "--version"],
                        capture_output=True, text=True, env=env, timeout=60)
     assert r.returncode != 0
@@ -107,3 +110,23 @@ def test_matriz_de_dependencias_documentada_esta_coerente():
     pyproject = (RAIZ / "pyproject.toml").read_text(encoding="utf-8")
     assert "pywebview" in pyproject
     assert ">=3.11" in pyproject
+
+
+# ---------------- fixtures para os testes manuais no Windows ----------------
+def test_gerador_de_fixtures_existe_e_roda(tmp_path):
+    """O Codex depende destas fixtures para os testes manuais."""
+    import subprocess
+    env = {**os.environ, "PYTHONPATH": str(RAIZ / "src")}
+    r = subprocess.run([sys.executable, str(RAIZ / "scripts" / "make_fixtures.py"),
+                        str(tmp_path / "fx")],
+                       capture_output=True, text=True, env=env, timeout=180)
+    assert r.returncode == 0, r.stderr
+    assert (tmp_path / "fx" / "MANIFESTO.json").is_file()
+    assert (tmp_path / "fx" / "01-skill-valida" / "SKILL.md").is_file()
+
+
+def test_fixtures_nao_contem_codigo_de_terceiro():
+    """As fixtures são sintéticas: nenhuma veio de fora."""
+    fonte = (RAIZ / "scripts" / "make_fixtures.py").read_text(encoding="utf-8")
+    assert "sintétic" in fonte.lower() or "sintetic" in fonte.lower()
+    assert "http://" not in fonte.replace("https://www.python.org", "")
