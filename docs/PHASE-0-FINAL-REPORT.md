@@ -432,3 +432,77 @@ A Fase 0 está concluída como **trabalho documental**. O produto **Lia Agent Hu
 O que torna essa conclusão defensável não é a quantidade de documentos — é que **cada recomendação tem evidência rastreável em branch e commit**, e que **cada afirmação que não pude verificar está marcada como tal**. As onze limitações da §9 são parte da entrega, não uma nota de rodapé.
 
 A Fase 1 não foi iniciada. Aguardo revisão e aprovação humana.
+
+---
+
+## 14. Adendo — Fase 1 executada (2026-11-15)
+
+> **Este adendo não reescreve a Fase 0.** As seções 1–13 descrevem o estado em
+> que a Fase 0 foi encerrada: documentação apenas, nenhuma implementação. Isso
+> era verdade e continua registrado como verdade histórica. O que mudou depois
+> está abaixo.
+
+### 14.1 O que autorizou a mudança
+
+A Fase 1 foi autorizada explicitamente pela missão de execução, que também
+restringiu o escopo: nenhuma execução de código de terceiros, nenhum sandbox,
+nenhuma credencial, nenhum marketplace, nenhuma alteração em `main`.
+
+### 14.2 Verificação de consistência — resultado real
+
+| Item | Fase 0 | Fase 1 |
+|---|---|---|
+| Verificações em `verify-consistency.py` | 30 | **44** |
+| Resultado | 29/30 (asserção 29 defeituosa) | **44/44 PASS** |
+
+A asserção 29 original conferia apenas a existência do título de D-01, D-05,
+D-16 e D-18 — passaria mesmo se a decisão tivesse sido marcada `APPROVED`.
+Agora `decision_state()` lê a célula `| **Estado** |` de cada bloco.
+
+**Prova de sensibilidade (executada, não afirmada):**
+
+| Regressão injetada | Resultado |
+|---|---|
+| D-16 → `APPROVED` | 41/44 — 3 FAILs |
+| D-13 → `APPROVED` | 40/44 — 4 FAILs |
+| D-14 sem marca de adoção | 43/44 — 1 FAIL |
+| Restaurado | **44/44** |
+
+### 14.3 Decisões: adotar não é aprovar
+
+Cinco decisões reversíveis foram **adotadas** como padrão de implementação:
+
+| Decisão | Escolha adotada |
+|---|---|
+| D-03 | Agent Skills (`SKILL.md`) como formato canônico |
+| D-06 | Arquivos + índice derivado; disco é a verdade |
+| D-13 | Escopo (b): MVP de 8 capacidades |
+| D-14 | (a) Python stdlib + UI web local + PyInstaller |
+| D-27 | (a) pywebview no MVP, com fallback para o navegador |
+
+**O estado delas continua `RECOMMENDED`.** Nenhuma foi marcada `APPROVED`.
+Quatro verificações travam essa distinção, e todas falham se ela for violada.
+
+Continuam `OPEN` e exigem decisão humana: **D-01** (nome), **D-05** (execução
+de terceiros), **D-16** (licença), **D-18** (modelo de risco). A implementação
+avançou dentro dos limites que essas decisões abertas permitem: não há execução
+de terceiros, não há `LICENSE`, o risco é por regras transparentes e o nome não
+foi alterado.
+
+### 14.4 O que foi implementado
+
+Ver `docs/DESENVOLVIMENTO.md` (arquitetura) e `docs/MVP-GUIA.md` (uso).
+Resumo: 7 módulos de domínio puro, 6 adaptadores, serviço de aplicação,
+servidor local com token de sessão, UI embarcada, 214 testes.
+
+### 14.5 O que continua sem validação
+
+Registrado, não inventado:
+
+- Executável Windows — não gerado (ambiente Linux, sem Windows).
+- Janela nativa WebView2 — não executada (sem WebView2 no ambiente).
+- SmartScreen e comportamento de instalação em máquina limpa.
+- Caminhos `%USERPROFILE%` / `%APPDATA%` reais.
+
+O servidor HTTP que a janela nativa carrega **foi** validado, incluindo token,
+Origem, Host e cabeçalhos de segurança. A camada que falta é a moldura nativa.

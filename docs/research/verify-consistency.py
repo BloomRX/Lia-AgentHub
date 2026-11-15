@@ -124,6 +124,16 @@ check("D-26 exige fixar a versao do Unicode",
 check("D-17 = sistemas operacionais", "### D-17 — Sistemas operacionais" in REG)
 check("D-27 = biblioteca de interface", "### D-27 — Biblioteca de interface" in REG)
 
+def block_of(text, decision_id):
+    """Texto do bloco de uma decisao, sem os vizinhos."""
+    m = re.search(rf"^### {re.escape(decision_id)} —.*?$", text, re.M)
+    if not m:
+        return ""
+    resto = text[m.end():]
+    nxt = re.search(r"^### D-\d{2}", resto, re.M)
+    return resto[:nxt.start()] if nxt else resto
+
+
 def decision_state(text, decision_id):
     """Estado real de uma decisão, lido do bloco dela.
 
@@ -154,6 +164,29 @@ MUST_BE_OPEN = ("D-01", "D-05", "D-16", "D-18")
 estados_abertas = {d: decision_state(REG, d) for d in MUST_BE_OPEN}
 check("D-01, D-05, D-16, D-18 marcadas OPEN (estado, não título)",
       all(v == "OPEN" for v in estados_abertas.values()))
+
+# ---- 9b. Adocao para implementacao != aprovacao humana -----------------
+# A Fase 1 adotou cinco decisoes reversiveis como padrao de implementacao.
+# Adotar NAO e aprovar: o estado continua RECOMMENDED e nenhuma decisao
+# afirma revisao humana. Estas verificacoes travam essa distincao.
+ADOTADAS = ("D-03", "D-06", "D-13", "D-14", "D-27")
+for did in ADOTADAS:
+    bloco_estado = decision_state(REG, did) or ""
+    check(f"{did} registra ADOCAO para implementacao",
+          "ADOPTED" in block_of(REG, did))
+    check(f"{did} continua RECOMMENDED, nao APPROVED",
+          bloco_estado.startswith("RECOMMENDED") and "APPROVED" not in bloco_estado)
+
+# A palavra APPROVED aparece legitimamente na legenda, na tabela de
+# contagem e no template. O que nao pode e o ESTADO de um bloco ser APPROVED
+# — e isso a verificacao 9 ja cobre por bloco. Aqui travamos a contagem.
+check("tabela de estados declara 0 APPROVED",
+      re.search(r"`APPROVED`.{0,40}\*\*0\*\*", REG, re.S) is not None
+      or re.search(r"\|\s*\*\*`APPROVED`\*\*\s*\|\s*—\s*\|\s*\*\*0\*\*\s*\|", REG) is not None)
+check("nenhum bloco de decisao esta APPROVED",
+      all(decision_state(REG, f"D-{i:02d}") != "APPROVED" for i in range(1, 28)))
+check("Fase 0.1 continua descrita como nao aprovada",
+      (ROOT / "docs" / "PHASE-0-FINAL-REPORT.md").exists())
 
 # ---- 10. LICENSE ausente ------------------------------------------------
 check("LICENSE ausente", not (ROOT / "LICENSE").exists())

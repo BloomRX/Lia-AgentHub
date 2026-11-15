@@ -69,7 +69,7 @@
 
 | | |
 |---|---|
-| **Estado** | `RECOMMENDED` |
+| **Estado** | `RECOMMENDED` · `ADOPTED` para implementação (Fase 1) — Agent Skills é o formato suportado; extensão por tipo não quebra o contrato |
 | **Questão original** | Quais formatos canônicos, preservando formatos abertos? |
 | **Evidências** | `INTEGRATION-CANDIDATES.md` §2: Agent Skills é padrão aberto (2025-12-18), Apache-2.0/CC-BY-4.0, 6 campos de frontmatter, governança neutra. **O Studio já usa `.agents/skills/<id>/SKILL.md` com `name`+`description`** e declara compatibilidade. Clientes estritos **rejeitam** chave desconhecida |
 | **Alternativas** | (a) Agent Skills puro; (b) Agent Skills + frontmatter estendido; (c) formato próprio Lia |
@@ -114,7 +114,7 @@
 
 | | |
 |---|---|
-| **Estado** | `RECOMMENDED` |
+| **Estado** | `RECOMMENDED` · `ADOPTED` para implementação (Fase 1) — arquivos + índice derivado; índice é reconstruível, disco é a verdade |
 | **Questão original** | Qual estratégia local-first? |
 | **Evidências** | `DATA-STORAGE-AND-PORTABILITY.md` §3: arquivos + índice derivado; padrão `Lia\` do kit; Forge usa workspace visível; Project usa wiki Markdown com índice reconstruível |
 | **Alternativas** | (a) arquivos + `index.json`; (b) SQLite como fonte; (c) SQLite como índice; (d) git obrigatório |
@@ -206,7 +206,7 @@
 
 | | |
 |---|---|
-| **Estado** | `RECOMMENDED` |
+| **Estado** | `RECOMMENDED` · `ADOPTED` para implementação (Fase 1) — escopo (b) MVP de 8 capacidades |
 | **Questão original** | Quais funcionalidades são essenciais no primeiro MVP? |
 | **Evidências** | `MVP-AND-ROADMAP.md` §3, §6. As oito lacunas (L-01…L-08) da auditoria mapeiam 1:1 nas capacidades M1–M8 |
 | **Alternativas** | (a) só biblioteca + pacote (A); (b) **M1–M8** (B); (c) B + Test Lab (C) |
@@ -218,7 +218,7 @@
 
 | | |
 |---|---|
-| **Estado** | `RECOMMENDED` |
+| **Estado** | `RECOMMENDED` · `ADOPTED` para implementação (Fase 1) — (a) Python stdlib + UI web local + PyInstaller |
 | **Questão original** | Electron, web local ou outra arquitetura? |
 | **Evidências** | `PLATFORM-AND-TECHNOLOGY-DECISION.md` §3 (stacks reais), §4 (8 critérios, K1+K2 = 45 %), §5 e **§5.5 (revisão da Fase 0.1)**; `devguide.python.org/versions/`; metadados PyPI de `pyinstaller` 6.22.3, `pywebview` 6.2.1 e `pythonnet` 3.2.1 |
 | **Alternativas** | (a) Python stdlib + WebView2 + PyInstaller; (b) Electron + Node; (c) Tauri; (d) web pura; (e) CLI |
@@ -454,7 +454,7 @@ Para cada decisão:
 
 | | |
 |---|---|
-| **Estado** | `RECOMMENDED` |
+| **Estado** | `RECOMMENDED` · `ADOPTED` para implementação (Fase 1) — (a) pywebview no MVP, com fallback para o navegador |
 | **Origem** | Revisão `R7` da Fase 0.1 — a Fase 0 dizia "janela WebView2" como se fosse uma decisão só |
 | **Questão** | Como o usuário vê a interface local: janela própria (`pywebview`) ou aba do navegador? |
 | **Evidências** | `PLATFORM-AND-TECHNOLOGY-DECISION.md` §5.5.4–§5.5.6. Metadados PyPI: `pywebview` 6.2.1 (BSD-3) depende de `pythonnet` no Windows; `pythonnet` 3.2.1 exige **Python ≥ 3.11** |
