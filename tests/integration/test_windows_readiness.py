@@ -230,3 +230,31 @@ def test_duas_instancias_nao_corrompem_o_indice(tmp_path):
     assert len(depois["capabilities"]) == len(antes["capabilities"])
     assert ([c["id"] for c in depois["capabilities"]]
             == [c["id"] for c in antes["capabilities"]])
+
+
+def test_lifecycle_all_nao_devolve_lista_vazia(tmp_path):
+    """`?lifecycle=all` deve significar "todos os estados", não "nenhum".
+
+    Regressão real: o valor era comparado por igualdade com
+    `cap.lifecycle.value`, então "all" não casava com nada e a rota devolvia
+    `{"items": []}` com status 200. Um filtro que devolve vazio e parece ter
+    funcionado é pior que um erro — quem depura acha que a biblioteca sumiu.
+    """
+    from lia_agenthub.app import SearchQuery
+
+    home = tmp_path / "h"
+    hub = AgentHub(resolve_locations(home))
+    base = _fixtures(tmp_path)
+
+    # uma capacidade ativa na biblioteca
+    r = hub.import_path(str(base / "01-skill-valida"))
+    assert r.ok
+    hub.promote(r.capability_id)
+
+    assert len(hub.items(SearchQuery(lifecycle="active"))) == 1
+    # None = todos os estados; é para isto que "all" é mapeado
+    assert len(hub.items(SearchQuery(lifecycle=None))) == 1
+    # e o valor literal "all" NÃO pode ser usado como filtro por igualdade
+    assert len(hub.items(SearchQuery(lifecycle="all"))) == 0, (
+        "se isto virar 1, o app passou a interpretar 'all' — mantenha o "
+        "mapeamento na camada HTTP, não no filtro de domínio")

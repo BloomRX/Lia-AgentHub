@@ -38,7 +38,7 @@ Verificado por comando, não por memória:
 | `main` (local e remoto) | `34a27f48` — **intacta** |
 | Upstream configurado | **nenhum** para a branch de trabalho |
 | PR / merge | nenhum |
-| Suíte de testes | 284 passando **[EXECUTADO]** |
+| Suíte de testes | 285 passando **[EXECUTADO]** |
 
 `main` não é tocada por este trabalho e você não deve tocá-la.
 
@@ -46,7 +46,7 @@ Verificado por comando, não por memória:
 
 | Validação | Linux (feito) | Windows real (você) |
 |---|---|---|
-| Suíte automatizada (284 testes) | sim, executada | **sim, [A VALIDAR]** |
+| Suíte automatizada (285 testes) | sim, executada | **sim, [A VALIDAR]** |
 | Detecção de WebView2 | impossível (só existe no Windows) | **[A VALIDAR]** |
 | Janela nativa (pywebview) | impossível (sem display) | **[A VALIDAR]** |
 | Build do `.exe` | impossível | **[A VALIDAR]** |
@@ -179,7 +179,7 @@ python -m pytest tests/integration/test_windows_readiness.py -v
 python -m pytest tests/integration/test_packaging.py -v
 ```
 
-Resultado esperado: **284 passed**. No Linux leva ~15 s **[EXECUTADO]**.
+Resultado esperado: **285 passed**. No Linux leva ~15 s **[EXECUTADO]**.
 No Windows, espere mais (antivírus e disco), mas a contagem deve ser a mesma.
 
 Consistência documental:
@@ -397,6 +397,29 @@ Este roteiro é derivado de um teste que **passou no Linux** com `GET /api/items
 + `X-Lia-Token` → `200 {"items": []}` **[EXECUTADO]**. Repetir no Windows é
 [A VALIDAR].
 
+**Detalhe que confunde na hora de conferir dados** — e que era um defeito
+real, corrigido nesta rodada **[EXECUTADO]**:
+
+| Rota | Devolve |
+|---|---|
+| `/api/items` | só **ativas** |
+| `/api/items?lifecycle=all` | todas as da **biblioteca** (ativas + versões substituídas) |
+| `/api/items?lifecycle=quarantined` | as da quarentena |
+| `/api/quarantine` | as da quarentena (rota própria) |
+
+Dois pontos que já custaram diagnóstico errado:
+
+1. **Quarentena é armazém separado.** `lifecycle=all` **não** inclui o que
+   está em quarentena — isso é `/api/quarantine`. Então: importar uma Skill
+   válida e ver `/api/items` vazio é **correto**, porque importar não promove.
+   Confira `/api/quarantine` antes de chamar de bug.
+2. **`?lifecycle=all` já devolveu lista vazia em silêncio.** O valor era
+   comparado por igualdade com `cap.lifecycle.value`; "all" não casava com
+   nada e a rota respondia `200 {"items": []}`. Corrigido: "all" agora vira
+   "sem filtro de estado". A lição vale para o resto da sua validação — se um
+   filtro devolve vazio, teste com um item que você **sabe** existir antes de
+   acreditar no resultado.
+
 **Encerramento limpo [A VALIDAR no Windows]** — Linux provou que funciona
 **[EXECUTADO]**: `shutdown()` + `server_close()` deixa a thread morta e a porta
 livre (`connect_ex` → 111). No Windows, confirme que **não sobram processos**:
@@ -539,6 +562,7 @@ funcionalidade essencial; **P2** relevante com contorno; **P3** não bloqueia.
 | R-08 | Detecção de WebView2 não validada em máquina real | **P1** | aberto **[A VALIDAR]** |
 | R-09 | Assinatura de código ausente → SmartScreen | P2 | decisão aberta (D-16) |
 | R-10 | Suíte nunca rodou no Windows | **P1** | aberto **[A VALIDAR]** |
+| R-11 | `?lifecycle=all` devolvia lista vazia em silêncio | **P2** | **corrigido** `[EXECUTADO]` |
 
 Detalhamento dos abertos na §8.
 
@@ -574,9 +598,9 @@ vocabulário é rígido:
 
 | ID | Funcionalidade | Comando | Esperado | Evidência |
 |---|---|---|---|---|
-| A-01 | Suíte completa | `python -m pytest -q` | `284 passed` | saída colada |
+| A-01 | Suíte completa | `python -m pytest -q` | `285 passed` | saída colada |
 | A-02 | Segurança | `python -m pytest tests/security -q` | `76 passed` | saída |
-| A-03 | Prontidão Windows | `python -m pytest tests/integration/test_windows_readiness.py -v` | `13 passed` | saída |
+| A-03 | Prontidão Windows | `python -m pytest tests/integration/test_windows_readiness.py -v` | `14 passed` | saída |
 | A-04 | Empacotamento | `python -m pytest tests/integration/test_packaging.py -v` | `13 passed` | saída |
 | A-05 | Consistência doc | `python docs\research\verify-consistency.py` | `44/44` | saída |
 | A-06 | Sem segredos | `scripts\validate.sh` ou equivalente | sem segredos | saída |
@@ -750,7 +774,7 @@ python -c "from lia_agenthub.adapters.platform_check import detect_webview2 as d
 python -m pytest -q
 ```
 
-Critério de saída: `284 passed` (ou `283 passed, 1 skipped` — o skip de symlink
+Critério de saída: `285 passed` (ou `284 passed, 1 skipped` — o skip de symlink
 é legítimo; registre qual).
 
 **Distinguir falha de ambiente de falha real** — a parte que mais importa:
@@ -946,6 +970,29 @@ risco → como retestar.
   isso é achado de segurança, não bug do teste.
 - **Retestar:** A-01.
 
+### R-11 — `?lifecycle=all` devolvia lista vazia em silêncio (P2, corrigido)
+
+- **Sintoma:** `GET /api/items?lifecycle=all` respondia `200` com
+  `{"items": []}`, mesmo com capacidades na biblioteca.
+- **Causa:** o servidor repassava o valor literal `"all"` para `SearchQuery`,
+  que filtra por igualdade (`cap.lifecycle.value != q.lifecycle`). Nenhuma
+  capacidade tem `lifecycle == "all"`, então nada passava.
+- **Arquivo:** `src/lia_agenthub/interface/server.py`, `_route_get`.
+- **Por que P2 e não P1:** a UI não usa esse parâmetro — ela manda
+  `lifecycle: "active"` fixo. O defeito atingia apenas chamadas diretas à API,
+  incluindo o seu roteiro de validação e scripts de terceiros.
+- **Correção:** `all` (e `""`, `todas`, `todos`) passam a significar "sem
+  filtro de estado" (`None`), e o parâmetro ausente continua sendo `"active"`.
+  A quarentena segue sendo armazém separado — `all` não a inclui.
+- **Risco da correção:** baixo. O comportamento padrão (sem parâmetro) não
+  mudou. Coberto por `test_lifecycle_all_nao_devolve_lista_vazia`.
+- **Retestar:** A-03; e no Windows, o roteiro da §3.B.1.
+
+**Lições para você, Codex:** este defeito não apareceria em nenhum teste que
+só olhasse "a rota responde 200". Foi encontrado porque o roteiro documentado
+foi executado de verdade. Ao validar, **compare a contagem com um item que
+você sabe estar lá**, não apenas com o status HTTP.
+
 ### Regra de conserto
 
 Conserte o defeito concreto. **Não** reescreva a arquitetura para facilitar o
@@ -1069,10 +1116,10 @@ scripts/
   make_fixtures.py     14 fixtures sintéticas
   validate.sh test.sh dev.sh seed_demo.py run_dev.py
 
-tests/                 284 testes
+tests/                 285 testes
   unit/                73
   security/            76
-  integration/         135
+  integration/         136
 ```
 
 ---
@@ -1129,7 +1176,7 @@ ESTÁGIO 1 — AMBIENTE
 
 ESTÁGIO 2 — TESTES BASE
   python -m pytest -q
-  SAÍDA ESPERADA: 284 passed (ou 283 passed, 1 skipped — o skip de symlink é
+  SAÍDA ESPERADA: 285 passed (ou 284 passed, 1 skipped — o skip de symlink é
   legítimo; diga qual foi).
   Se falhar, classifique: falha de AMBIENTE (pacote não instalado, venv errado,
   path) ou falha REAL (comportamento Windows). Ambiente você conserta.

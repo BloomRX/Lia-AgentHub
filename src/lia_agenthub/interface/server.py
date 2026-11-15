@@ -169,14 +169,34 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/items":
             # Parâmetro ausente usa o padrão do SearchQuery ("só ativas").
             # Antes, ausência virava "" e anulava o padrão, devolvendo vazio.
-            ciclo = qs.get("lifecycle")
+            #
+            # Semântica do filtro de ciclo de vida:
+            #   ausente           -> "active"  (só o que o usuário usa)
+            #   "all"             -> None      (todos os estados DENTRO da
+            #                                   biblioteca: ativas + versões
+            #                                   substituídas)
+            #   "active"/"quarantined"/... -> filtro exato
+            #
+            # `all` é convertido para None e não comparado por igualdade:
+            # antes, "all" não casava com nenhum `cap.lifecycle.value` e a rota
+            # devolvia lista vazia EM SILÊNCIO. Filtro que não filtra nada e
+            # parece ter funcionado é pior que um erro explícito.
+            #
+            # Atenção: a quarentena é um armazém SEPARADO (outro diretório).
+            # "all" NÃO a inclui — para isso existe `/api/quarantine`.
+            bruto = qs.get("lifecycle")
+            if bruto is None:
+                ciclo = "active"
+            else:
+                valor = bruto[0].strip().lower()
+                ciclo = None if valor in ("", "all", "todas", "todos") else valor
             query = SearchQuery(
                 text=(qs.get("q") or [""])[0],
                 type=(qs.get("type") or [""])[0],
                 domain=(qs.get("domain") or [""])[0],
                 tag=(qs.get("tag") or [""])[0],
                 trust=(qs.get("trust") or [""])[0],
-                lifecycle=(ciclo[0] if ciclo else "active"),
+                lifecycle=ciclo,
             )
             return self._json({"items": hub.items(query)})
         if path.startswith("/api/items/"):
