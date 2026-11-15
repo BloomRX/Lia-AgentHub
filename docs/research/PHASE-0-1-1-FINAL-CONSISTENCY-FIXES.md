@@ -353,16 +353,17 @@ A Fase 1 continua **não autorizada**.
 | Branch | `arena/a92004be-lia-agenthub` |
 | Branch-base | `main` @ `34a27f484e5f85987390a27fe7e0c0b3cd205bb2` |
 | Commit de partida | `d6c303313a4b36aa5defe73f54044c08d1d43d3d` |
-| **Commit final** | ver abaixo |
+| **Commit final** | `7db9a3a` — *docs: registra hash final da Fase 0.1.1* (após os dois commits de conteúdo) |
+| Commits da rodada | `139986a` (correções), `26506bd` (este relatório), `7db9a3a` (hash) |
 | Push | `origin/arena/a92004be-lia-agenthub` |
 | PR | **Nenhum** |
 | Merge | **Nenhum** |
 | Alteração de `main` | **Nenhuma** |
 
-> **Sobre o hash final.** Este relatório está no **segundo** commit desta rodada; o hash do
-> `HEAD` final é registrado no **terceiro**, que só toca esta tabela. Isso evita o problema de
-> um documento que grava o hash do commit que o contém — impossível, porque o hash depende do
-> conteúdo do documento.
+> **Sobre o hash final.** Este relatório está no **segundo** commit da rodada; o hash do `HEAD`
+> final foi gravado no **terceiro**, que só toca esta tabela. Um documento não pode gravar o
+> hash do commit que o contém — o hash depende do conteúdo do documento. Por isso o valor acima
+> é o hash do **commit seguinte**, e a cadeia é verificável.
 >
 > **Verificação reproduzível, para qualquer revisão futura:**
 >
