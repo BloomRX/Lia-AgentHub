@@ -7,9 +7,34 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import tempfile
+import time
 from contextlib import contextmanager
 from pathlib import Path
+
+#: No Windows, antivírus, indexador ou editor podem segurar o arquivo de
+#: destino por alguns milissegundos. `os.replace` levanta PermissionError nesse
+#: caso. Repetir com backoff resolve sem mascarar erro real (o último erro
+#: propaga). Fora do Windows é 1 tentativa: não há motivo para esperar.
+_REPLACE_ATTEMPTS = 5 if sys.platform == "win32" else 1
+_REPLACE_DELAY = 0.05
+
+
+def _replace(src: str, dst: Path) -> None:
+    """`os.replace` com retry apenas onde isso é necessário."""
+    ultimo: PermissionError | None = None
+    for tentativa in range(_REPLACE_ATTEMPTS):
+        try:
+            os.replace(src, dst)
+            return
+        except PermissionError as e:
+            ultimo = e
+            if tentativa == _REPLACE_ATTEMPTS - 1:
+                break
+            time.sleep(_REPLACE_DELAY * (2 ** tentativa))
+    assert ultimo is not None
+    raise ultimo
 
 
 def atomic_write_bytes(path: Path, data: bytes) -> None:
@@ -21,10 +46,13 @@ def atomic_write_bytes(path: Path, data: bytes) -> None:
             fh.write(data)
             fh.flush()
             os.fsync(fh.fileno())
-        os.replace(tmp, path)  # atômico no mesmo volume
+        _replace(tmp, path)  # atômico no mesmo volume
     except BaseException:
         if os.path.exists(tmp):
-            os.unlink(tmp)
+            try:
+                os.unlink(tmp)
+            except OSError:
+                pass  # se nem remover dá, o erro original é mais informativo
         raise
 
 

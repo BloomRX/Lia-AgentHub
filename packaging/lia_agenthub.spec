@@ -19,8 +19,12 @@ STATIC = ROOT / "src" / "lia_agenthub" / "resources" / "static"
 if not STATIC.is_dir():
     raise SystemExit(f"UI nao encontrada em {STATIC} - rode a partir da raiz do repo.")
 
+# IMPORTANTE: a entrada é `launcher.py`, NÃO `lia_agenthub/__main__.py`.
+# O PyInstaller executa o script de entrada como `__main__`, sem contexto de
+# pacote; o `__main__.py` do pacote usa import relativo e quebraria com
+# "attempted relative import with no known parent package".
 a = Analysis(
-    [str(ROOT / "src" / "lia_agenthub" / "__main__.py")],
+    [str(ROOT / "packaging" / "launcher.py")],
     pathex=[str(ROOT / "src")],
     binaries=[],
     datas=[(str(STATIC), "lia_agenthub/resources/static")],
@@ -33,7 +37,23 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=["tkinter", "unittest", "pydoc", "doctest"],
+    # Exclusões: reduzem tamanho e evitam que o PyInstaller arraste stacks
+    # gráficas que o Hub nunca usa. No Windows o pywebview tenta `qt` e depois
+    # `winforms`; `qt` só existe se QtPy+PyQt estiverem instalados, o que NÃO é
+    # o caso do venv de build deste projeto. Excluir é seguro e evita um .exe
+    # de centenas de MB.
+    excludes=[
+        "tkinter", "unittest", "pydoc", "doctest",
+        # backends de UI que não usamos
+        "PyQt5", "PyQt6", "PySide2", "PySide6", "qtpy", "QtPy",
+        "gi", "cefpython3", "android",
+        # plataformas de outros sistemas
+        "webview.platforms.cocoa", "webview.platforms.gtk",
+        "webview.platforms.cef", "webview.platforms.qt",
+        "webview.platforms.android", "webview.platforms.mshtml",
+        # ferramentas de desenvolvimento que não rodam no bundle
+        "pytest", "setuptools", "pip",
+    ],
     noarchive=False,
     optimize=0,
 )

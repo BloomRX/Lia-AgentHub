@@ -13,6 +13,9 @@ from __future__ import annotations
 
 import json
 import logging
+import socket
+import socketserver
+import sys
 import mimetypes
 import secrets
 import threading
@@ -236,14 +239,39 @@ class Handler(BaseHTTPRequestHandler):
         self._error("Rota desconhecida.", "", 404)
 
 
+class _LocalServer(ThreadingHTTPServer):
+    """Servidor que só aceita uma instância por porta, inclusive no Windows.
+
+    `allow_reuse_address = 1` (o padrão de HTTPServer) é a escolha certa no
+    POSIX e a ERRADA no Windows: lá, SO_REUSEADDR permite que OUTRO processo
+    faça bind na mesma porta e responda no lugar do Hub. Como a interface
+    carrega o token de sessão, isso seria um sequestro local.
+
+    No Windows usamos SO_EXCLUSIVEADDRUSE, que torna a porta exclusiva do
+    processo. Fora do Windows, SO_REUSEADDR só evita o TIME_WAIT, o que é
+    desejável.
+    """
+
+    daemon_threads = True
+
+    def server_bind(self):
+        # Define a opção ANTES do bind. `HTTPServer.server_bind` chamaria
+        # `setsockopt(SO_REUSEADDR)` por conta própria, então pulamos direto
+        # para a implementação de TCPServer.
+        if sys.platform == "win32" and hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        else:
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        socketserver.TCPServer.server_bind(self)
+
+
 def create_server(hub: AgentHub, *, port: int = 0) -> tuple[ThreadingHTTPServer, str]:
     """Cria o servidor. Retorna (servidor, token). Porta 0 = efêmera."""
     token = secrets.token_urlsafe(32)
     handler = type("BoundHandler", (Handler,), {
         "hub": hub, "token": token, "resources": hub.locations.resources,
     })
-    httpd = ThreadingHTTPServer(("127.0.0.1", port), handler)  # bind só local
-    httpd.daemon_threads = True
+    httpd = _LocalServer(("127.0.0.1", port), handler)  # bind só local
     return httpd, token
 
 
