@@ -1,0 +1,2260 @@
+{
+  "generator": {
+    "algorithmSource": "src/lia_agenthub/domain/integrity.py, domain/model.py, domain/paths.py, adapters/importer.py",
+    "hubBranch": "arena/a92004be-lia-agenthub",
+    "hubCommit": "b4eb85f",
+    "note": "Reimplementação de pesquisa do algoritmo documentado. O Hub não foi executado; nada foi gravado na biblioteca real.",
+    "tool": "docs/research/tools/build-catalog-records.py"
+  },
+  "recordCount": 22,
+  "records": [
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "272e52dd8edffd16953847f241e7bb41e593929dab5f51541df554df500f937d",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "airi-upstream-integration-46870e84",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "airi-upstream-integration",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/airi-upstream-integration"
+        },
+        "tags": [],
+        "treeHash": "5908d2248ce49f00c5cb98e2227ac47973640752b50b5faa5d255811a212c8b0",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "272e52dd8edffd16953847f241e7bb41e593929dab5f51541df554df500f937d",
+            "path": "SKILL.md",
+            "sha256": "272e52dd8edffd16953847f241e7bb41e593929dab5f51541df554df500f937d",
+            "size": 4674
+          }
+        ],
+        "hashes": {
+          "contentHash": "272e52dd8edffd16953847f241e7bb41e593929dab5f51541df554df500f937d",
+          "treeHash": "5908d2248ce49f00c5cb98e2227ac47973640752b50b5faa5d255811a212c8b0"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/airi-upstream-integration"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral; descreve como integrar o upstream vendado em airi/",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "airi-upstream-integration",
+        "frontmatter": {
+          "compatibility": "Requer git e acesso a github.com. O clone de comparacao vive fora do repositorio.",
+          "description": "Avalia e integra seletivamente atualizacoes do AIRI vendado em airi/, sem re-clone cego e sem perder as modificacoes da Lia. Use ao comparar com o upstream moeru-ai/airi, avaliar uma correcao vinda de la, decidir se um patch upstream deve entrar, ou quando alguem pedir para atualizar o AIRI.",
+          "name": "airi-upstream-integration"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "sem prefixo `lia-`",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 4674,
+        "reuseAcrossLia": [
+          "Lia-Project"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/airi-upstream-integration",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED; temporaria por definicao (o AIRI e tratado como fonte temporaria)",
+        "structuralIssues": [],
+        "upstreamLicense": "AIRI e MIT (Copyright (c) 2024-PRESENT Neko Ayaka); a skill em si e autoral da Lia",
+        "upstreamProject": "moeru-ai/airi (assunto da skill, nao sua fonte)"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": true,
+        "contentHash": "151172c3728cf9636151760001074bccffaa97879e8acaa497ea9970aa8852a5",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "alethe-855b31e6",
+        "license": {
+          "code": "MIT",
+          "content": null,
+          "notice_required": true,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "declared",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "alethe",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/alethe"
+        },
+        "tags": [],
+        "treeHash": "24a4a35cf1abc0835da89f8bdb70dbcc48ac63ef65ce8037bd2135c5c8939d53",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "fa909bb135a17371ebdeaf8260732c87a9e755a0b2c8974386478d9b368144e5",
+            "path": "LICENSE",
+            "sha256": "fa909bb135a17371ebdeaf8260732c87a9e755a0b2c8974386478d9b368144e5",
+            "size": 1069
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "151172c3728cf9636151760001074bccffaa97879e8acaa497ea9970aa8852a5",
+            "path": "SKILL.md",
+            "sha256": "151172c3728cf9636151760001074bccffaa97879e8acaa497ea9970aa8852a5",
+            "size": 21461
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "083e0dc9f6a0f85e5c1a1dbe0c5a04e1ff76d5abf3c1d36cb83199bd02539642",
+            "path": "UPSTREAM.md",
+            "sha256": "083e0dc9f6a0f85e5c1a1dbe0c5a04e1ff76d5abf3c1d36cb83199bd02539642",
+            "size": 1393
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "d775965ea1f8060538c15f758a3e22487317211fcb6051333b5e023f35aa726f",
+            "path": "assets/brands/antigravity-official.svg",
+            "sha256": "d775965ea1f8060538c15f758a3e22487317211fcb6051333b5e023f35aa726f",
+            "size": 5301
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "295a7091e58ee230a46ca0c8abea4d804415b1b427beac1bffce45ce00f73216",
+            "path": "assets/brands/claude-official.png.b64",
+            "sha256": "295a7091e58ee230a46ca0c8abea4d804415b1b427beac1bffce45ce00f73216",
+            "size": 484272
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "189abe20d0626eed11625abd300d68210aba697269240aa855f76e3872915611",
+            "path": "assets/brands/kimi-official.png.b64",
+            "sha256": "189abe20d0626eed11625abd300d68210aba697269240aa855f76e3872915611",
+            "size": 313148
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "b94ea61d860fae6f82f43571f36f17111fcf5d348e8e9cc22ae4b441c7560011",
+            "path": "assets/brands/openai-official-white.svg",
+            "sha256": "b94ea61d860fae6f82f43571f36f17111fcf5d348e8e9cc22ae4b441c7560011",
+            "size": 2961
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "ddf1676baefc0d0c9631ca3c89b9ea4ee604e5d2989f9cdf45cfd0d1260d3f01",
+            "path": "assets/brands/router9-official.svg",
+            "sha256": "ddf1676baefc0d0c9631ca3c89b9ea4ee604e5d2989f9cdf45cfd0d1260d3f01",
+            "size": 533
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "3ac4dbdac0469867dada047339ef3326f7e6b2e5a790aeb6e8ce9df4109d24ab",
+            "path": "assets/editor.html",
+            "sha256": "3ac4dbdac0469867dada047339ef3326f7e6b2e5a790aeb6e8ce9df4109d24ab",
+            "size": 180657
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "4c35ccf9da06358bfcdc6d83745d733a899b766e84c57c1abd97eedeb3ce5d3a",
+            "path": "assets/report.html",
+            "sha256": "4c35ccf9da06358bfcdc6d83745d733a899b766e84c57c1abd97eedeb3ce5d3a",
+            "size": 66322
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "9565792104e8d25cb80c7aa69a8fa360312594807c936102260cdcaab2825846",
+            "path": "playbooks.yaml",
+            "sha256": "9565792104e8d25cb80c7aa69a8fa360312594807c936102260cdcaab2825846",
+            "size": 22394
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "ade541253caea511ddb062c13b2cca04a50c886ee41cffd14ea6dd3964a5cf4c",
+            "path": "prices.json",
+            "sha256": "ade541253caea511ddb062c13b2cca04a50c886ee41cffd14ea6dd3964a5cf4c",
+            "size": 8944
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "0699709490c242a79cdf8f264fb272a92c204ed80f18d1977b88c208ff3c6181",
+            "path": "references/briefs.md",
+            "sha256": "0699709490c242a79cdf8f264fb272a92c204ed80f18d1977b88c208ff3c6181",
+            "size": 4419
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "0d4fda4d19eec0082135619706def23f186ceda88cccb309fb72c7636077ef74",
+            "path": "references/diagram.md",
+            "sha256": "0d4fda4d19eec0082135619706def23f186ceda88cccb309fb72c7636077ef74",
+            "size": 2848
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "f748a636d51a69012d1c1c4c28a0a9f74b493d575334a2b1761ec0c8b7691256",
+            "path": "references/manual.md",
+            "sha256": "f748a636d51a69012d1c1c4c28a0a9f74b493d575334a2b1761ec0c8b7691256",
+            "size": 12962
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "1b382940328b7f3598af4c504a6a9ce543cf30ad809e9d6bb924bb95baf05050",
+            "path": "references/onboarding.md",
+            "sha256": "1b382940328b7f3598af4c504a6a9ce543cf30ad809e9d6bb924bb95baf05050",
+            "size": 6708
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "f597a5ec86d45a91cf3b4ec2e748e2cb0c48532c7960244b7faacadbecc3eb60",
+            "path": "references/operations.md",
+            "sha256": "f597a5ec86d45a91cf3b4ec2e748e2cb0c48532c7960244b7faacadbecc3eb60",
+            "size": 21909
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "7c1b047a921ee8a185b676242df300ee041ce2c2dbd7382f4ce612388c556344",
+            "path": "references/playbooks.md",
+            "sha256": "7c1b047a921ee8a185b676242df300ee041ce2c2dbd7382f4ce612388c556344",
+            "size": 13419
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "20ad5debb6c2c6170e3803cd43222bdba14601daad8c5fdedc43851d0a293342",
+            "path": "references/providers.md",
+            "sha256": "20ad5debb6c2c6170e3803cd43222bdba14601daad8c5fdedc43851d0a293342",
+            "size": 6753
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "ec84f6ef2fb131fcd5b222a7cffc2b7c9aaf229f7184c955a9c897c63bd58ea0",
+            "path": "references/routing.md",
+            "sha256": "ec84f6ef2fb131fcd5b222a7cffc2b7c9aaf229f7184c955a9c897c63bd58ea0",
+            "size": 7603
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "e024f8eb89c38d1be499d117366b4b590714e4bd58004299dfe20953b403a4de",
+            "path": "schemas/plan.schema.json",
+            "sha256": "e024f8eb89c38d1be499d117366b4b590714e4bd58004299dfe20953b403a4de",
+            "size": 3939
+          },
+          {
+            "executable": true,
+            "normalizedSha256": "2ae9ee3e67b9790edeb713acb5fd604d2c4abe54702b6cbae88b25f2fdf59d32",
+            "path": "scripts/diagram.py",
+            "sha256": "2ae9ee3e67b9790edeb713acb5fd604d2c4abe54702b6cbae88b25f2fdf59d32",
+            "size": 9761
+          },
+          {
+            "executable": true,
+            "normalizedSha256": "c7a21fd8738a535ce068ef293924f29136d83997ad600629abf9571bcadf5a92",
+            "path": "scripts/orchestrate.py",
+            "sha256": "c7a21fd8738a535ce068ef293924f29136d83997ad600629abf9571bcadf5a92",
+            "size": 251484
+          }
+        ],
+        "hashes": {
+          "contentHash": "151172c3728cf9636151760001074bccffaa97879e8acaa497ea9970aa8852a5",
+          "treeHash": "24a4a35cf1abc0835da89f8bdb70dbcc48ac63ef65ce8037bd2135c5c8939d53"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/alethe"
+      },
+      "researchNotes": {
+        "attributionWhere": "LICENSE + UPSTREAM.md no proprio payload; patches locais de seguranca de 28/10/2026 documentados em docs/architecture/ALETHE-HARDENING-2026-10-28.md",
+        "blocked": false,
+        "brandAssetsNote": "assets/brands/ traz marcas de terceiros (claude-official.png.b64, openai-official-white.svg, kimi, antigravity, router9): MIT nao cobre marca; risco de uso de sinal distintivo",
+        "containsScriptsNote": "scripts/orchestrate.py e scripts/diagram.py -> containsScripts=true no Hub (nivel de risco maior)",
+        "derivationUrl": "https://github.com/Kc1t/alethe-orchestrate-skill",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 23,
+        "folder": "alethe",
+        "frontmatter": {
+          "description": "Orchestrate bounded Codex, Claude Code, Agy, Kimi, or custom CLI workers to finish work with the least lead context and provider usage, following playbooks such as plan big, execute small. Use when the user asks to orchestrate, delegate, compare agents, conserve agent tokens or quota, recover a worker, report what an orchestration did and cost, or work without MCP or Python, when the user types /alethe or a short command such as \"alethe report\" or \"alethe stop\", and when they want it on from now on, at any point of a task and alongside other skills. Also use it proactively, without being asked, when a request is large enough to split into bounded independent units, such as a multi-file refactor, a migration, an audit or research across many files. Do not use for a small mechanical task unless explicitly requested.",
+          "metadata": "",
+          "name": "alethe"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "mantem o nome original (correto pela convencao proposta: terceiro sem alteracao de identidade)",
+        "importWarnings": [],
+        "licenseFileInPayload": "LICENSE",
+        "originClass": "THIRD_PARTY_VENDORED_WITH_LOCAL_PATCHES",
+        "payloadBytes": 1450260,
+        "reuseAcrossLia": [
+          "Lia-Project (orquestracao)",
+          "Lia-AgentHub (referencia de orquestracao SEM executar)"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/alethe",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED no repo (copia local patcheada); execucao real NOT-TESTED segundo UPSTREAM.md",
+        "structuralIssues": [
+          {
+            "code": "NAME_FOLDER_MISMATCH",
+            "detail": "name=`alethe` vs pasta derivada `assets` (artefato de import direto)",
+            "severity": "warning"
+          }
+        ],
+        "upstreamLicense": "MIT (Copyright (c) 2026 Kaua Miguel) — copia integral em .agents/skills/alethe/LICENSE (DENTRO do payload)",
+        "upstreamProject": "Kc1t/alethe-orchestrate-skill",
+        "upstreamVersion": "19 (2026-10-23); comparada anteriormente com c36c341c34360f970a07fe3e2d2600ca2bba8ed2"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "3e9651cb6732815f4da6a929b21825370e4139ba5fb0f7feae944fee89b53e26",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-agent-evaluation-b50f56a2",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-agent-evaluation",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-agent-evaluation"
+        },
+        "tags": [],
+        "treeHash": "557919cd975ae280464b54a4f4caf9b3ddb1e81e7ad6e2c452054b109b6f64cc",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "3e9651cb6732815f4da6a929b21825370e4139ba5fb0f7feae944fee89b53e26",
+            "path": "SKILL.md",
+            "sha256": "3e9651cb6732815f4da6a929b21825370e4139ba5fb0f7feae944fee89b53e26",
+            "size": 4974
+          }
+        ],
+        "hashes": {
+          "contentHash": "3e9651cb6732815f4da6a929b21825370e4139ba5fb0f7feae944fee89b53e26",
+          "treeHash": "557919cd975ae280464b54a4f4caf9b3ddb1e81e7ad6e2c452054b109b6f64cc"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-agent-evaluation"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-agent-evaluation",
+        "frontmatter": {
+          "compatibility": "Requer acesso ao provedor configurado. Sem credencial, o item e BLOCKED - nao FAIL.",
+          "description": "Monta comparacao controlada de qualidade do modelo na Lia - imagem, ferramentas, streaming SSE, argumentos invalidos, respostas vazias e espaco no texto - mudando uma variavel por vez e registrando o que foi provado. Use ao investigar resposta errada, resposta vazia, ferramenta nao chamada, imagem mal interpretada ou regressao de visao e de formato.",
+          "name": "lia-agent-evaluation"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 4974,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-agent-evaluation",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "ff131e2512e55c71504be26d3fce62099af65cd75eb962c6ba7b851dd8def87b",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-agent-orchestration-810fc789",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-agent-orchestration",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-agent-orchestration"
+        },
+        "tags": [],
+        "treeHash": "53da6f81a5672ac913e4156925f2e8663a15c895349b76bf46238df7db4ff4a9",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "ff131e2512e55c71504be26d3fce62099af65cd75eb962c6ba7b851dd8def87b",
+            "path": "SKILL.md",
+            "sha256": "ff131e2512e55c71504be26d3fce62099af65cd75eb962c6ba7b851dd8def87b",
+            "size": 3105
+          }
+        ],
+        "hashes": {
+          "contentHash": "ff131e2512e55c71504be26d3fce62099af65cd75eb962c6ba7b851dd8def87b",
+          "treeHash": "53da6f81a5672ac913e4156925f2e8663a15c895349b76bf46238df7db4ff4a9"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-agent-orchestration"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-agent-orchestration",
+        "frontmatter": {
+          "compatibility": "A seleção de modelo e esforço depende do runner e não é garantida pelo repositório. Alethe exige CLI externa instalada e autenticada.",
+          "description": "Divide trabalho entre agentes, subagentes ou workers com escopo e contexto mínimos, escolhe a capacidade adequada à tarefa e evita conflito de escrita e retrabalho. Use ao delegar, paralelizar, dividir uma tarefa grande em etapas, escolher modelo ou nível de raciocínio, ou ao revisar o que um worker devolveu.",
+          "name": "lia-agent-orchestration"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 3105,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-agent-orchestration",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "9179dee007f5721e3be0a16babc73a968b5b35a5310fc78aef62c3dff7c867f0",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-ai-sdk-integration-af3bb9c4",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-ai-sdk-integration",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-ai-sdk-integration"
+        },
+        "tags": [],
+        "treeHash": "9124c5d2c7f5926b54936d8d33859996be97d7f7dca8dff9c2efc61453377c29",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "9179dee007f5721e3be0a16babc73a968b5b35a5310fc78aef62c3dff7c867f0",
+            "path": "SKILL.md",
+            "sha256": "9179dee007f5721e3be0a16babc73a968b5b35a5310fc78aef62c3dff7c867f0",
+            "size": 1390
+          }
+        ],
+        "hashes": {
+          "contentHash": "9179dee007f5721e3be0a16babc73a968b5b35a5310fc78aef62c3dff7c867f0",
+          "treeHash": "9124c5d2c7f5926b54936d8d33859996be97d7f7dca8dff9c2efc61453377c29"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-ai-sdk-integration"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-ai-sdk-integration",
+        "frontmatter": {
+          "description": "Avalia integrações de geração de texto, streaming, ferramentas, saída estruturada, embeddings, imagem ou voz com xsAI/APIs compatíveis. Use ao integrar geração, streaming ou ferramentas com o SDK já presente.",
+          "name": "lia-ai-sdk-integration"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1390,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-ai-sdk-integration",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "34c52337f6d85dd742e5635f5b513b0ecef474bb566adc7140145200a63488cc",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-browser-automation-bd764479",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-browser-automation",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-browser-automation"
+        },
+        "tags": [],
+        "treeHash": "4f3776cb6f847bfd55c8419b87cc223cfb312757863ea39bcb205b160cbfd5a5",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "34c52337f6d85dd742e5635f5b513b0ecef474bb566adc7140145200a63488cc",
+            "path": "SKILL.md",
+            "sha256": "34c52337f6d85dd742e5635f5b513b0ecef474bb566adc7140145200a63488cc",
+            "size": 1747
+          }
+        ],
+        "hashes": {
+          "contentHash": "34c52337f6d85dd742e5635f5b513b0ecef474bb566adc7140145200a63488cc",
+          "treeHash": "4f3776cb6f847bfd55c8419b87cc223cfb312757863ea39bcb205b160cbfd5a5"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-browser-automation"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-browser-automation",
+        "frontmatter": {
+          "compatibility": "Requer agent-browser instalado e endpoint CDP ativo; não instala ferramentas automaticamente.",
+          "description": "Automatiza navegador e renderer de Electron com agent-browser/CDP para investigação, testes exploratórios e QA. Use somente quando a ferramenta estiver instalada e a aplicação tiver sido iniciada com depuração acessível.",
+          "name": "lia-browser-automation"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1747,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-browser-automation",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "48a0fcb84b44f82ec178ea2353a00aeab002223ce1af34992b8e4deb9018c9d5",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-electron-cdp-debugging-87bab323",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-electron-cdp-debugging",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-electron-cdp-debugging"
+        },
+        "tags": [],
+        "treeHash": "0f76e7fad81223dc7d32d32b5cd59ffe477723f3bb9d4a33757852fa415d2bbb",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "48a0fcb84b44f82ec178ea2353a00aeab002223ce1af34992b8e4deb9018c9d5",
+            "path": "SKILL.md",
+            "sha256": "48a0fcb84b44f82ec178ea2353a00aeab002223ce1af34992b8e4deb9018c9d5",
+            "size": 1240
+          }
+        ],
+        "hashes": {
+          "contentHash": "48a0fcb84b44f82ec178ea2353a00aeab002223ce1af34992b8e4deb9018c9d5",
+          "treeHash": "0f76e7fad81223dc7d32d32b5cd59ffe477723f3bb9d4a33757852fa415d2bbb"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-electron-cdp-debugging"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-electron-cdp-debugging",
+        "frontmatter": {
+          "description": "Descobre a janela renderer correta de um app Electron por CDP quando há várias janelas, rotas duplicadas ou alvos criados sob demanda. Use ao selecionar ou recuperar um renderer Electron por CDP.",
+          "name": "lia-electron-cdp-debugging"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1240,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-electron-cdp-debugging",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "93f0f1d06703bada5942b731d2e1e60cdbffdc59ff86ecc589ebeaba1e78cda8",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-eventa-ipc-82243469",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-eventa-ipc",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-eventa-ipc"
+        },
+        "tags": [],
+        "treeHash": "4040eee094023fcba7e66decf51d8dfaf8a2c8128d84d506de54db9062201676",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "93f0f1d06703bada5942b731d2e1e60cdbffdc59ff86ecc589ebeaba1e78cda8",
+            "path": "SKILL.md",
+            "sha256": "93f0f1d06703bada5942b731d2e1e60cdbffdc59ff86ecc589ebeaba1e78cda8",
+            "size": 1031
+          }
+        ],
+        "hashes": {
+          "contentHash": "93f0f1d06703bada5942b731d2e1e60cdbffdc59ff86ecc589ebeaba1e78cda8",
+          "treeHash": "4040eee094023fcba7e66decf51d8dfaf8a2c8128d84d506de54db9062201676"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-eventa-ipc"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-eventa-ipc",
+        "frontmatter": {
+          "description": "Usa @moeru/eventa para eventos tipados, RPC ou streaming quando a dependência estiver presente. Use ao implementar ou revisar IPC com Eventa já instalado.",
+          "license": "MIT",
+          "name": "lia-eventa-ipc"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1031,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-eventa-ipc",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "693e713f930c1f2dfacb3010d308a34928dc97ad93f2cda41bda0e16b33e049f",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-pnpm-workspaces-3f63a0ff",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-pnpm-workspaces",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-pnpm-workspaces"
+        },
+        "tags": [],
+        "treeHash": "652da3e9926cf112156bbd024027049b3ad114d3beecc407af051d2d90acc93d",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "693e713f930c1f2dfacb3010d308a34928dc97ad93f2cda41bda0e16b33e049f",
+            "path": "SKILL.md",
+            "sha256": "693e713f930c1f2dfacb3010d308a34928dc97ad93f2cda41bda0e16b33e049f",
+            "size": 931
+          }
+        ],
+        "hashes": {
+          "contentHash": "693e713f930c1f2dfacb3010d308a34928dc97ad93f2cda41bda0e16b33e049f",
+          "treeHash": "652da3e9926cf112156bbd024027049b3ad114d3beecc407af051d2d90acc93d"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-pnpm-workspaces"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-pnpm-workspaces",
+        "frontmatter": {
+          "description": "Trabalha com pnpm, dependências e workspaces no repositório Lia. Use antes de alterar dependências, filtros ou builds.",
+          "name": "lia-pnpm-workspaces"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 931,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-pnpm-workspaces",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "ef7bfc74c585847ffd159d916f6fd21b9a77615a22e6a63bf92120fd2e4291be",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-regression-investigation-5c9848cc",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-regression-investigation",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-regression-investigation"
+        },
+        "tags": [],
+        "treeHash": "49027c105f6a8cefa518a800999fb005daf6d8cb98b34619727aee7ff38b0ed5",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "ef7bfc74c585847ffd159d916f6fd21b9a77615a22e6a63bf92120fd2e4291be",
+            "path": "SKILL.md",
+            "sha256": "ef7bfc74c585847ffd159d916f6fd21b9a77615a22e6a63bf92120fd2e4291be",
+            "size": 4632
+          }
+        ],
+        "hashes": {
+          "contentHash": "ef7bfc74c585847ffd159d916f6fd21b9a77615a22e6a63bf92120fd2e4291be",
+          "treeHash": "49027c105f6a8cefa518a800999fb005daf6d8cb98b34619727aee7ff38b0ed5"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-regression-investigation"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-regression-investigation",
+        "frontmatter": {
+          "compatibility": "Nenhuma. Metodo; serve a qualquer ambiente e a qualquer suite da Lia.",
+          "description": "Investiga causa de bug ou regressao na Lia com experimento controlado, uma variavel por vez, teste que falha antes da correcao e refutacao da propria hipotese. Use quando a causa for desconhecida, o sintoma for intermitente, houver suspeita a confirmar, ou depois de uma correcao que \"parece certa\" mas nao foi provada.",
+          "name": "lia-regression-investigation"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 4632,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-regression-investigation",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "e8989f5e2021795215ac61e1b71afdd080b2f2936a8d4f36de6e98eac2688f6f",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-release-gate-f2b7f765",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-release-gate",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-release-gate"
+        },
+        "tags": [],
+        "treeHash": "1398b95a3dda223d9f231bfe34a0c05f3a0ea2990d483eaebad40deccaf1b26e",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "e8989f5e2021795215ac61e1b71afdd080b2f2936a8d4f36de6e98eac2688f6f",
+            "path": "SKILL.md",
+            "sha256": "e8989f5e2021795215ac61e1b71afdd080b2f2936a8d4f36de6e98eac2688f6f",
+            "size": 4723
+          }
+        ],
+        "hashes": {
+          "contentHash": "e8989f5e2021795215ac61e1b71afdd080b2f2936a8d4f36de6e98eac2688f6f",
+          "treeHash": "1398b95a3dda223d9f231bfe34a0c05f3a0ea2990d483eaebad40deccaf1b26e"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-release-gate"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-release-gate",
+        "frontmatter": {
+          "compatibility": "O gate real exige Windows com o checkout, Node e Python no PATH. Fora do Windows apenas a parte automatizada roda, e ela nao substitui o gate.",
+          "description": "Executa e documenta o gate de release da Lia no Windows, separando PASS, FAIL, BLOCKED e NOT RUN. Use ao rodar os testes de release, decidir se a Lia pode ser declarada pronta, atualizar RELEASE-WINDOWS ou CURRENT-STATE, ou quando a pergunta for se a release esta aprovada.",
+          "name": "lia-release-gate"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 4723,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-release-gate",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "52363a78fbe89fdbcc6185c1928a5054186a9a21fbda9d4f410dabe33b134488",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-safe-change-035dd03a",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-safe-change",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-safe-change"
+        },
+        "tags": [],
+        "treeHash": "100d7bbdf40525a6185cee93b7aba837d8f51b44966059ddc9c6ded460d1c751",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "52363a78fbe89fdbcc6185c1928a5054186a9a21fbda9d4f410dabe33b134488",
+            "path": "SKILL.md",
+            "sha256": "52363a78fbe89fdbcc6185c1928a5054186a9a21fbda9d4f410dabe33b134488",
+            "size": 2759
+          }
+        ],
+        "hashes": {
+          "contentHash": "52363a78fbe89fdbcc6185c1928a5054186a9a21fbda9d4f410dabe33b134488",
+          "treeHash": "100d7bbdf40525a6185cee93b7aba837d8f51b44966059ddc9c6ded460d1c751"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-safe-change"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-safe-change",
+        "frontmatter": {
+          "description": "Protege o trabalho existente ao implementar mudanças na Lia. Use antes de editar código, reorganizar arquivos, integrar dependências ou continuar uma tarefa iniciada por outro agente.",
+          "name": "lia-safe-change"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2759,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-safe-change",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "0bd9165a306535e905f5bd0404d182c719c3836397b25481c3e6abe7363fe6b9",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-security-review-5c8dc85a",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-security-review",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-security-review"
+        },
+        "tags": [],
+        "treeHash": "4ab64bb003c68db155c6bf98f904d3669fc5aa9a57e9af35e141855ec19b0a46",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "0bd9165a306535e905f5bd0404d182c719c3836397b25481c3e6abe7363fe6b9",
+            "path": "SKILL.md",
+            "sha256": "0bd9165a306535e905f5bd0404d182c719c3836397b25481c3e6abe7363fe6b9",
+            "size": 2473
+          }
+        ],
+        "hashes": {
+          "contentHash": "0bd9165a306535e905f5bd0404d182c719c3836397b25481c3e6abe7363fe6b9",
+          "treeHash": "4ab64bb003c68db155c6bf98f904d3669fc5aa9a57e9af35e141855ec19b0a46"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-security-review"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-security-review",
+        "frontmatter": {
+          "description": "Revisa alterações da Lia quanto a permissões, execução de ferramentas, arquivos, segredos, processos, dependências e dados de conversação. Use ao adicionar capacidades, integrar provedores, criar skills para a Lia ou mudar limites de confiança.",
+          "name": "lia-security-review"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2473,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-security-review",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "7dcd154fdbbd3d4388ecfe0b1cfabe86684c9ceb96a95821023b99e88f9c5e9f",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-test-discipline-7aa20996",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-test-discipline",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-test-discipline"
+        },
+        "tags": [],
+        "treeHash": "84eb4b7039826d3f0ef07bd3123e8bc929baaf1c6a4a082739bfd5490f4cb961",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "7dcd154fdbbd3d4388ecfe0b1cfabe86684c9ceb96a95821023b99e88f9c5e9f",
+            "path": "SKILL.md",
+            "sha256": "7dcd154fdbbd3d4388ecfe0b1cfabe86684c9ceb96a95821023b99e88f9c5e9f",
+            "size": 2800
+          }
+        ],
+        "hashes": {
+          "contentHash": "7dcd154fdbbd3d4388ecfe0b1cfabe86684c9ceb96a95821023b99e88f9c5e9f",
+          "treeHash": "84eb4b7039826d3f0ef07bd3123e8bc929baaf1c6a4a082739bfd5490f4cb961"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-test-discipline"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-test-discipline",
+        "frontmatter": {
+          "compatibility": "Exige Node, pnpm e Python. Suítes Vitest exigem dependências do workspace instaladas.",
+          "description": "Localiza e executa a suíte certa da Lia entre Python tools/, Node Tests/tools, Vitest lia-app e Vitest core-agent. Use antes de testar ou ao investigar \"Ran 0 tests\" e \"Cannot find package\".",
+          "name": "lia-test-discipline"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2800,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-test-discipline",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "e0186705aa2655f1545cb13d136b4eac2bc844f5500bbaa43f44f2df5c820fab",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-ui-quality-review-1288bf29",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-ui-quality-review",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-ui-quality-review"
+        },
+        "tags": [],
+        "treeHash": "ecea4d04814f3c51cf3eb60eec36214ec08f35eac571c56cf87bf1dad16259cb",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "e0186705aa2655f1545cb13d136b4eac2bc844f5500bbaa43f44f2df5c820fab",
+            "path": "SKILL.md",
+            "sha256": "e0186705aa2655f1545cb13d136b4eac2bc844f5500bbaa43f44f2df5c820fab",
+            "size": 1488
+          }
+        ],
+        "hashes": {
+          "contentHash": "e0186705aa2655f1545cb13d136b4eac2bc844f5500bbaa43f44f2df5c820fab",
+          "treeHash": "ecea4d04814f3c51cf3eb60eec36214ec08f35eac571c56cf87bf1dad16259cb"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-ui-quality-review"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-ui-quality-review",
+        "frontmatter": {
+          "description": "Revisa telas e fluxos da Lia quanto a clareza, acessibilidade, consistência visual e usabilidade para pessoas não técnicas. Use ao revisar uma tela ou fluxo de usuário.",
+          "name": "lia-ui-quality-review"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1488,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-ui-quality-review",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "ea68343584663b83738dbc3198a0232525a9f16f65f578b6336181fb9a1439ea",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-unocss-ui-71a3e789",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-unocss-ui",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-unocss-ui"
+        },
+        "tags": [],
+        "treeHash": "017e5efb8d72c1ed3f146eaf994ca6cd48e4dfe381d08e748d2870a52a5949ad",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "ea68343584663b83738dbc3198a0232525a9f16f65f578b6336181fb9a1439ea",
+            "path": "SKILL.md",
+            "sha256": "ea68343584663b83738dbc3198a0232525a9f16f65f578b6336181fb9a1439ea",
+            "size": 746
+          }
+        ],
+        "hashes": {
+          "contentHash": "ea68343584663b83738dbc3198a0232525a9f16f65f578b6336181fb9a1439ea",
+          "treeHash": "017e5efb8d72c1ed3f146eaf994ca6cd48e4dfe381d08e748d2870a52a5949ad"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-unocss-ui"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-unocss-ui",
+        "frontmatter": {
+          "description": "Trabalha com UnoCSS em partes da Lia que realmente usam essa tecnologia. Use ao editar estilos em uma área que usa UnoCSS.",
+          "name": "lia-unocss-ui"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 746,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-unocss-ui",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "f269f0dffaa99b63d6e4c446e622220c65c0ad78fdd9e6c1ca23cf5597c86e36",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-visual-evidence-388d125f",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-visual-evidence",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-visual-evidence"
+        },
+        "tags": [],
+        "treeHash": "d7c91dcca344f6ea36b01a67613c2cbf79759066e3ba4b4d8fb987fd712b17c5",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "f269f0dffaa99b63d6e4c446e622220c65c0ad78fdd9e6c1ca23cf5597c86e36",
+            "path": "SKILL.md",
+            "sha256": "f269f0dffaa99b63d6e4c446e622220c65c0ad78fdd9e6c1ca23cf5597c86e36",
+            "size": 1647
+          }
+        ],
+        "hashes": {
+          "contentHash": "f269f0dffaa99b63d6e4c446e622220c65c0ad78fdd9e6c1ca23cf5597c86e36",
+          "treeHash": "d7c91dcca344f6ea36b01a67613c2cbf79759066e3ba4b4d8fb987fd712b17c5"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-visual-evidence"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-visual-evidence",
+        "frontmatter": {
+          "compatibility": "Requer Vishot e runtime disponível; não instala Playwright/Chromium sem autorização.",
+          "description": "Produz evidência visual repetível de fluxos da Lia em Electron ou navegador usando Vishot quando disponível. Use ao registrar um gate visual com a ferramenta disponível.",
+          "name": "lia-visual-evidence"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1647,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-visual-evidence",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "b9c4ca5840b02e9986e27b7471748fad609d1a6aea429ec19a85a19be7d65e73",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-voice-diagnostics-3e2a6b75",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-voice-diagnostics",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-voice-diagnostics"
+        },
+        "tags": [],
+        "treeHash": "8075b9064c046e1c9715584636638bc4840c021103eff4dd619f83536882b60d",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "b9c4ca5840b02e9986e27b7471748fad609d1a6aea429ec19a85a19be7d65e73",
+            "path": "SKILL.md",
+            "sha256": "b9c4ca5840b02e9986e27b7471748fad609d1a6aea429ec19a85a19be7d65e73",
+            "size": 2935
+          }
+        ],
+        "hashes": {
+          "contentHash": "b9c4ca5840b02e9986e27b7471748fad609d1a6aea429ec19a85a19be7d65e73",
+          "treeHash": "8075b9064c046e1c9715584636638bc4840c021103eff4dd619f83536882b60d"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-voice-diagnostics"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-voice-diagnostics",
+        "frontmatter": {
+          "compatibility": "Testes completos de áudio exigem dispositivos e permissões reais; mocks e logs não substituem validação auditiva no Windows.",
+          "description": "Investiga falhas no caminho de voz da Lia, separando microfone/permissões, captura, VAD, STT, modelo conversacional, TTS, reprodução e interrupção. Use quando a voz não inicia, não é transcrita, não é reproduzida ou apresenta latência/erros.",
+          "name": "lia-voice-diagnostics"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2935,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-voice-diagnostics",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "d428ed07c8a026e84a8039acf6db3a89963a548318fdef2f6c1a8241381f1884",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-vue-development-d2e8cbe2",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-vue-development",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-vue-development"
+        },
+        "tags": [],
+        "treeHash": "2bd38f9c10c2ec3f5e17e05864806dbf15a78150e86989edba52ceb3d453eb7c",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "d428ed07c8a026e84a8039acf6db3a89963a548318fdef2f6c1a8241381f1884",
+            "path": "SKILL.md",
+            "sha256": "d428ed07c8a026e84a8039acf6db3a89963a548318fdef2f6c1a8241381f1884",
+            "size": 1544
+          }
+        ],
+        "hashes": {
+          "contentHash": "d428ed07c8a026e84a8039acf6db3a89963a548318fdef2f6c1a8241381f1884",
+          "treeHash": "2bd38f9c10c2ec3f5e17e05864806dbf15a78150e86989edba52ceb3d453eb7c"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-vue-development"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-vue-development",
+        "frontmatter": {
+          "description": "Desenvolve e revisa Vue 3, TypeScript, Pinia e VueUse na Lia, quando a área afetada realmente usa essa stack. Use ao implementar componentes, stores ou composables Vue.",
+          "name": "lia-vue-development"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1544,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-vue-development",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "f82a2c2bda6a6fbb2642484a66563fccb4a8916307aa1d3227323c2031e58cf0",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-vue-testing-456bff43",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-vue-testing",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-vue-testing"
+        },
+        "tags": [],
+        "treeHash": "38332a038ccf5c61d61fcfda31859833a06020700248a7b391c3a89569ddacd6",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "f82a2c2bda6a6fbb2642484a66563fccb4a8916307aa1d3227323c2031e58cf0",
+            "path": "SKILL.md",
+            "sha256": "f82a2c2bda6a6fbb2642484a66563fccb4a8916307aa1d3227323c2031e58cf0",
+            "size": 1361
+          }
+        ],
+        "hashes": {
+          "contentHash": "f82a2c2bda6a6fbb2642484a66563fccb4a8916307aa1d3227323c2031e58cf0",
+          "treeHash": "38332a038ccf5c61d61fcfda31859833a06020700248a7b391c3a89569ddacd6"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-vue-testing"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-vue-testing",
+        "frontmatter": {
+          "description": "Escreve e depura testes de componentes Vue, composables, stores Pinia e interfaces DOM. Use ao escrever ou investigar testes de Vue e Pinia.",
+          "name": "lia-vue-testing"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1361,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-vue-testing",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "2249a091a8d938e3bf8142c6b5cc7d25318415596da72104fbcb9c8415a948b3",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-windows-electron-validation-05d6d591",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-windows-electron-validation",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-windows-electron-validation"
+        },
+        "tags": [],
+        "treeHash": "4f49ef8b535001dddb44d9acf8f54791ca4c3a031a2522dbbe9bf1987c174d3b",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "2249a091a8d938e3bf8142c6b5cc7d25318415596da72104fbcb9c8415a948b3",
+            "path": "SKILL.md",
+            "sha256": "2249a091a8d938e3bf8142c6b5cc7d25318415596da72104fbcb9c8415a948b3",
+            "size": 1756
+          }
+        ],
+        "hashes": {
+          "contentHash": "2249a091a8d938e3bf8142c6b5cc7d25318415596da72104fbcb9c8415a948b3",
+          "treeHash": "4f49ef8b535001dddb44d9acf8f54791ca4c3a031a2522dbbe9bf1987c174d3b"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/lia-windows-electron-validation"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-windows-electron-validation",
+        "frontmatter": {
+          "compatibility": "Exige Windows e checkout local. Automação controlada prova critérios observáveis; áudio físico exige teste apropriado.",
+          "description": "Valida o comportamento real do Launcher e do Stage Electron da Lia no Windows, incluindo janela visível, processos filhos, logs e encerramento limpo. Use ao executar gates reais do Launcher ou Stage no Windows.",
+          "name": "lia-windows-electron-validation"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1756,
+        "reuseAcrossLia": [
+          "Lia-Studio",
+          "Lia-Forge",
+          "Lia-Go",
+          "Lia-AgentHub"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/lia-windows-electron-validation",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "c4992d334e94c9512235b3b5f7ffbb230c0f6d72c59c9821906469d1bc8f67cb",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "stage-runtime-debugging-32a68b69",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "stage-runtime-debugging",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/stage-runtime-debugging"
+        },
+        "tags": [],
+        "treeHash": "99061ec3354e5be3cc4c5b54db75c177e33c8281c82086fc5243145216cd4b41",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "c4992d334e94c9512235b3b5f7ffbb230c0f6d72c59c9821906469d1bc8f67cb",
+            "path": "SKILL.md",
+            "sha256": "c4992d334e94c9512235b3b5f7ffbb230c0f6d72c59c9821906469d1bc8f67cb",
+            "size": 4593
+          }
+        ],
+        "hashes": {
+          "contentHash": "c4992d334e94c9512235b3b5f7ffbb230c0f6d72c59c9821906469d1bc8f67cb",
+          "treeHash": "99061ec3354e5be3cc4c5b54db75c177e33c8281c82086fc5243145216cd4b41"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/stage-runtime-debugging"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia (diagnostico do Stage Electron no Windows)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "stage-runtime-debugging",
+        "frontmatter": {
+          "compatibility": "Exige Windows com o checkout e Node no PATH. O Stage e um processo Electron supervisionado pelo launcher.",
+          "description": "Diagnostica o Stage da Lia no Windows quando ele nao inicia, inicia sem janela, congela ou nao encerra, separando falha de build, de runtime, de IPC, de inicializacao e de interface. Use ao investigar o fluxo Launcher para Conversar com a Lia, processos residuais, PID errado ou janela em branco.",
+          "name": "stage-runtime-debugging"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "sem prefixo `lia-`",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 4593,
+        "reuseAcrossLia": [
+          "Lia-Project",
+          "Lia-Studio (build desktop)"
+        ],
+        "sourceBranch": "arena/c6b02f64-lia-project",
+        "sourceCommit": "0093de090d86c291b7a85eaeacebe0a559585359",
+        "sourcePath": "skills/stage-runtime-debugging",
+        "sourceRepo": "BloomRX/Lia-Project",
+        "state": "IMPLEMENTED; exige Windows para validacao real (nao validado nesta pesquisa)",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload",
+        "upstreamProject": null
+      }
+    }
+  ],
+  "schemaNote": "Registros no formato implementado pelo Lia Agent Hub (schemaVersion 1). `capability` e `provenance` seguem o contrato de `.lia/capability.json` e `.lia/provenance.json`. `researchNotes` é metadado de pesquisa e NÃO faz parte do contrato.",
+  "source": {
+    "branch": "arena/c6b02f64-lia-project",
+    "commit": "0093de090d86c291b7a85eaeacebe0a559585359",
+    "inspectedAt": "2026-11-15",
+    "localRoot": "/tmp/lia/src/lia-project/.agents/skills",
+    "repo": "BloomRX/Lia-Project",
+    "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/"
+  }
+}

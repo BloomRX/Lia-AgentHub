@@ -1,0 +1,867 @@
+{
+  "generator": {
+    "algorithmSource": "src/lia_agenthub/domain/integrity.py, domain/model.py, domain/paths.py, adapters/importer.py",
+    "hubBranch": "arena/a92004be-lia-agenthub",
+    "hubCommit": "b4eb85f",
+    "note": "Reimplementação de pesquisa do algoritmo documentado. O Hub não foi executado; nada foi gravado na biblioteca real.",
+    "tool": "docs/research/tools/build-catalog-records.py"
+  },
+  "recordCount": 9,
+  "records": [
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "aca4735bdb111d32867eb11e4a044f66e989bd2b0e0dad61964c9375d1fe3665",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "capability-mapping-9dddebe4",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "capability-mapping",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/capability-mapping"
+        },
+        "tags": [],
+        "treeHash": "9cc82c5cd51382f70a6f1780972553a694dd8c8104a6bfceb1a7eceee5b3e1c3",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "aca4735bdb111d32867eb11e4a044f66e989bd2b0e0dad61964c9375d1fe3665",
+            "path": "SKILL.md",
+            "sha256": "aca4735bdb111d32867eb11e4a044f66e989bd2b0e0dad61964c9375d1fe3665",
+            "size": 1902
+          }
+        ],
+        "hashes": {
+          "contentHash": "aca4735bdb111d32867eb11e4a044f66e989bd2b0e0dad61964c9375d1fe3665",
+          "treeHash": "9cc82c5cd51382f70a6f1780972553a694dd8c8104a6bfceb1a7eceee5b3e1c3"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/capability-mapping"
+      },
+      "researchNotes": {
+        "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "capability-mapping",
+        "frontmatter": {
+          "description": "Separar pesos, especialistas, runtime, integrações e critérios operacionais.",
+          "name": "capability-mapping"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1902,
+        "reuseAcrossLia": [
+          "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+          "Lia-Project (capability-mapping)",
+          "Lia-Forge (model-candidate-research para pesos de asset)"
+        ],
+        "sourceBranch": "main",
+        "sourceCommit": "3ec4313ba57ec94a7f3d93ec4f7a0d533d5077cf",
+        "sourcePath": "skills/capability-mapping",
+        "sourceRepo": "BloomRX/Lia-Model-Lab",
+        "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "0013310af3d7528ea77852348a50841175621ac3ff8836409f77020f54855bd3",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "dataset-governance-f6d13852",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "dataset-governance",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/dataset-governance"
+        },
+        "tags": [],
+        "treeHash": "6ab2e2f6ea65643d70ed7d5bc8f8477a7b096ce54e44b7314c55fc4aee415ca5",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "0013310af3d7528ea77852348a50841175621ac3ff8836409f77020f54855bd3",
+            "path": "SKILL.md",
+            "sha256": "0013310af3d7528ea77852348a50841175621ac3ff8836409f77020f54855bd3",
+            "size": 1987
+          }
+        ],
+        "hashes": {
+          "contentHash": "0013310af3d7528ea77852348a50841175621ac3ff8836409f77020f54855bd3",
+          "treeHash": "6ab2e2f6ea65643d70ed7d5bc8f8477a7b096ce54e44b7314c55fc4aee415ca5"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/dataset-governance"
+      },
+      "researchNotes": {
+        "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "dataset-governance",
+        "frontmatter": {
+          "description": "Auditar direitos, privacidade, schema e isolamento dos dados.",
+          "name": "dataset-governance"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1987,
+        "reuseAcrossLia": [
+          "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+          "Lia-Project (capability-mapping)",
+          "Lia-Forge (model-candidate-research para pesos de asset)"
+        ],
+        "sourceBranch": "main",
+        "sourceCommit": "3ec4313ba57ec94a7f3d93ec4f7a0d533d5077cf",
+        "sourcePath": "skills/dataset-governance",
+        "sourceRepo": "BloomRX/Lia-Model-Lab",
+        "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "4cb611f117eb07aae82861e8de97e98e27f47c2e5a015b227c3a3d1a3592928e",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "experiment-reproducibility-8c60e8a2",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "experiment-reproducibility",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/experiment-reproducibility"
+        },
+        "tags": [],
+        "treeHash": "f82fee08ee445962bdae0176476c16db0a28d1eeaeda34e6a1c9a21cdd5361ec",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "4cb611f117eb07aae82861e8de97e98e27f47c2e5a015b227c3a3d1a3592928e",
+            "path": "SKILL.md",
+            "sha256": "4cb611f117eb07aae82861e8de97e98e27f47c2e5a015b227c3a3d1a3592928e",
+            "size": 2257
+          }
+        ],
+        "hashes": {
+          "contentHash": "4cb611f117eb07aae82861e8de97e98e27f47c2e5a015b227c3a3d1a3592928e",
+          "treeHash": "f82fee08ee445962bdae0176476c16db0a28d1eeaeda34e6a1c9a21cdd5361ec"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/experiment-reproducibility"
+      },
+      "researchNotes": {
+        "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "experiment-reproducibility",
+        "frontmatter": {
+          "description": "Verificar identidade, hashes, ambientes e retomada sem executar workloads.",
+          "name": "experiment-reproducibility"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2257,
+        "reuseAcrossLia": [
+          "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+          "Lia-Project (capability-mapping)",
+          "Lia-Forge (model-candidate-research para pesos de asset)"
+        ],
+        "sourceBranch": "main",
+        "sourceCommit": "3ec4313ba57ec94a7f3d93ec4f7a0d533d5077cf",
+        "sourcePath": "skills/experiment-reproducibility",
+        "sourceRepo": "BloomRX/Lia-Model-Lab",
+        "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "8a7de1d20dfedfa2b2e7c18909f397710f9dfe7e23081fcdae97546a25a571ae",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "finetuning-plan-9707e89b",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "finetuning-plan",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/finetuning-plan"
+        },
+        "tags": [],
+        "treeHash": "b2afe3d4f03740e4ed77649bb30295c2502dd02536ce5247f6870e4666b5d7e1",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "8a7de1d20dfedfa2b2e7c18909f397710f9dfe7e23081fcdae97546a25a571ae",
+            "path": "SKILL.md",
+            "sha256": "8a7de1d20dfedfa2b2e7c18909f397710f9dfe7e23081fcdae97546a25a571ae",
+            "size": 2436
+          }
+        ],
+        "hashes": {
+          "contentHash": "8a7de1d20dfedfa2b2e7c18909f397710f9dfe7e23081fcdae97546a25a571ae",
+          "treeHash": "b2afe3d4f03740e4ed77649bb30295c2502dd02536ce5247f6870e4666b5d7e1"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/finetuning-plan"
+      },
+      "researchNotes": {
+        "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "finetuning-plan",
+        "frontmatter": {
+          "description": "Planejar SFT LoRA/QLoRA sem executar treinamento.",
+          "name": "finetuning-plan"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2436,
+        "reuseAcrossLia": [
+          "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+          "Lia-Project (capability-mapping)",
+          "Lia-Forge (model-candidate-research para pesos de asset)"
+        ],
+        "sourceBranch": "main",
+        "sourceCommit": "3ec4313ba57ec94a7f3d93ec4f7a0d533d5077cf",
+        "sourcePath": "skills/finetuning-plan",
+        "sourceRepo": "BloomRX/Lia-Model-Lab",
+        "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "98b551f6ac32291e933ab1f06a74c1d2113e5486663bc7cb09fb96e5d12bf0ca",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-brand-consistency-review-13dd0f3d",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-brand-consistency-review",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/lia-brand-consistency-review"
+        },
+        "tags": [],
+        "treeHash": "1b8e9b1ad29bff6b8a4f9bd7471080b9b38d5ed9d18137974b783c7cef1bbbcf",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "98b551f6ac32291e933ab1f06a74c1d2113e5486663bc7cb09fb96e5d12bf0ca",
+            "path": "SKILL.md",
+            "sha256": "98b551f6ac32291e933ab1f06a74c1d2113e5486663bc7cb09fb96e5d12bf0ca",
+            "size": 1844
+          }
+        ],
+        "hashes": {
+          "contentHash": "98b551f6ac32291e933ab1f06a74c1d2113e5486663bc7cb09fb96e5d12bf0ca",
+          "treeHash": "1b8e9b1ad29bff6b8a4f9bd7471080b9b38d5ed9d18137974b783c7cef1bbbcf"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/lia-brand-consistency-review"
+      },
+      "researchNotes": {
+        "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-brand-consistency-review",
+        "frontmatter": {
+          "description": "Revisar nome, autonomia, privacidade e alegações conforme marca Lia.",
+          "name": "lia-brand-consistency-review"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1844,
+        "reuseAcrossLia": [
+          "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+          "Lia-Project (capability-mapping)",
+          "Lia-Forge (model-candidate-research para pesos de asset)"
+        ],
+        "sourceBranch": "main",
+        "sourceCommit": "3ec4313ba57ec94a7f3d93ec4f7a0d533d5077cf",
+        "sourcePath": "skills/lia-brand-consistency-review",
+        "sourceRepo": "BloomRX/Lia-Model-Lab",
+        "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "ca088be9c3182c61012db2ebd9fc2730718673c45372df23962ebe7131c8286b",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "model-candidate-research-69cd1d06",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "model-candidate-research",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/model-candidate-research"
+        },
+        "tags": [],
+        "treeHash": "13fbdd6b328e9bd4032bdd9077be7cb2dd6c5df3a20fa9483ab48a347f06ca72",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "ca088be9c3182c61012db2ebd9fc2730718673c45372df23962ebe7131c8286b",
+            "path": "SKILL.md",
+            "sha256": "ca088be9c3182c61012db2ebd9fc2730718673c45372df23962ebe7131c8286b",
+            "size": 2032
+          }
+        ],
+        "hashes": {
+          "contentHash": "ca088be9c3182c61012db2ebd9fc2730718673c45372df23962ebe7131c8286b",
+          "treeHash": "13fbdd6b328e9bd4032bdd9077be7cb2dd6c5df3a20fa9483ab48a347f06ca72"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/model-candidate-research"
+      },
+      "researchNotes": {
+        "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "model-candidate-research",
+        "frontmatter": {
+          "description": "Comparar checkpoints abertos com fontes primárias e recomendação condicional.",
+          "name": "model-candidate-research"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2032,
+        "reuseAcrossLia": [
+          "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+          "Lia-Project (capability-mapping)",
+          "Lia-Forge (model-candidate-research para pesos de asset)"
+        ],
+        "sourceBranch": "main",
+        "sourceCommit": "3ec4313ba57ec94a7f3d93ec4f7a0d533d5077cf",
+        "sourcePath": "skills/model-candidate-research",
+        "sourceRepo": "BloomRX/Lia-Model-Lab",
+        "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "ce3ba4b1e7438c01db7c48531117e5dc86689cb7e29031a0bbbff900dc808aa2",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "model-evaluation-7396dd64",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "model-evaluation",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/model-evaluation"
+        },
+        "tags": [],
+        "treeHash": "5b2acd04195f9479f17dfd518275880615368f1febd7f05c27ad0f92ecd6bf17",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "ce3ba4b1e7438c01db7c48531117e5dc86689cb7e29031a0bbbff900dc808aa2",
+            "path": "SKILL.md",
+            "sha256": "ce3ba4b1e7438c01db7c48531117e5dc86689cb7e29031a0bbbff900dc808aa2",
+            "size": 2473
+          }
+        ],
+        "hashes": {
+          "contentHash": "ce3ba4b1e7438c01db7c48531117e5dc86689cb7e29031a0bbbff900dc808aa2",
+          "treeHash": "5b2acd04195f9479f17dfd518275880615368f1febd7f05c27ad0f92ecd6bf17"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/model-evaluation"
+      },
+      "researchNotes": {
+        "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "model-evaluation",
+        "frontmatter": {
+          "description": "Comparar base, adapter e quantização sem ocultar regressões.",
+          "name": "model-evaluation"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2473,
+        "reuseAcrossLia": [
+          "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+          "Lia-Project (capability-mapping)",
+          "Lia-Forge (model-candidate-research para pesos de asset)"
+        ],
+        "sourceBranch": "main",
+        "sourceCommit": "3ec4313ba57ec94a7f3d93ec4f7a0d533d5077cf",
+        "sourcePath": "skills/model-evaluation",
+        "sourceRepo": "BloomRX/Lia-Model-Lab",
+        "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "60ce49b1a6bf9c548adc695f812bd2a7d135bb0bd60eb5822e1a363c48dadbd3",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "model-license-release-review-139a1796",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "model-license-release-review",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/model-license-release-review"
+        },
+        "tags": [],
+        "treeHash": "881d85f90e0c60eaff664d2b9a1e6ab0ae8a603db83d35ae59c472a0b59426a5",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "60ce49b1a6bf9c548adc695f812bd2a7d135bb0bd60eb5822e1a363c48dadbd3",
+            "path": "SKILL.md",
+            "sha256": "60ce49b1a6bf9c548adc695f812bd2a7d135bb0bd60eb5822e1a363c48dadbd3",
+            "size": 2044
+          }
+        ],
+        "hashes": {
+          "contentHash": "60ce49b1a6bf9c548adc695f812bd2a7d135bb0bd60eb5822e1a363c48dadbd3",
+          "treeHash": "881d85f90e0c60eaff664d2b9a1e6ab0ae8a603db83d35ae59c472a0b59426a5"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/model-license-release-review"
+      },
+      "researchNotes": {
+        "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "model-license-release-review",
+        "frontmatter": {
+          "description": "Revisar direitos por artefato sem aceitar termos ou publicar.",
+          "name": "model-license-release-review"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2044,
+        "reuseAcrossLia": [
+          "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+          "Lia-Project (capability-mapping)",
+          "Lia-Forge (model-candidate-research para pesos de asset)"
+        ],
+        "sourceBranch": "main",
+        "sourceCommit": "3ec4313ba57ec94a7f3d93ec4f7a0d533d5077cf",
+        "sourcePath": "skills/model-license-release-review",
+        "sourceRepo": "BloomRX/Lia-Model-Lab",
+        "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "54fdae94faf4f7365b6cadfe5c6936d665912b3303786c50c6e284591a7ccde5",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "multi-agent-orchestration-cc95e4a5",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "multi-agent-orchestration",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/multi-agent-orchestration"
+        },
+        "tags": [],
+        "treeHash": "466529d28314198573063367f49f4d5aba26077b358f7e233d86858721c118fe",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "54fdae94faf4f7365b6cadfe5c6936d665912b3303786c50c6e284591a7ccde5",
+            "path": "SKILL.md",
+            "sha256": "54fdae94faf4f7365b6cadfe5c6936d665912b3303786c50c6e284591a7ccde5",
+            "size": 1957
+          }
+        ],
+        "hashes": {
+          "contentHash": "54fdae94faf4f7365b6cadfe5c6936d665912b3303786c50c6e284591a7ccde5",
+          "treeHash": "466529d28314198573063367f49f4d5aba26077b358f7e233d86858721c118fe"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/multi-agent-orchestration"
+      },
+      "researchNotes": {
+        "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "multi-agent-orchestration",
+        "frontmatter": {
+          "description": "Coordenar revisões independentes com fallback sequencial real.",
+          "name": "multi-agent-orchestration"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 1957,
+        "reuseAcrossLia": [
+          "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+          "Lia-Project (capability-mapping)",
+          "Lia-Forge (model-candidate-research para pesos de asset)"
+        ],
+        "sourceBranch": "main",
+        "sourceCommit": "3ec4313ba57ec94a7f3d93ec4f7a0d533d5077cf",
+        "sourcePath": "skills/multi-agent-orchestration",
+        "sourceRepo": "BloomRX/Lia-Model-Lab",
+        "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+        "upstreamProject": null
+      }
+    }
+  ],
+  "schemaNote": "Registros no formato implementado pelo Lia Agent Hub (schemaVersion 1). `capability` e `provenance` seguem o contrato de `.lia/capability.json` e `.lia/provenance.json`. `researchNotes` é metadado de pesquisa e NÃO faz parte do contrato.",
+  "source": {
+    "branch": "main",
+    "commit": "3ec4313ba57ec94a7f3d93ec4f7a0d533d5077cf",
+    "inspectedAt": "2026-11-15",
+    "localRoot": "/tmp/lia/src/modellab/.agents/skills",
+    "repo": "BloomRX/Lia-Model-Lab",
+    "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/"
+  }
+}

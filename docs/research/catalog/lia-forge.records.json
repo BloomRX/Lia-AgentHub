@@ -1,0 +1,113 @@
+{
+  "generator": {
+    "algorithmSource": "src/lia_agenthub/domain/integrity.py, domain/model.py, domain/paths.py, adapters/importer.py",
+    "hubBranch": "arena/a92004be-lia-agenthub",
+    "hubCommit": "b4eb85f",
+    "note": "Reimplementação de pesquisa do algoritmo documentado. O Hub não foi executado; nada foi gravado na biblioteca real.",
+    "tool": "docs/research/tools/build-catalog-records.py"
+  },
+  "recordCount": 1,
+  "records": [
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "6a77dc8941ca1064ae52580956b3dbd89e392d6abd5f35a1659ce28022151520",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-brand-check-79f82f4e",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-brand-check",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Forge@35b207f:.agents/skills/lia-brand-check"
+        },
+        "tags": [],
+        "treeHash": "2b05182cdca03493d3d95ab4b5b44cab20a67d18190b29a1497fc2e1df7e86f0",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "6a77dc8941ca1064ae52580956b3dbd89e392d6abd5f35a1659ce28022151520",
+            "path": "SKILL.md",
+            "sha256": "6a77dc8941ca1064ae52580956b3dbd89e392d6abd5f35a1659ce28022151520",
+            "size": 2662
+          }
+        ],
+        "hashes": {
+          "contentHash": "6a77dc8941ca1064ae52580956b3dbd89e392d6abd5f35a1659ce28022151520",
+          "treeHash": "2b05182cdca03493d3d95ab4b5b44cab20a67d18190b29a1497fc2e1df7e86f0"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Forge@35b207f:.agents/skills/lia-brand-check"
+      },
+      "researchNotes": {
+        "attributionWhere": "autoral da Lia Forge (revisao de marca/autonomia/consentimento)",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-brand-check",
+        "frontmatter": {
+          "description": "Audita uma mudança da Lia Forge contra os princípios de autonomia, dados do usuário, consentimento, transparência e integração opcional. Use ao alterar interface, armazenamento, IA, instalação, handoff ou comunicação com outro app. Não use como substituto de teste funcional ou revisão jurídica.",
+          "name": "lia-brand-check"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "overlapNote": "sobrepoe-se a lia-brand-consistency-review do Lia Model Lab: candidatos a uma unica skill compartilhada",
+        "payloadBytes": 2662,
+        "reuseAcrossLia": [
+          "todos os produtos Lia (revisao de marca e consenso de dados)"
+        ],
+        "sourceBranch": "arena/649f88bd-3dspritesheet",
+        "sourceCommit": "35b207f7b1ae5bc0c104fbdd0e9cf6ae83944692",
+        "sourcePath": "skills/lia-brand-check",
+        "sourceRepo": "BloomRX/Lia-Forge",
+        "state": "IMPLEMENTED apenas em branches de desenvolvimento; NAO existe em main",
+        "structuralIssues": [],
+        "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Forge sem SPDX na API",
+        "upstreamProject": null
+      }
+    }
+  ],
+  "schemaNote": "Registros no formato implementado pelo Lia Agent Hub (schemaVersion 1). `capability` e `provenance` seguem o contrato de `.lia/capability.json` e `.lia/provenance.json`. `researchNotes` é metadado de pesquisa e NÃO faz parte do contrato.",
+  "source": {
+    "branch": "arena/649f88bd-3dspritesheet",
+    "commit": "35b207f7b1ae5bc0c104fbdd0e9cf6ae83944692",
+    "inspectedAt": "2026-11-15",
+    "localRoot": "/tmp/lia/src/forge/.agents/skills",
+    "repo": "BloomRX/Lia-Forge",
+    "upstream": "BloomRX/Lia-Forge@35b207f:.agents/skills/"
+  }
+}

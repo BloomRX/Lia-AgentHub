@@ -1,0 +1,1595 @@
+{
+  "generator": {
+    "algorithmSource": "src/lia_agenthub/domain/integrity.py, domain/model.py, domain/paths.py, adapters/importer.py",
+    "hubBranch": "arena/a92004be-lia-agenthub",
+    "hubCommit": "b4eb85f",
+    "note": "Reimplementação de pesquisa do algoritmo documentado. O Hub não foi executado; nada foi gravado na biblioteca real.",
+    "tool": "docs/research/tools/build-catalog-records.py"
+  },
+  "recordCount": 16,
+  "records": [
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "c00c0cbf8400e8b9d938580841de70fee42afc0dedc5dccf7ff069352f648909",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-audio-plan-c5a95aba",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-audio-plan",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-audio-plan"
+        },
+        "tags": [],
+        "treeHash": "8d16846dc02dc0656e9ca18dc9550d3379b9c4c2e516c88ef807137b3005abbd",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "c00c0cbf8400e8b9d938580841de70fee42afc0dedc5dccf7ff069352f648909",
+            "path": "SKILL.md",
+            "sha256": "c00c0cbf8400e8b9d938580841de70fee42afc0dedc5dccf7ff069352f648909",
+            "size": 1814
+          }
+        ],
+        "hashes": {
+          "contentHash": "c00c0cbf8400e8b9d938580841de70fee42afc0dedc5dccf7ff069352f648909",
+          "treeHash": "8d16846dc02dc0656e9ca18dc9550d3379b9c4c2e516c88ef807137b3005abbd"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-audio-plan"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/MR-MAK-WORKSPACE-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/witnesstodark/mr-mak-workspace/blob/cf1e1260253a61499dc67fe2332a330bf1b85c14/.agents/skills/game-audio-workflow/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-audio-plan",
+        "frontmatter": {
+          "description": "Planejar banco de sons e eventos verificáveis sem gerar, baixar ou instalar áudio.",
+          "name": "lia-game-audio-plan"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1814,
+        "reuseAcrossLia": [
+          "Lia-Forge (audio/VFX/UI de asset)",
+          "Lia-Project (revisao visual)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-audio-plan",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); sem execucao por runtime",
+        "structuralIssues": [],
+        "upstreamCommit": "cf1e1260253a61499dc67fe2332a330bf1b85c14",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Mr. Mak Workspace contributors)",
+        "upstreamProject": "witnesstodark/mr-mak-workspace",
+        "upstreamSkill": "game-audio-workflow"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "edb25b397642c1f69233f4f7b1e8e8f281b8ce4b97fb8da6781da0b2e5753b87",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-balance-review-377a41f7",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-balance-review",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-balance-review"
+        },
+        "tags": [],
+        "treeHash": "8f3e9952aa58f7cd47fc571ec70bbc393d8cd06ea014778583b095e326f8700b",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "edb25b397642c1f69233f4f7b1e8e8f281b8ce4b97fb8da6781da0b2e5753b87",
+            "path": "SKILL.md",
+            "sha256": "edb25b397642c1f69233f4f7b1e8e8f281b8ce4b97fb8da6781da0b2e5753b87",
+            "size": 1747
+          }
+        ],
+        "hashes": {
+          "contentHash": "edb25b397642c1f69233f4f7b1e8e8f281b8ce4b97fb8da6781da0b2e5753b87",
+          "treeHash": "8f3e9952aa58f7cd47fc571ec70bbc393d8cd06ea014778583b095e326f8700b"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-balance-review"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/balance-check/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-balance-review",
+        "frontmatter": {
+          "description": "Analisar dados de combate, economia e progressão sem inventar métricas ou alterar valores.",
+          "name": "lia-game-balance-review"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1747,
+        "reuseAcrossLia": [
+          "Lia-Project (QA/regressao)",
+          "Lia-Forge (revisao de asset)",
+          "Lia-Go (revisao documental)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-balance-review",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+        "structuralIssues": [],
+        "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+        "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+        "upstreamSkill": "balance-check"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "5bcf7e5467e2c463fb645c0c19d2ed20b8024844489960b63f1f50448a3b9cdd",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-bug-triage-09484de7",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-bug-triage",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-bug-triage"
+        },
+        "tags": [],
+        "treeHash": "8d405ef7908effd8dfa8c3d4e9961a77ee00191d47b7b9ae8e0e5b37da3707bd",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "5bcf7e5467e2c463fb645c0c19d2ed20b8024844489960b63f1f50448a3b9cdd",
+            "path": "SKILL.md",
+            "sha256": "5bcf7e5467e2c463fb645c0c19d2ed20b8024844489960b63f1f50448a3b9cdd",
+            "size": 1732
+          }
+        ],
+        "hashes": {
+          "contentHash": "5bcf7e5467e2c463fb645c0c19d2ed20b8024844489960b63f1f50448a3b9cdd",
+          "treeHash": "8d405ef7908effd8dfa8c3d4e9961a77ee00191d47b7b9ae8e0e5b37da3707bd"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-bug-triage"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/bug-triage/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-bug-triage",
+        "frontmatter": {
+          "description": "Classificar bugs de jogo por reprodução, impacto e evidência sem fechá-los automaticamente.",
+          "name": "lia-game-bug-triage"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1732,
+        "reuseAcrossLia": [
+          "Lia-Project (QA/regressao)",
+          "Lia-Forge (revisao de asset)",
+          "Lia-Go (revisao documental)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-bug-triage",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+        "structuralIssues": [],
+        "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+        "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+        "upstreamSkill": "bug-triage"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "82aed1a88f28f85f95c20f4725fe493d62ef2c1767802df9c5f81b6b5592f43a",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-design-review-a62f237f",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-design-review",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-design-review"
+        },
+        "tags": [],
+        "treeHash": "1a4b2cd91999be9183767244d01af9fc47c1150e0a15259368cc57bbb773b652",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "82aed1a88f28f85f95c20f4725fe493d62ef2c1767802df9c5f81b6b5592f43a",
+            "path": "SKILL.md",
+            "sha256": "82aed1a88f28f85f95c20f4725fe493d62ef2c1767802df9c5f81b6b5592f43a",
+            "size": 1826
+          }
+        ],
+        "hashes": {
+          "contentHash": "82aed1a88f28f85f95c20f4725fe493d62ef2c1767802df9c5f81b6b5592f43a",
+          "treeHash": "1a4b2cd91999be9183767244d01af9fc47c1150e0a15259368cc57bbb773b652"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-design-review"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/design-review/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-design-review",
+        "frontmatter": {
+          "description": "Revisar a coerência e verificabilidade de um documento de design de jogo sem aprovar uma fase.",
+          "name": "lia-game-design-review"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1826,
+        "reuseAcrossLia": [
+          "Lia-Project (QA/regressao)",
+          "Lia-Forge (revisao de asset)",
+          "Lia-Go (revisao documental)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-design-review",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+        "structuralIssues": [],
+        "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+        "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+        "upstreamSkill": "design-review"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "f88ae9eef5af8b6fcb623e5f4cd0a88decf9a9eb26efa5651d9ddfb54332c782",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-level-design-9ea257b2",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-level-design",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-level-design"
+        },
+        "tags": [],
+        "treeHash": "61c4957044b7d2c29d97f3992e81c4c9ad4820b3d2af9f7a6b77be5370c1d517",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "f88ae9eef5af8b6fcb623e5f4cd0a88decf9a9eb26efa5651d9ddfb54332c782",
+            "path": "SKILL.md",
+            "sha256": "f88ae9eef5af8b6fcb623e5f4cd0a88decf9a9eb26efa5651d9ddfb54332c782",
+            "size": 1823
+          }
+        ],
+        "hashes": {
+          "contentHash": "f88ae9eef5af8b6fcb623e5f4cd0a88decf9a9eb26efa5651d9ddfb54332c782",
+          "treeHash": "61c4957044b7d2c29d97f3992e81c4c9ad4820b3d2af9f7a6b77be5370c1d517"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-level-design"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/MR-MAK-WORKSPACE-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/witnesstodark/mr-mak-workspace/blob/cf1e1260253a61499dc67fe2332a330bf1b85c14/.agents/skills/game-level-design/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-level-design",
+        "frontmatter": {
+          "description": "Preparar layout revisável de fase e contrato de integração, sem presumir cena implementada.",
+          "name": "lia-game-level-design"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1823,
+        "reuseAcrossLia": [
+          "Lia-Forge (audio/VFX/UI de asset)",
+          "Lia-Project (revisao visual)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-level-design",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); sem execucao por runtime",
+        "structuralIssues": [],
+        "upstreamCommit": "cf1e1260253a61499dc67fe2332a330bf1b85c14",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Mr. Mak Workspace contributors)",
+        "upstreamProject": "witnesstodark/mr-mak-workspace",
+        "upstreamSkill": "game-level-design"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "da28c6887a3026767b18df86f8a3d1cf286524f597711fd8868a5ebcccbd76bb",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-playtest-report-169d003f",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-playtest-report",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-playtest-report"
+        },
+        "tags": [],
+        "treeHash": "a9466af3c0ddaa231e987c6f9088a4236b8f1c7ce39fd5f17bcb940e1777b8fb",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "da28c6887a3026767b18df86f8a3d1cf286524f597711fd8868a5ebcccbd76bb",
+            "path": "SKILL.md",
+            "sha256": "da28c6887a3026767b18df86f8a3d1cf286524f597711fd8868a5ebcccbd76bb",
+            "size": 1756
+          }
+        ],
+        "hashes": {
+          "contentHash": "da28c6887a3026767b18df86f8a3d1cf286524f597711fd8868a5ebcccbd76bb",
+          "treeHash": "a9466af3c0ddaa231e987c6f9088a4236b8f1c7ce39fd5f17bcb940e1777b8fb"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-playtest-report"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/playtest-report/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-playtest-report",
+        "frontmatter": {
+          "description": "Organizar observações reais de playtest, separando feedback humano de hipótese ou simulação.",
+          "name": "lia-game-playtest-report"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1756,
+        "reuseAcrossLia": [
+          "Lia-Project (QA/regressao)",
+          "Lia-Forge (revisao de asset)",
+          "Lia-Go (revisao documental)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-playtest-report",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+        "structuralIssues": [],
+        "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+        "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+        "upstreamSkill": "playtest-report"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "087d998d5ec3c01c37ffa67a65129c90c4c95d2edbc8d0e58834188bfb5ce789",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-project-bootstrap-4d1c8510",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-project-bootstrap",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-project-bootstrap"
+        },
+        "tags": [],
+        "treeHash": "60fd56bd587a53bdb6983bb46bf16854b9a73dc8bb4e114db685bd7612457882",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "087d998d5ec3c01c37ffa67a65129c90c4c95d2edbc8d0e58834188bfb5ce789",
+            "path": "SKILL.md",
+            "sha256": "087d998d5ec3c01c37ffa67a65129c90c4c95d2edbc8d0e58834188bfb5ce789",
+            "size": 8256
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "8d57eae3e2090bc99bd39855fc568e750df00859a10677cf73a09c7a9b4a482a",
+            "path": "references/glossario-e-metodo.md",
+            "sha256": "8d57eae3e2090bc99bd39855fc568e750df00859a10677cf73a09c7a9b4a482a",
+            "size": 2244
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "9b44eb24a275f4d4ded3f4bf5f0ffd00fd676924c00c5899c8b865a5f54e5ad6",
+            "path": "references/testes-documentais.md",
+            "sha256": "9b44eb24a275f4d4ded3f4bf5f0ffd00fd676924c00c5899c8b865a5f54e5ad6",
+            "size": 3394
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "80d6e4c945b491fb084f254013e62f1a06f7a1db0427aa18244d4b253b8e695f",
+            "path": "templates/DECISIONS.md",
+            "sha256": "80d6e4c945b491fb084f254013e62f1a06f7a1db0427aa18244d4b253b8e695f",
+            "size": 655
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "103b0b3fff6ad0bc8fe6d9f0533c355867a7ba816321a9939943da0dbd9c52b4",
+            "path": "templates/GDD.md",
+            "sha256": "103b0b3fff6ad0bc8fe6d9f0533c355867a7ba816321a9939943da0dbd9c52b4",
+            "size": 1573
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "07eb60d508e01fc4cfbea5d14ee6e1c04cb5daf5bbad9e0655ddfce74ddb0bf6",
+            "path": "templates/PROJECT_BRIEF.md",
+            "sha256": "07eb60d508e01fc4cfbea5d14ee6e1c04cb5daf5bbad9e0655ddfce74ddb0bf6",
+            "size": 1234
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "2ad773b96950b0c85ce290e23857a0f29061cbcdba34929553ebb54b9552ffa9",
+            "path": "templates/REFERENCIAS.md",
+            "sha256": "2ad773b96950b0c85ce290e23857a0f29061cbcdba34929553ebb54b9552ffa9",
+            "size": 1021
+          },
+          {
+            "executable": false,
+            "normalizedSha256": "2f377a3b7185d6b0d079d24f49677016541c509fd38eb175d028b6c4562be61e",
+            "path": "templates/SCOPE.md",
+            "sha256": "2f377a3b7185d6b0d079d24f49677016541c509fd38eb175d028b6c4562be61e",
+            "size": 774
+          }
+        ],
+        "hashes": {
+          "contentHash": "087d998d5ec3c01c37ffa67a65129c90c4c95d2edbc8d0e58834188bfb5ce789",
+          "treeHash": "60fd56bd587a53bdb6983bb46bf16854b9a73dc8bb4e114db685bd7612457882"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-project-bootstrap"
+      },
+      "researchNotes": {
+        "attributionWhere": "Skill original; referencia o metodo 'Etapa 0' do GameDevPipeline (sem copia de arquivo; upstream sem LICENSE na raiz segundo THIRD_PARTY_NOTICES.md do Studio).",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 8,
+        "folder": "lia-game-project-bootstrap",
+        "frontmatter": {
+          "description": ">",
+          "name": "lia-game-project-bootstrap"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 19151,
+        "reuseAcrossLia": [
+          "Lia-Go (bootstrap de projeto)",
+          "Lia-Forge (brief de asset)",
+          "Lia-AgentHub (exemplo de skill com templates/)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-project-bootstrap",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); bootstrap gera templates (GDD/SCOPE/DECISIONS/REFERENCIAS/PROJECT_BRIEF) incluidos no payload",
+        "structuralIssues": [
+          {
+            "code": "NAME_FOLDER_MISMATCH",
+            "detail": "name=`lia-game-project-bootstrap` vs pasta derivada `references` (artefato de import direto)",
+            "severity": "warning"
+          }
+        ],
+        "upstreamLicense": "MIT do proprio Lia Studio (LICENSE na raiz do repo, fora do payload)",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "3aefa8664adb2c2c5de2f91da818d9cf6cf74bcb686957d41bb62460bf7bd38f",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-qa-plan-3bf0e9fe",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-qa-plan",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-qa-plan"
+        },
+        "tags": [],
+        "treeHash": "f3ea0279f796bfcb047b3a1dcc28d4e4c476b404d050b76255d522a6ac3739a8",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "3aefa8664adb2c2c5de2f91da818d9cf6cf74bcb686957d41bb62460bf7bd38f",
+            "path": "SKILL.md",
+            "sha256": "3aefa8664adb2c2c5de2f91da818d9cf6cf74bcb686957d41bb62460bf7bd38f",
+            "size": 1784
+          }
+        ],
+        "hashes": {
+          "contentHash": "3aefa8664adb2c2c5de2f91da818d9cf6cf74bcb686957d41bb62460bf7bd38f",
+          "treeHash": "f3ea0279f796bfcb047b3a1dcc28d4e4c476b404d050b76255d522a6ac3739a8"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-qa-plan"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/qa-plan/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-qa-plan",
+        "frontmatter": {
+          "description": "Planejar verificações de lógica, integração, interface e gameplay por Task, sem fingir teste executado.",
+          "name": "lia-game-qa-plan"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1784,
+        "reuseAcrossLia": [
+          "Lia-Project (QA/regressao)",
+          "Lia-Forge (revisao de asset)",
+          "Lia-Go (revisao documental)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-qa-plan",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+        "structuralIssues": [],
+        "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+        "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+        "upstreamSkill": "qa-plan"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "427a53c3e48db5117ceaa30b48492b686e148465ba39b6faf005bd7490790d7c",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-story-readiness-028a61fe",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-story-readiness",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-story-readiness"
+        },
+        "tags": [],
+        "treeHash": "177ad5d12a444eb907880bd1e6111c3544cb2fc53cf859c1232919d3e8414e42",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "427a53c3e48db5117ceaa30b48492b686e148465ba39b6faf005bd7490790d7c",
+            "path": "SKILL.md",
+            "sha256": "427a53c3e48db5117ceaa30b48492b686e148465ba39b6faf005bd7490790d7c",
+            "size": 1830
+          }
+        ],
+        "hashes": {
+          "contentHash": "427a53c3e48db5117ceaa30b48492b686e148465ba39b6faf005bd7490790d7c",
+          "treeHash": "177ad5d12a444eb907880bd1e6111c3544cb2fc53cf859c1232919d3e8414e42"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-story-readiness"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/story-readiness/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-story-readiness",
+        "frontmatter": {
+          "description": "Verificar se uma Task de jogo pode ser iniciada sem pressupor que será executada ou aprovada.",
+          "name": "lia-game-story-readiness"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1830,
+        "reuseAcrossLia": [
+          "Lia-Project (QA/regressao)",
+          "Lia-Forge (revisao de asset)",
+          "Lia-Go (revisao documental)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-story-readiness",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+        "structuralIssues": [],
+        "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+        "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+        "upstreamSkill": "story-readiness"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "1a3cb983f9361ec9ab7cb1d13f215008471bf829eb8ebf8cffe9bc281fd4a3b4",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-test-evidence-review-9c629b6c",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-test-evidence-review",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-test-evidence-review"
+        },
+        "tags": [],
+        "treeHash": "3c9c2b148608f286ebfccedacdf3c24c8adb1acfece1c9e6e8a38fed35e710cc",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "1a3cb983f9361ec9ab7cb1d13f215008471bf829eb8ebf8cffe9bc281fd4a3b4",
+            "path": "SKILL.md",
+            "sha256": "1a3cb983f9361ec9ab7cb1d13f215008471bf829eb8ebf8cffe9bc281fd4a3b4",
+            "size": 1814
+          }
+        ],
+        "hashes": {
+          "contentHash": "1a3cb983f9361ec9ab7cb1d13f215008471bf829eb8ebf8cffe9bc281fd4a3b4",
+          "treeHash": "3c9c2b148608f286ebfccedacdf3c24c8adb1acfece1c9e6e8a38fed35e710cc"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-test-evidence-review"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/test-evidence-review/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-test-evidence-review",
+        "frontmatter": {
+          "description": "Revisar qualidade, proveniência e cobertura de testes e evidências de jogo sem abrir gates.",
+          "name": "lia-game-test-evidence-review"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1814,
+        "reuseAcrossLia": [
+          "Lia-Project (QA/regressao)",
+          "Lia-Forge (revisao de asset)",
+          "Lia-Go (revisao documental)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-test-evidence-review",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+        "structuralIssues": [],
+        "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+        "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+        "upstreamSkill": "test-evidence-review"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "7aaf1a73d81e5ebeb98a4853172a89b17bbfa4809cd26ca6fa1ba60ada2da32a",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-ui-plan-5fea1856",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-ui-plan",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-ui-plan"
+        },
+        "tags": [],
+        "treeHash": "5658589aebbc79302d994084b84b612c1ac3d9f31820bbb6a0b7ec978b652d6a",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "7aaf1a73d81e5ebeb98a4853172a89b17bbfa4809cd26ca6fa1ba60ada2da32a",
+            "path": "SKILL.md",
+            "sha256": "7aaf1a73d81e5ebeb98a4853172a89b17bbfa4809cd26ca6fa1ba60ada2da32a",
+            "size": 1780
+          }
+        ],
+        "hashes": {
+          "contentHash": "7aaf1a73d81e5ebeb98a4853172a89b17bbfa4809cd26ca6fa1ba60ada2da32a",
+          "treeHash": "5658589aebbc79302d994084b84b612c1ac3d9f31820bbb6a0b7ec978b652d6a"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-ui-plan"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/MR-MAK-WORKSPACE-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/witnesstodark/mr-mak-workspace/blob/cf1e1260253a61499dc67fe2332a330bf1b85c14/.agents/skills/game-ui-workflow/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-ui-plan",
+        "frontmatter": {
+          "description": "Planejar HUD e menus a partir de estado real do jogo e revisar acessibilidade.",
+          "name": "lia-game-ui-plan"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1780,
+        "reuseAcrossLia": [
+          "Lia-Forge (audio/VFX/UI de asset)",
+          "Lia-Project (revisao visual)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-ui-plan",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); sem execucao por runtime",
+        "structuralIssues": [],
+        "upstreamCommit": "cf1e1260253a61499dc67fe2332a330bf1b85c14",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Mr. Mak Workspace contributors)",
+        "upstreamProject": "witnesstodark/mr-mak-workspace",
+        "upstreamSkill": "game-ui-workflow"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "2ed3bdfb808c51ee19a8668735d3fbd85e27c2afefe367834275ae3b0bd7566f",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-vfx-plan-d3096c0e",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-vfx-plan",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-vfx-plan"
+        },
+        "tags": [],
+        "treeHash": "39f2d9011185b7cd46fad766dd4a1a4a46c247cb0653992a230532e72dd927c5",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "2ed3bdfb808c51ee19a8668735d3fbd85e27c2afefe367834275ae3b0bd7566f",
+            "path": "SKILL.md",
+            "sha256": "2ed3bdfb808c51ee19a8668735d3fbd85e27c2afefe367834275ae3b0bd7566f",
+            "size": 1791
+          }
+        ],
+        "hashes": {
+          "contentHash": "2ed3bdfb808c51ee19a8668735d3fbd85e27c2afefe367834275ae3b0bd7566f",
+          "treeHash": "39f2d9011185b7cd46fad766dd4a1a4a46c247cb0653992a230532e72dd927c5"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-vfx-plan"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/MR-MAK-WORKSPACE-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/witnesstodark/mr-mak-workspace/blob/cf1e1260253a61499dc67fe2332a330bf1b85c14/.agents/skills/game-vfx-workflow/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-vfx-plan",
+        "frontmatter": {
+          "description": "Definir intenção, gatilhos e ciclo de vida de efeitos visuais antes da integração na engine.",
+          "name": "lia-game-vfx-plan"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1791,
+        "reuseAcrossLia": [
+          "Lia-Forge (audio/VFX/UI de asset)",
+          "Lia-Project (revisao visual)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-vfx-plan",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); sem execucao por runtime",
+        "structuralIssues": [],
+        "upstreamCommit": "cf1e1260253a61499dc67fe2332a330bf1b85c14",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Mr. Mak Workspace contributors)",
+        "upstreamProject": "witnesstodark/mr-mak-workspace",
+        "upstreamSkill": "game-vfx-workflow"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "d0172e9b71912ee24cdb2ad36bc73a3b5a2a86c0be1591acb3619bde7bb27af9",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-game-visual-review-c29e0ace",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-game-visual-review",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-visual-review"
+        },
+        "tags": [],
+        "treeHash": "ca7149129853001f31ad87e322e4aa3761f9b2bb20dd59b84c719a71d1596d94",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "d0172e9b71912ee24cdb2ad36bc73a3b5a2a86c0be1591acb3619bde7bb27af9",
+            "path": "SKILL.md",
+            "sha256": "d0172e9b71912ee24cdb2ad36bc73a3b5a2a86c0be1591acb3619bde7bb27af9",
+            "size": 1790
+          }
+        ],
+        "hashes": {
+          "contentHash": "d0172e9b71912ee24cdb2ad36bc73a3b5a2a86c0be1591acb3619bde7bb27af9",
+          "treeHash": "ca7149129853001f31ad87e322e4aa3761f9b2bb20dd59b84c719a71d1596d94"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-game-visual-review"
+      },
+      "researchNotes": {
+        "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/MR-MAK-WORKSPACE-MIT.txt (raiz do repo, fora do payload)",
+        "blocked": false,
+        "derivationUrl": "https://github.com/witnesstodark/mr-mak-workspace/blob/cf1e1260253a61499dc67fe2332a330bf1b85c14/.agents/skills/gameplay-visual-review/SKILL.md",
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-game-visual-review",
+        "frontmatter": {
+          "description": "Planejar e revisar comparações visuais de gameplay com evidência nativa quando disponível.",
+          "name": "lia-game-visual-review"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+        "payloadBytes": 1790,
+        "reuseAcrossLia": [
+          "Lia-Forge (audio/VFX/UI de asset)",
+          "Lia-Project (revisao visual)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-game-visual-review",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); sem execucao por runtime",
+        "structuralIssues": [],
+        "upstreamCommit": "cf1e1260253a61499dc67fe2332a330bf1b85c14",
+        "upstreamLicense": "MIT (Copyright (c) 2026 Mr. Mak Workspace contributors)",
+        "upstreamProject": "witnesstodark/mr-mak-workspace",
+        "upstreamSkill": "gameplay-visual-review"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "424da234018c67859c87f1fa821065fc95bf398d93b2f56c69778c55cb6fac45",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-module-planning-d3e0b2f1",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-module-planning",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-module-planning"
+        },
+        "tags": [],
+        "treeHash": "d7a678f8f603e594cb67c36c9f5fa135f76b828ac36207b9ff4a7fd06236c53a",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "424da234018c67859c87f1fa821065fc95bf398d93b2f56c69778c55cb6fac45",
+            "path": "SKILL.md",
+            "sha256": "424da234018c67859c87f1fa821065fc95bf398d93b2f56c69778c55cb6fac45",
+            "size": 2627
+          }
+        ],
+        "hashes": {
+          "contentHash": "424da234018c67859c87f1fa821065fc95bf398d93b2f56c69778c55cb6fac45",
+          "treeHash": "d7a678f8f603e594cb67c36c9f5fa135f76b828ac36207b9ff4a7fd06236c53a"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-module-planning"
+      },
+      "researchNotes": {
+        "attributionWhere": "Skill original; inspiracao conceitual em GameDevPipeline e no formato curto de `plan` do Mr. Mak.",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-module-planning",
+        "frontmatter": {
+          "description": "Use depois da Etapa 0 quando o Dev pedir para dividir a visão do jogo em módulos, tarefas, dependências e critérios de aceite verificáveis. NÃO use para criar a ideia inicial, programar gameplay, fazer handoff ou declarar testes aprovados.",
+          "name": "lia-module-planning"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2627,
+        "reuseAcrossLia": [
+          "Lia-Go (bootstrap de projeto)",
+          "Lia-Forge (brief de asset)",
+          "Lia-AgentHub (exemplo de skill com templates/)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-module-planning",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); bootstrap gera templates (GDD/SCOPE/DECISIONS/REFERENCIAS/PROJECT_BRIEF) incluidos no payload",
+        "structuralIssues": [],
+        "upstreamLicense": "MIT do proprio Lia Studio (LICENSE na raiz do repo, fora do payload)",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "d259d2010b231632e085658f7fcaecb72553bd79c15f14df64bc267b623a1507",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-project-resume-566d8b15",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-project-resume",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-project-resume"
+        },
+        "tags": [],
+        "treeHash": "e73632918b7fd04d6883496743480e2685b884a78081aff8ac7aa0c2c1ad6561",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "d259d2010b231632e085658f7fcaecb72553bd79c15f14df64bc267b623a1507",
+            "path": "SKILL.md",
+            "sha256": "d259d2010b231632e085658f7fcaecb72553bd79c15f14df64bc267b623a1507",
+            "size": 2313
+          }
+        ],
+        "hashes": {
+          "contentHash": "d259d2010b231632e085658f7fcaecb72553bd79c15f14df64bc267b623a1507",
+          "treeHash": "e73632918b7fd04d6883496743480e2685b884a78081aff8ac7aa0c2c1ad6561"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-project-resume"
+      },
+      "researchNotes": {
+        "attributionWhere": "Skill original do Lia Studio.",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-project-resume",
+        "frontmatter": {
+          "description": "Use ao reabrir um projeto de jogo após pausa, receber um handoff ou perguntar onde paramos; reconstrói estado, bloqueios e próximo passo a partir de documentos/evidências locais. NÃO use para começar novo projeto, implementar código ou presumir aprovação do jogo.",
+          "name": "lia-project-resume"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2313,
+        "reuseAcrossLia": [
+          "Lia-Go (bootstrap de projeto)",
+          "Lia-Forge (brief de asset)",
+          "Lia-AgentHub (exemplo de skill com templates/)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-project-resume",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); bootstrap gera templates (GDD/SCOPE/DECISIONS/REFERENCIAS/PROJECT_BRIEF) incluidos no payload",
+        "structuralIssues": [],
+        "upstreamLicense": "MIT do proprio Lia Studio (LICENSE na raiz do repo, fora do payload)",
+        "upstreamProject": null
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "24ae8ea266e1824994b973a25dd50420819429d2fe911394ae2adcb6edcca0c4",
+        "declaredPermissions": [],
+        "description": "",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "lia-task-handoff-8041c0fb",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "lia-task-handoff",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": null,
+          "method": "local",
+          "original_name": null,
+          "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-task-handoff"
+        },
+        "tags": [],
+        "treeHash": "1be92a07e8dbf85e41837a07fc84fdf1ba65d82f49af8500f9e129324e58c6e4",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "files": [
+          {
+            "executable": false,
+            "normalizedSha256": "24ae8ea266e1824994b973a25dd50420819429d2fe911394ae2adcb6edcca0c4",
+            "path": "SKILL.md",
+            "sha256": "24ae8ea266e1824994b973a25dd50420819429d2fe911394ae2adcb6edcca0c4",
+            "size": 2521
+          }
+        ],
+        "hashes": {
+          "contentHash": "24ae8ea266e1824994b973a25dd50420819429d2fe911394ae2adcb6edcca0c4",
+          "treeHash": "1be92a07e8dbf85e41837a07fc84fdf1ba65d82f49af8500f9e129324e58c6e4"
+        },
+        "importedAt": null,
+        "method": "local",
+        "note": "Hashes provam integridade, não autoria.",
+        "schemaVersion": 1,
+        "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/lia-task-handoff"
+      },
+      "researchNotes": {
+        "attributionWhere": "Skill original; `feature-handoff` (Mr. Mak) e `game-review-handoff` (GameDevPipeline) sao referencias conceituais.",
+        "blocked": false,
+        "evidenceClass": "EXECUTED (ferramenta de pesquisa) — não VALIDATED pelo Hub",
+        "fileCount": 1,
+        "folder": "lia-task-handoff",
+        "frontmatter": {
+          "description": "Use antes de trocar de sessão/agente, delegar uma Task ou interromper trabalho para entregar handoff com IDs, contexto, limites, evidências e pendências. NÃO use para inventar resultado verificado, compartilhar segredos ou substituir o planejamento do projeto.",
+          "name": "lia-task-handoff"
+        },
+        "generatedAt": "2026-11-15T15:10:41+00:00",
+        "importWarnings": [
+          "Nenhum arquivo de licença encontrado na raiz do payload. Ausência de licença NÃO significa que o recurso é livre."
+        ],
+        "licenseFileInPayload": null,
+        "originClass": "LIA_ORIGINAL",
+        "payloadBytes": 2521,
+        "reuseAcrossLia": [
+          "Lia-Go (bootstrap de projeto)",
+          "Lia-Forge (brief de asset)",
+          "Lia-AgentHub (exemplo de skill com templates/)"
+        ],
+        "sourceBranch": "arena/01a0f4ab-lia-gamedev",
+        "sourceCommit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+        "sourcePath": "skills/lia-task-handoff",
+        "sourceRepo": "BloomRX/Lia-Studio",
+        "state": "IMPLEMENTED (instrucao textual versionada); bootstrap gera templates (GDD/SCOPE/DECISIONS/REFERENCIAS/PROJECT_BRIEF) incluidos no payload",
+        "structuralIssues": [],
+        "upstreamLicense": "MIT do proprio Lia Studio (LICENSE na raiz do repo, fora do payload)",
+        "upstreamProject": null
+      }
+    }
+  ],
+  "schemaNote": "Registros no formato implementado pelo Lia Agent Hub (schemaVersion 1). `capability` e `provenance` seguem o contrato de `.lia/capability.json` e `.lia/provenance.json`. `researchNotes` é metadado de pesquisa e NÃO faz parte do contrato.",
+  "source": {
+    "branch": "arena/01a0f4ab-lia-gamedev",
+    "commit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+    "inspectedAt": "2026-11-15",
+    "localRoot": "/tmp/lia/src/studio/.agents/skills",
+    "repo": "BloomRX/Lia-Studio",
+    "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/"
+  }
+}

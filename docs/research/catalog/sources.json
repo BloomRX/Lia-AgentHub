@@ -1,0 +1,841 @@
+{
+  "sources": [
+    {
+      "slug": "lia-studio",
+      "repo": "BloomRX/Lia-Studio",
+      "branch": "arena/01a0f4ab-lia-gamedev",
+      "commit": "203b60f17d177f7faf79d293b95f078d0d0a729a",
+      "inspectedAt": "2026-11-15",
+      "localRoot": "/tmp/lia/src/studio/.agents/skills",
+      "upstream": "BloomRX/Lia-Studio@203b60f:.agents/skills/",
+      "algorithmSource": "src/lia_agenthub/domain/integrity.py, domain/model.py, domain/paths.py, adapters/importer.py",
+      "hubBranch": "arena/a92004be-lia-agenthub",
+      "hubCommit": "b4eb85f",
+      "skills": [
+        {
+          "folder": "lia-game-audio-plan",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "witnesstodark/mr-mak-workspace",
+            "upstreamSkill": "game-audio-workflow",
+            "upstreamCommit": "cf1e1260253a61499dc67fe2332a330bf1b85c14",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Mr. Mak Workspace contributors)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/MR-MAK-WORKSPACE-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); sem execucao por runtime",
+            "reuseAcrossLia": [
+              "Lia-Forge (audio/VFX/UI de asset)",
+              "Lia-Project (revisao visual)"
+            ],
+            "derivationUrl": "https://github.com/witnesstodark/mr-mak-workspace/blob/cf1e1260253a61499dc67fe2332a330bf1b85c14/.agents/skills/game-audio-workflow/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-game-balance-review",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+            "upstreamSkill": "balance-check",
+            "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+            "reuseAcrossLia": [
+              "Lia-Project (QA/regressao)",
+              "Lia-Forge (revisao de asset)",
+              "Lia-Go (revisao documental)"
+            ],
+            "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/balance-check/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-game-bug-triage",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+            "upstreamSkill": "bug-triage",
+            "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+            "reuseAcrossLia": [
+              "Lia-Project (QA/regressao)",
+              "Lia-Forge (revisao de asset)",
+              "Lia-Go (revisao documental)"
+            ],
+            "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/bug-triage/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-game-design-review",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+            "upstreamSkill": "design-review",
+            "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+            "reuseAcrossLia": [
+              "Lia-Project (QA/regressao)",
+              "Lia-Forge (revisao de asset)",
+              "Lia-Go (revisao documental)"
+            ],
+            "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/design-review/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-game-level-design",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "witnesstodark/mr-mak-workspace",
+            "upstreamSkill": "game-level-design",
+            "upstreamCommit": "cf1e1260253a61499dc67fe2332a330bf1b85c14",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Mr. Mak Workspace contributors)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/MR-MAK-WORKSPACE-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); sem execucao por runtime",
+            "reuseAcrossLia": [
+              "Lia-Forge (audio/VFX/UI de asset)",
+              "Lia-Project (revisao visual)"
+            ],
+            "derivationUrl": "https://github.com/witnesstodark/mr-mak-workspace/blob/cf1e1260253a61499dc67fe2332a330bf1b85c14/.agents/skills/game-level-design/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-game-playtest-report",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+            "upstreamSkill": "playtest-report",
+            "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+            "reuseAcrossLia": [
+              "Lia-Project (QA/regressao)",
+              "Lia-Forge (revisao de asset)",
+              "Lia-Go (revisao documental)"
+            ],
+            "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/playtest-report/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-game-project-bootstrap",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "MIT do proprio Lia Studio (LICENSE na raiz do repo, fora do payload)",
+            "attributionWhere": "Skill original; referencia o metodo 'Etapa 0' do GameDevPipeline (sem copia de arquivo; upstream sem LICENSE na raiz segundo THIRD_PARTY_NOTICES.md do Studio).",
+            "state": "IMPLEMENTED (instrucao textual versionada); bootstrap gera templates (GDD/SCOPE/DECISIONS/REFERENCIAS/PROJECT_BRIEF) incluidos no payload",
+            "reuseAcrossLia": [
+              "Lia-Go (bootstrap de projeto)",
+              "Lia-Forge (brief de asset)",
+              "Lia-AgentHub (exemplo de skill com templates/)"
+            ]
+          }
+        },
+        {
+          "folder": "lia-game-qa-plan",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+            "upstreamSkill": "qa-plan",
+            "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+            "reuseAcrossLia": [
+              "Lia-Project (QA/regressao)",
+              "Lia-Forge (revisao de asset)",
+              "Lia-Go (revisao documental)"
+            ],
+            "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/qa-plan/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-game-story-readiness",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+            "upstreamSkill": "story-readiness",
+            "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+            "reuseAcrossLia": [
+              "Lia-Project (QA/regressao)",
+              "Lia-Forge (revisao de asset)",
+              "Lia-Go (revisao documental)"
+            ],
+            "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/story-readiness/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-game-test-evidence-review",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "Donchitos/Claude-Code-Game-Studios",
+            "upstreamSkill": "test-evidence-review",
+            "upstreamCommit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Donchitos)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/CLAUDE-CODE-GAME-STUDIOS-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); nenhum runtime do Hub/Studio a executa",
+            "reuseAcrossLia": [
+              "Lia-Project (QA/regressao)",
+              "Lia-Forge (revisao de asset)",
+              "Lia-Go (revisao documental)"
+            ],
+            "derivationUrl": "https://github.com/Donchitos/Claude-Code-Game-Studios/blob/05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418/.claude/skills/test-evidence-review/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-game-ui-plan",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "witnesstodark/mr-mak-workspace",
+            "upstreamSkill": "game-ui-workflow",
+            "upstreamCommit": "cf1e1260253a61499dc67fe2332a330bf1b85c14",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Mr. Mak Workspace contributors)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/MR-MAK-WORKSPACE-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); sem execucao por runtime",
+            "reuseAcrossLia": [
+              "Lia-Forge (audio/VFX/UI de asset)",
+              "Lia-Project (revisao visual)"
+            ],
+            "derivationUrl": "https://github.com/witnesstodark/mr-mak-workspace/blob/cf1e1260253a61499dc67fe2332a330bf1b85c14/.agents/skills/game-ui-workflow/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-game-vfx-plan",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "witnesstodark/mr-mak-workspace",
+            "upstreamSkill": "game-vfx-workflow",
+            "upstreamCommit": "cf1e1260253a61499dc67fe2332a330bf1b85c14",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Mr. Mak Workspace contributors)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/MR-MAK-WORKSPACE-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); sem execucao por runtime",
+            "reuseAcrossLia": [
+              "Lia-Forge (audio/VFX/UI de asset)",
+              "Lia-Project (revisao visual)"
+            ],
+            "derivationUrl": "https://github.com/witnesstodark/mr-mak-workspace/blob/cf1e1260253a61499dc67fe2332a330bf1b85c14/.agents/skills/game-vfx-workflow/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-game-visual-review",
+          "research": {
+            "originClass": "LIA_ADAPTED_FROM_THIRD_PARTY",
+            "upstreamProject": "witnesstodark/mr-mak-workspace",
+            "upstreamSkill": "gameplay-visual-review",
+            "upstreamCommit": "cf1e1260253a61499dc67fe2332a330bf1b85c14",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Mr. Mak Workspace contributors)",
+            "attributionWhere": "secao 'Origem' do proprio SKILL.md + THIRD_PARTY_NOTICES.md + docs/licenses/MR-MAK-WORKSPACE-MIT.txt (raiz do repo, fora do payload)",
+            "state": "IMPLEMENTED (instrucao textual versionada); sem execucao por runtime",
+            "reuseAcrossLia": [
+              "Lia-Forge (audio/VFX/UI de asset)",
+              "Lia-Project (revisao visual)"
+            ],
+            "derivationUrl": "https://github.com/witnesstodark/mr-mak-workspace/blob/cf1e1260253a61499dc67fe2332a330bf1b85c14/.agents/skills/gameplay-visual-review/SKILL.md"
+          }
+        },
+        {
+          "folder": "lia-module-planning",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "MIT do proprio Lia Studio (LICENSE na raiz do repo, fora do payload)",
+            "attributionWhere": "Skill original; inspiracao conceitual em GameDevPipeline e no formato curto de `plan` do Mr. Mak.",
+            "state": "IMPLEMENTED (instrucao textual versionada); bootstrap gera templates (GDD/SCOPE/DECISIONS/REFERENCIAS/PROJECT_BRIEF) incluidos no payload",
+            "reuseAcrossLia": [
+              "Lia-Go (bootstrap de projeto)",
+              "Lia-Forge (brief de asset)",
+              "Lia-AgentHub (exemplo de skill com templates/)"
+            ]
+          }
+        },
+        {
+          "folder": "lia-project-resume",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "MIT do proprio Lia Studio (LICENSE na raiz do repo, fora do payload)",
+            "attributionWhere": "Skill original do Lia Studio.",
+            "state": "IMPLEMENTED (instrucao textual versionada); bootstrap gera templates (GDD/SCOPE/DECISIONS/REFERENCIAS/PROJECT_BRIEF) incluidos no payload",
+            "reuseAcrossLia": [
+              "Lia-Go (bootstrap de projeto)",
+              "Lia-Forge (brief de asset)",
+              "Lia-AgentHub (exemplo de skill com templates/)"
+            ]
+          }
+        },
+        {
+          "folder": "lia-task-handoff",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "MIT do proprio Lia Studio (LICENSE na raiz do repo, fora do payload)",
+            "attributionWhere": "Skill original; `feature-handoff` (Mr. Mak) e `game-review-handoff` (GameDevPipeline) sao referencias conceituais.",
+            "state": "IMPLEMENTED (instrucao textual versionada); bootstrap gera templates (GDD/SCOPE/DECISIONS/REFERENCIAS/PROJECT_BRIEF) incluidos no payload",
+            "reuseAcrossLia": [
+              "Lia-Go (bootstrap de projeto)",
+              "Lia-Forge (brief de asset)",
+              "Lia-AgentHub (exemplo de skill com templates/)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "lia-model-lab",
+      "repo": "BloomRX/Lia-Model-Lab",
+      "branch": "main",
+      "commit": "3ec4313ba57ec94a7f3d93ec4f7a0d533d5077cf",
+      "inspectedAt": "2026-11-15",
+      "localRoot": "/tmp/lia/src/modellab/.agents/skills",
+      "upstream": "BloomRX/Lia-Model-Lab@3ec4313:.agents/skills/",
+      "algorithmSource": "src/lia_agenthub/domain/integrity.py, domain/model.py, domain/paths.py, adapters/importer.py",
+      "hubBranch": "arena/a92004be-lia-agenthub",
+      "hubCommit": "b4eb85f",
+      "skills": [
+        {
+          "folder": "capability-mapping",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+            "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+            "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+            "reuseAcrossLia": [
+              "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+              "Lia-Project (capability-mapping)",
+              "Lia-Forge (model-candidate-research para pesos de asset)"
+            ],
+            "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)"
+          }
+        },
+        {
+          "folder": "dataset-governance",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+            "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+            "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+            "reuseAcrossLia": [
+              "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+              "Lia-Project (capability-mapping)",
+              "Lia-Forge (model-candidate-research para pesos de asset)"
+            ],
+            "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)"
+          }
+        },
+        {
+          "folder": "experiment-reproducibility",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+            "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+            "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+            "reuseAcrossLia": [
+              "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+              "Lia-Project (capability-mapping)",
+              "Lia-Forge (model-candidate-research para pesos de asset)"
+            ],
+            "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)"
+          }
+        },
+        {
+          "folder": "finetuning-plan",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+            "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+            "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+            "reuseAcrossLia": [
+              "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+              "Lia-Project (capability-mapping)",
+              "Lia-Forge (model-candidate-research para pesos de asset)"
+            ],
+            "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)"
+          }
+        },
+        {
+          "folder": "lia-brand-consistency-review",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+            "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+            "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+            "reuseAcrossLia": [
+              "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+              "Lia-Project (capability-mapping)",
+              "Lia-Forge (model-candidate-research para pesos de asset)"
+            ],
+            "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)"
+          }
+        },
+        {
+          "folder": "model-candidate-research",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+            "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+            "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+            "reuseAcrossLia": [
+              "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+              "Lia-Project (capability-mapping)",
+              "Lia-Forge (model-candidate-research para pesos de asset)"
+            ],
+            "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)"
+          }
+        },
+        {
+          "folder": "model-evaluation",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+            "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+            "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+            "reuseAcrossLia": [
+              "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+              "Lia-Project (capability-mapping)",
+              "Lia-Forge (model-candidate-research para pesos de asset)"
+            ],
+            "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)"
+          }
+        },
+        {
+          "folder": "model-license-release-review",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+            "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+            "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+            "reuseAcrossLia": [
+              "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+              "Lia-Project (capability-mapping)",
+              "Lia-Forge (model-candidate-research para pesos de asset)"
+            ],
+            "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)"
+          }
+        },
+        {
+          "folder": "multi-agent-orchestration",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; licenca do repo nao declarada no repositorio (spdx NONE na API do GitHub)",
+            "attributionWhere": "procedimento autoral do Lia Model Lab; .agents/skills/README.md os descreve como 'procedimentos versionados'",
+            "state": "IMPLEMENTED (procedimento documental); descoberta automatica no Arena declarada como NAO comprovada no README",
+            "reuseAcrossLia": [
+              "Lia-AgentHub (model-license-release-review e quase um lia-license-audit)",
+              "Lia-Project (capability-mapping)",
+              "Lia-Forge (model-candidate-research para pesos de asset)"
+            ],
+            "identityGap": "8 de 9 nao usam o prefixo `lia-` (excecao: lia-brand-consistency-review)"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "lia-project",
+      "repo": "BloomRX/Lia-Project",
+      "branch": "arena/c6b02f64-lia-project",
+      "commit": "0093de090d86c291b7a85eaeacebe0a559585359",
+      "inspectedAt": "2026-11-15",
+      "localRoot": "/tmp/lia/src/lia-project/.agents/skills",
+      "upstream": "BloomRX/Lia-Project@0093de09:.agents/skills/",
+      "algorithmSource": "src/lia_agenthub/domain/integrity.py, domain/model.py, domain/paths.py, adapters/importer.py",
+      "hubBranch": "arena/a92004be-lia-agenthub",
+      "hubCommit": "b4eb85f",
+      "skills": [
+        {
+          "folder": "airi-upstream-integration",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": "moeru-ai/airi (assunto da skill, nao sua fonte)",
+            "upstreamLicense": "AIRI e MIT (Copyright (c) 2024-PRESENT Neko Ayaka); a skill em si e autoral da Lia",
+            "attributionWhere": "autoral; descreve como integrar o upstream vendado em airi/",
+            "state": "IMPLEMENTED; temporaria por definicao (o AIRI e tratado como fonte temporaria)",
+            "reuseAcrossLia": [
+              "Lia-Project"
+            ],
+            "identityGap": "sem prefixo `lia-`"
+          }
+        },
+        {
+          "folder": "alethe",
+          "research": {
+            "originClass": "THIRD_PARTY_VENDORED_WITH_LOCAL_PATCHES",
+            "upstreamProject": "Kc1t/alethe-orchestrate-skill",
+            "upstreamVersion": "19 (2026-10-23); comparada anteriormente com c36c341c34360f970a07fe3e2d2600ca2bba8ed2",
+            "upstreamLicense": "MIT (Copyright (c) 2026 Kaua Miguel) — copia integral em .agents/skills/alethe/LICENSE (DENTRO do payload)",
+            "attributionWhere": "LICENSE + UPSTREAM.md no proprio payload; patches locais de seguranca de 28/10/2026 documentados em docs/architecture/ALETHE-HARDENING-2026-10-28.md",
+            "state": "IMPLEMENTED no repo (copia local patcheada); execucao real NOT-TESTED segundo UPSTREAM.md",
+            "containsScriptsNote": "scripts/orchestrate.py e scripts/diagram.py -> containsScripts=true no Hub (nivel de risco maior)",
+            "brandAssetsNote": "assets/brands/ traz marcas de terceiros (claude-official.png.b64, openai-official-white.svg, kimi, antigravity, router9): MIT nao cobre marca; risco de uso de sinal distintivo",
+            "reuseAcrossLia": [
+              "Lia-Project (orquestracao)",
+              "Lia-AgentHub (referencia de orquestracao SEM executar)"
+            ],
+            "identityGap": "mantem o nome original (correto pela convencao proposta: terceiro sem alteracao de identidade)",
+            "derivationUrl": "https://github.com/Kc1t/alethe-orchestrate-skill"
+          }
+        },
+        {
+          "folder": "lia-agent-evaluation",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-agent-orchestration",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-ai-sdk-integration",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-browser-automation",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-electron-cdp-debugging",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-eventa-ipc",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-pnpm-workspaces",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-regression-investigation",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-release-gate",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-safe-change",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-security-review",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-test-discipline",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-ui-quality-review",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-unocss-ui",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-visual-evidence",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-voice-diagnostics",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-vue-development",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-vue-testing",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "lia-windows-electron-validation",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Project sem SPDX na API do GitHub",
+            "attributionWhere": "autoral da Lia; varias derivam conceitualmente de skills vendadas do AIRI (ver docs/architecture/AGENT-SKILLS-CATALOG.md)",
+            "state": "IMPLEMENTED (instrucao textual versionada); catalogo local exige que toda skill esteja em AGENT-SKILLS-CATALOG.md (teste test_every_skill_is_in_the_catalog)",
+            "reuseAcrossLia": [
+              "Lia-Studio",
+              "Lia-Forge",
+              "Lia-Go",
+              "Lia-AgentHub"
+            ]
+          }
+        },
+        {
+          "folder": "stage-runtime-debugging",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload",
+            "attributionWhere": "autoral da Lia (diagnostico do Stage Electron no Windows)",
+            "state": "IMPLEMENTED; exige Windows para validacao real (nao validado nesta pesquisa)",
+            "reuseAcrossLia": [
+              "Lia-Project",
+              "Lia-Studio (build desktop)"
+            ],
+            "identityGap": "sem prefixo `lia-`"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "lia-forge",
+      "repo": "BloomRX/Lia-Forge",
+      "branch": "arena/649f88bd-3dspritesheet",
+      "commit": "35b207f7b1ae5bc0c104fbdd0e9cf6ae83944692",
+      "inspectedAt": "2026-11-15",
+      "localRoot": "/tmp/lia/src/forge/.agents/skills",
+      "upstream": "BloomRX/Lia-Forge@35b207f:.agents/skills/",
+      "algorithmSource": "src/lia_agenthub/domain/integrity.py, domain/model.py, domain/paths.py, adapters/importer.py",
+      "hubBranch": "arena/a92004be-lia-agenthub",
+      "hubCommit": "b4eb85f",
+      "skills": [
+        {
+          "folder": "lia-brand-check",
+          "research": {
+            "originClass": "LIA_ORIGINAL",
+            "upstreamProject": null,
+            "upstreamLicense": "nenhum LICENSE dentro do payload; repo Lia-Forge sem SPDX na API",
+            "attributionWhere": "autoral da Lia Forge (revisao de marca/autonomia/consentimento)",
+            "state": "IMPLEMENTED apenas em branches de desenvolvimento; NAO existe em main",
+            "reuseAcrossLia": [
+              "todos os produtos Lia (revisao de marca e consenso de dados)"
+            ],
+            "overlapNote": "sobrepoe-se a lia-brand-consistency-review do Lia Model Lab: candidatos a uma unica skill compartilhada"
+          }
+        }
+      ]
+    }
+  ]
+}
