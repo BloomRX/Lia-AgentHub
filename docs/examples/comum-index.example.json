@@ -1,0 +1,113 @@
+{
+  "capabilities": [
+    {
+      "author": null,
+      "containsScripts": false,
+      "description": "",
+      "domain": "tags:acessibilidade,wcag,ui",
+      "egress": [],
+      "id": "checklist-de-acessibilidade-e483de2f",
+      "license": null,
+      "licenseKnown": false,
+      "name": "checklist-de-acessibilidade",
+      "notEvaluated": [
+        "Conteúdo malicioso em prosa",
+        "Segurança de scripts",
+        "Comportamento em execução"
+      ],
+      "package": null,
+      "redistributable": false,
+      "tags": [
+        "acessibilidade",
+        "wcag",
+        "ui"
+      ],
+      "treeHash": "e515a5b48631f0da6c04da487e821d75e30d0cf50b70b683b7b4a991268ddd75",
+      "trust": "unreviewed",
+      "type": "agent-skill",
+      "version": "0.1.0"
+    },
+    {
+      "author": null,
+      "containsScripts": true,
+      "description": "",
+      "domain": "tags:dados,csv,json",
+      "egress": [],
+      "id": "conversor-de-planilhas-75a884d0",
+      "license": null,
+      "licenseKnown": false,
+      "name": "conversor-de-planilhas",
+      "notEvaluated": [
+        "Conteúdo malicioso em prosa",
+        "Segurança de scripts",
+        "Comportamento em execução"
+      ],
+      "package": null,
+      "redistributable": false,
+      "tags": [
+        "dados",
+        "csv",
+        "json"
+      ],
+      "treeHash": "a2836997cda25b7acbc56c37c7ba1bf853abbedc126c8abdbd6898a719f82f38",
+      "trust": "unreviewed",
+      "type": "agent-skill",
+      "version": "0.1.0"
+    },
+    {
+      "author": null,
+      "containsScripts": false,
+      "description": "",
+      "domain": "tags:juridico,resumo,portugues",
+      "egress": [],
+      "id": "resumo-de-contratos-0ce2944a",
+      "license": null,
+      "licenseKnown": false,
+      "name": "resumo-de-contratos",
+      "notEvaluated": [
+        "Conteúdo malicioso em prosa",
+        "Segurança de scripts",
+        "Comportamento em execução"
+      ],
+      "package": null,
+      "redistributable": false,
+      "tags": [
+        "juridico",
+        "resumo",
+        "portugues"
+      ],
+      "treeHash": "9248ebafacf5ec3f1b205d4fcffdc76c99a630ac3f14650e825f61307584a34b",
+      "trust": "unreviewed",
+      "type": "agent-skill",
+      "version": "0.1.0"
+    },
+    {
+      "author": null,
+      "containsScripts": false,
+      "description": "",
+      "domain": "",
+      "egress": [],
+      "id": "texto-com-marcador-dc127710",
+      "license": null,
+      "licenseKnown": false,
+      "name": "texto-com-marcador",
+      "notEvaluated": [
+        "Conteúdo malicioso em prosa",
+        "Segurança de scripts",
+        "Comportamento em execução"
+      ],
+      "package": null,
+      "redistributable": false,
+      "tags": [],
+      "treeHash": "ca015f22038082d273257867a335dba8bded5356694d3cadaa92313006e0d4e7",
+      "trust": "unreviewed",
+      "type": "agent-skill",
+      "version": "0.1.0"
+    }
+  ],
+  "generatedAt": "2026-11-15T05:42:57+00:00",
+  "schemaVersion": 1,
+  "signatureNote": "Este índice NÃO é assinado. Hashes provam integridade do arquivo, não autoria nem confiança.",
+  "signed": false,
+  "_note": "EXEMPLO SINTÉTICO gerado por scripts/seed_demo.py, apenas para documentar o formato. Não é a biblioteca de ninguém. O índice real do usuário fica em %USERPROFILE%\\Lia\\Comum\\Capacidades\\index.json."
+}

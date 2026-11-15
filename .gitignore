@@ -1,187 +1,22 @@
-# .gitignore — Lia Agent Hub
-#
-# Regras montadas a partir de KIT-PROJETO-NOVO (APP-WINDOWS/ e APP-MOBILE-OU-WEB/
-# arquivos-prontos/gitignore-acrescentar.txt), adaptadas a este repositorio.
-# Ver docs/research/PHASE-0-1-CONSISTENCY-REVIEW.md §3.6.3 para o que foi
-# adotado, o que foi omitido e por que.
-#
-# PRINCIPIO: ignorar apenas o que e LOCAL ou GERADO.
-# Nunca ignorar contrato, regra, decisao ou documento — isso esconde o projeto
-# de quem chega depois.
-
-# ---------------------------------------------------------------------------
-# Espelho de skills e config local do agente
-# ---------------------------------------------------------------------------
-# O Git no Windows enxerga junction como pasta comum e commitaria tudo
-# duplicado. Precisa vir ANTES de qualquer junction ser criada.
-#
-# ATENCAO: NAO ignore `.claude/` inteiro. As regras de projeto ficam em
-# `.claude/rules/` e PRECISAM ser versionadas — se forem ignoradas, ninguem
-# mais recebe as regras. Mesma licao vale para `.vscode/` abaixo.
-.claude/skills/
-.claude/worktrees/
-.claude/settings.local.json
-
-# ---------------------------------------------------------------------------
-# Dados de usuario do padrao Lia
-# ---------------------------------------------------------------------------
-# O padrao de dados da marca cria `<raiz>/Lia/<App>/`. Se alguem rodar o app
-# a partir do fonte DENTRO do repositorio, dados de usuario nasceriam aqui.
-# Trabalho do usuario nunca entra no Git.
-/Lia/
-**/Lia/
-**/Lia/AgentHub/
-**/Lia/Studio/
-**/Lia/Forge/
-**/Lia/Comum/
-.lia-home
-
-# ---------------------------------------------------------------------------
-# Artefatos do proprio dominio (binarios gerados, nunca versionados)
-# ---------------------------------------------------------------------------
-*.lia-capability
-*.lia-collection
-/Exportados/
-**/Exportados/
-
-# ---------------------------------------------------------------------------
 # Python
-# ---------------------------------------------------------------------------
 __pycache__/
 *.py[cod]
-*$py.class
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Ambientes virtuais
+.eggs/
+build/
+dist/
 .venv/
-.venv*/
 venv/
-ENV/
-env.bak/
-venv.bak/
-.python-version
 
-# Caches de ferramenta
+# Ferramentas
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
-.dmypy.json
-dmypy.json
-.pyre/
-.hypothesis/
-.tox/
-.nox/
 .coverage
-.coverage.*
 htmlcov/
-coverage.xml
 
-# ---------------------------------------------------------------------------
-# Build e empacotamento do app
-# ---------------------------------------------------------------------------
-*.spec
-/pyinstaller-build/
-/pyinstaller-dist/
-*.exe
-*.msi
-*.msix
-
-# ---------------------------------------------------------------------------
-# Node / ferramental web (interface local ou documentacao futura)
-# ---------------------------------------------------------------------------
-node_modules/
-.npm
-.pnpm-store/
-.vite/
-.next/
-.nuxt/
-.svelte-kit/
-.turbo/
-.parcel-cache/
-*.tsbuildinfo
-
-# ---------------------------------------------------------------------------
-# Segredos e material de chave — NUNCA versionar
-# ---------------------------------------------------------------------------
-.env
-.env.*
-!.env.example
-*.pem
-*.key
-*.pfx
-*.p12
-*.jks
-*.keystore
-id_rsa*
-id_ed25519*
-*.kdbx
-
-# ---------------------------------------------------------------------------
-# Logs, dumps e diagnosticos locais
-# ---------------------------------------------------------------------------
+# Estado local de desenvolvimento (dados de runtime, nunca versionados)
+.devhome/
+/Comum/
+/Exportados/
 *.log
-logs/
-*.dump
-diagnostico*.txt
---diagnostico*.txt
-
-# ---------------------------------------------------------------------------
-# Editores e IDE
-# ---------------------------------------------------------------------------
-# Configuracao pessoal fora; recomendacoes compartilhadas DENTRO.
-.idea/
-.vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
-!.vscode/launch.json
-!.vscode/tasks.json
-*.swp
-*.swo
-*~
-.vim/
-
-# ---------------------------------------------------------------------------
-# Ruido de sistema operacional
-# ---------------------------------------------------------------------------
-Thumbs.db
-Thumbs.db:encryptable
-ehthumbs.db
-ehthumbs_vista.db
-Desktop.ini
-desktop.ini
-$RECYCLE.BIN/
-.DS_Store
-._*
-.Spotlight-V100
-.Trashes
-*.lnk
-
-# ---------------------------------------------------------------------------
-# Temporarios
-# ---------------------------------------------------------------------------
-*.tmp
-*.temp
-*.bak
-*.orig
-*.rej
-_tmp/
-tmp/
-.cache/
-.tmp/
-*.stackdump

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="lia-token" content="__LIA_TOKEN__">
+<title>Lia Agent Hub</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">◈</span>
+    <div>
+      <h1>Lia Agent Hub</h1>
+      <p class="tag">Seu acervo local de capacidades. Nada é executado aqui.</p>
+    </div>
+  </div>
+  <nav aria-label="Navegação principal">
+    <button class="tab" data-view="library" aria-current="page">Biblioteca</button>
+    <button class="tab" data-view="quarantine">Quarentena <span id="qcount" class="pill"></span></button>
+    <button class="tab" data-view="import">Importar</button>
+    <button class="tab" data-view="shared">Índice e pacotes</button>
+    <button class="tab" data-view="diagnostics">Diagnóstico</button>
+  </nav>
+</header>
+
+<div id="banner" class="banner" hidden></div>
+
+<main id="main" tabindex="-1">
+
+  <!-- ============ BIBLIOTECA ============ -->
+  <section id="view-library" class="view">
+    <div class="row">
+      <h2>Biblioteca</h2>
+      <div class="toolbar">
+        <label class="sr" for="search">Buscar</label>
+        <input id="search" type="search" placeholder="Buscar por nome, descrição ou tag…">
+        <label class="sr" for="ftype">Tipo</label>
+        <select id="ftype">
+          <option value="">Todos os tipos</option>
+          <option value="agent-skill">Agent Skill</option>
+          <option value="mcp-server">Servidor MCP</option>
+          <option value="prompt">Prompt</option>
+          <option value="workflow">Workflow</option>
+          <option value="reference">Referência</option>
+          <option value="dataset">Dataset</option>
+          <option value="plugin">Plugin</option>
+          <option value="template">Template</option>
+          <option value="unknown">Desconhecido</option>
+        </select>
+        <label class="sr" for="ftrust">Confiança</label>
+        <select id="ftrust">
+          <option value="">Qualquer confiança</option>
+          <option value="unreviewed">Não revisado</option>
+          <option value="user-provided">Fornecido por você</option>
+          <option value="reviewed-external">Revisado externamente</option>
+          <option value="first-party">Primeira parte</option>
+        </select>
+        <label class="sr" for="ftag">Tag</label>
+        <input id="ftag" type="text" placeholder="tag" size="10">
+        <button id="clear-filters" class="ghost">Limpar</button>
+      </div>
+    </div>
+    <p id="libcount" class="muted"></p>
+    <div id="liblist" class="grid" role="list"></div>
+  </section>
+
+  <!-- ============ QUARENTENA ============ -->
+  <section id="view-quarantine" class="view" hidden>
+    <h2>Quarentena</h2>
+    <p class="muted">Recursos importados que ainda não entraram na biblioteca.
+      Nada aqui foi executado. Promover é uma decisão sua.</p>
+    <div id="qlist" class="grid" role="list"></div>
+  </section>
+
+  <!-- ============ IMPORTAR ============ -->
+  <section id="view-import" class="view" hidden>
+    <h2>Importar</h2>
+    <p class="muted">Caminho de um arquivo, pasta, <code>.zip</code> ou pacote
+      <code>.lia-capability</code>. O original nunca é movido nem alterado.</p>
+    <div class="row">
+      <label class="sr" for="ipath">Caminho</label>
+      <input id="ipath" type="text" class="grow" placeholder="C:\Users\voce\Downloads\minha-skill">
+      <button id="idry" class="ghost">Simular</button>
+      <button id="igo" class="primary">Importar</button>
+    </div>
+    <p class="muted small">Dica: você também pode arrastar um arquivo ou pasta para esta janela.</p>
+    <div id="ireport"></div>
+  </section>
+
+  <!-- ============ ÍNDICE E PACOTES ============ -->
+  <section id="view-shared" class="view" hidden>
+    <h2>Índice e pacotes</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Índice compartilhável</h3>
+        <p class="muted">Um arquivo <code>index.json</code> que descreve suas
+          capacidades sem depender do Hub. Sem segredos, sem caminhos absolutos.</p>
+        <div id="idxhealth"></div>
+        <button id="publish" class="primary">Gerar índice</button>
+      </div>
+      <div class="card">
+        <h3>Verificar pacote</h3>
+        <p class="muted">Confere os hashes de um <code>.lia-capability</code> contra o
+          próprio manifesto. Detecta alteração, não autoria.</p>
+        <input id="vpath" type="text" placeholder="C:\...\algo.lia-capability">
+        <button id="vgo" class="ghost">Verificar</button>
+        <div id="vresult"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DIAGNÓSTICO ============ -->
+  <section id="view-diagnostics" class="view" hidden>
+    <h2>Diagnóstico</h2>
+    <p class="muted">Onde ficam seus arquivos e o que o Hub sabe sobre si mesmo.</p>
+    <div id="diag"></div>
+  </section>
+</main>
+
+<!-- ============ PAINEL DE DETALHE ============ -->
+<aside id="drawer" class="drawer" hidden aria-labelledby="dtitle">
+  <div class="drawer-head">
+    <h2 id="dtitle">Detalhe</h2>
+    <button id="dclose" class="ghost" aria-label="Fechar detalhe">Fechar</button>
+  </div>
+  <div id="dbody"></div>
+</aside>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<footer class="foot">
+  <span>Versão <span id="ver">0.1.0</span> · local · sem conta · sem conexão automática</span>
+  <span>Hashes provam integridade, não autoria.</span>
+</footer>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lia-agenthub"
+version = "0.1.0"
+description = "Lia Agent Hub - registro, validação e distribuição de capacidades para agentes"
+requires-python = ">=3.11"
+license = { text = "UNLICENSED — ver D-16 em docs/DECISION-REGISTER.md" }
+authors = [{ name = "BloomRX" }]
+classifiers = [
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.13",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+]
+dependencies = []
+
+[project.optional-dependencies]
+# Camada de interface. Ausente = navegador do sistema (D-27 opção A/C).
+webview = ["pywebview>=6.2"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+lia-agenthub = "lia_agenthub.__main__:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+lia_agenthub = ["resources/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q --strict-markers"
+markers = [
+  "windows_only: requer Windows real",
+  "webview_only: requer WebView2 disponivel",
+]

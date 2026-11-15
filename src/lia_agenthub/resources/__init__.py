@@ -1,0 +1,1 @@
+"""Recursos embarcados: UI estática."""
