@@ -220,9 +220,12 @@
 |---|---|
 | **Estado** | `RECOMMENDED` |
 | **Questão original** | Electron, web local ou outra arquitetura? |
-| **Evidências** | `PLATFORM-AND-TECHNOLOGY-DECISION.md` §3 (stacks reais), §4 (8 critérios, K1+K2 = 45 %), §5 |
+| **Evidências** | `PLATFORM-AND-TECHNOLOGY-DECISION.md` §3 (stacks reais), §4 (8 critérios, K1+K2 = 45 %), §5 e **§5.5 (revisão da Fase 0.1)**; `devguide.python.org/versions/`; metadados PyPI de `pyinstaller` 6.22.3, `pywebview` 6.2.1 e `pythonnet` 3.2.1 |
 | **Alternativas** | (a) Python stdlib + WebView2 + PyInstaller; (b) Electron + Node; (c) Tauri; (d) web pura; (e) CLI |
-| **Recomendação Agent 0** | **(a)**: núcleo Python 3.9+ stdlib, UI web local em WebView2, PyInstaller, instalação por usuário. Electron é **viável e não recomendado** (custo de runtime desproporcional a um editor de texto/arquivo). Web/mobile **rejeitados por natureza do produto** (depende de sistema de arquivos real). Tauri como reavaliação futura |
+| **Recomendação Agent 0** | **(a)** núcleo **Python 3.11+ stdlib**, alvo de bundle **3.13.x**, UI web local em `127.0.0.1`, PyInstaller, instalação por usuário. Electron é **viável e não recomendado** (custo de runtime desproporcional). Web/mobile **rejeitados por natureza do produto**. Tauri como reavaliação futura |
+| **Correção da Fase 0.1** | A Fase 0 recomendava **Python 3.9+**. **Estava errado:** 3.9 chegou a EOL em 2025-10-31 e 3.10 em 2026-10-01 (`devguide.python.org/versions/`). Piso corrigido para **3.11** (linha suportada mais antiga, EOL 2027-10) e alvo **3.13** (EOL 2029-10). Ver `PHASE-0-1-CONSISTENCY-REVIEW.md` §3.1 |
+| **Evidência que força a correção** | `pywebview` declara `pythonnet` como dependência **incondicional no Windows**; `pythonnet` 3.2.x exige **Python ≥ 3.11**. A combinação original ("3.9+" **e** "pywebview") não monta |
+| **Alternativa legítima** | Alvo **3.12** em vez de 3.13 — também suportada (EOL 2028-10), passa nos mesmos critérios. Variação de `D-14`, não consequência técnica |
 | **Impacto de adiar** | Bloqueia Fase 1 inteira |
 | **Humano?** | **Sim** |
 
@@ -257,6 +260,7 @@
 | **Estado** | `RECOMMENDED` |
 | **Recomendação Agent 0** | **Windows 10/11 x64 obrigatório; Linux x64 secundário** (ambiente de desenvolvimento das sessões). macOS **não** no MVP (sem máquina de validação, exige notarização, sem demanda). Mobile **não**. WSL2: suporte acidental, não declarado |
 | **Humano?** | **Sim** |
+| **Nota da Fase 0.1** | Esta decisão é sobre **sistema operacional**, não sobre biblioteca de interface. A escolha entre `pywebview` e navegador do sistema é `D-27` |
 
 ### D-18 — Nível de risco aceitável ao testar MCPs e código de terceiros
 
@@ -291,7 +295,7 @@
 
 ---
 
-## Parte III — Decisões incorporadas pela Fase 0 (D-21 a D-24)
+## Parte III — Decisões incorporadas pela Fase 0 e 0.1 (D-21 a D-27)
 
 Estas não estavam no briefing; surgiram da pesquisa e precisam de registro para não ficarem implícitas.
 
@@ -337,12 +341,8 @@ Estas não estavam no briefing; surgiram da pesquisa e precisam de registro para
 
 ## Resumo por estado
 
-| Estado | IDs |
-|---|---|
-| `OPEN` | **D-01**, **D-05**, **D-16**, **D-18** |
-| `RECOMMENDED` | D-02, D-03, D-04, D-06, D-07, D-08, D-09, D-10, D-11, D-13, D-14, D-15, D-17, D-19, D-20, D-21, D-22, D-23, D-24 |
-| `DEFERRED` | **D-12** |
-| `APPROVED` | **nenhuma** |
+> **Índice único na Parte IV.** Esta seção era duplicada e ficou desatualizada quando
+> `D-25`–`D-27` foram criadas. Ver **Parte IV — Índice de estados**.
 
 **As quatro decisões que realmente bloqueiam o início da Fase 1:**
 
@@ -354,6 +354,36 @@ Estas não estavam no briefing; surgiram da pesquisa e precisam de registro para
 | 4 | **D-06** (armazenamento) | Define o que fica no disco do usuário |
 
 **As duas decisões que bloqueiam apenas a Fase 4:** `D-05` e `D-18`.
+
+---
+
+## Parte IV — Índice de estados
+
+| Estado | Decisões | Quantidade |
+|---|---|---|
+| `OPEN` | `D-01`, `D-05`, `D-16`, `D-18` | 4 |
+| `RECOMMENDED` | `D-02`, `D-03`, `D-04`, `D-06`–`D-11`, `D-13`–`D-15`, `D-17`, `D-19`–`D-27` | 22 |
+| `DEFERRED` | `D-12` | 1 |
+| **`APPROVED`** | — | **0** |
+| **Total** | `D-01` … `D-27` | **27** |
+
+**Nenhuma decisão deste registro está aprovada.** As correções da Fase 0.1 alteraram
+recomendações; **não** alteraram o estado de nenhuma decisão para `APPROVED`.
+
+### As quatro decisões que bloqueiam a Fase 1
+
+`D-13` (escopo do MVP) · `D-14` (stack) · `D-03` (formato) · `D-06` (armazenamento)
+
+### A quinta que pode correr em paralelo
+
+`D-16` (licença do repositório) — não bloqueia código, mas bloqueia qualquer publicação que
+convide terceiros a reutilizar o material.
+
+### As duas que só bloqueiam a Fase 4
+
+`D-05` e `D-18` (isolamento Windows) — dependem de pesquisa com máquina real.
+
+---
 
 ---
 
@@ -381,6 +411,56 @@ Para cada decisão:
 **Condições:** <o que precisa valer para a decisão continuar válida>
 **Revisão prevista:** <quando reavaliar, se aplicável>
 ```
+
+---
+
+### D-25 — Política de exportação privada vs. redistribuição
+
+| | |
+|---|---|
+| **Estado** | `RECOMMENDED` |
+| **Origem** | Revisão `R5` da Fase 0.1 — a Fase 0 recusava exportar qualquer capacidade com `license: null`, incluindo backup do próprio arquivo |
+| **Questão** | Backup privado e redistribuição pública têm as mesmas implicações jurídicas? |
+| **Evidências** | `DATA-STORAGE-AND-PORTABILITY.md` §5.2 (política por destino); `PHASE-0-1-CONSISTENCY-REVIEW.md` §3.5. Regra nº 3 da marca: o trabalho do usuário deve ser "acessível, copiável, exportável e removível" |
+| **Alternativas** | (a) bloquear tudo sem licença revisada — **atual, rejeitada**; (b) não bloquear nada; (c) política por destino: `private`/`self` sempre permitido, `shared` com aviso, `public` bloqueado sem base — **recomendada** |
+| **Recomendação Agent 0** | **(c)**. A pergunta não é "tem licença?", é "para onde vai?". O único bloqueio duro é **redistribuição pública sem `redistributable: true` e base registrada**. Backup e transferência entre máquinas do mesmo usuário **nunca** são bloqueados |
+| **Por que não (a)** | Um Hub que impede o usuário de copiar o próprio arquivo falha a regra nº 3 e **não protege ninguém**: o `Ctrl+C` no Explorer funciona de qualquer forma. O bloqueio só teria efeito sobre o usuário honesto fazendo backup |
+| **Limite declarado** | **O Hub não avalia se o usuário tem direito de redistribuir.** Ele registra o que o autor declarou e impede a operação de alto risco. **Não é parecer jurídico** |
+| **Impacto de adiar** | Bloqueia M7 (empacotar/exportar) — não bloqueia M1–M6 |
+| **Humano?** | **Sim** — a linha entre "meu backup" e "publicação" é decisão de produto com consequência jurídica |
+
+### D-26 — Política de caracteres Unicode invisíveis
+
+| | |
+|---|---|
+| **Estado** | `RECOMMENDED` |
+| **Origem** | Revisão `R2` da Fase 0.1 — a Fase 0 rejeitava `U+200B–U+200F` indiscriminadamente |
+| **Questão** | Rejeitar todo caractere invisível, ou distinguir por categoria e contexto? |
+| **Evidências** | **UTS #39 §3.1.1** (normativo): *"A blanket exclusion of these characters makes it impossible to create identifiers with the correct visual appearance for common words or phrases in those languages."* **UTS #39 §3**: *"The exclusion of characters from identifiers does not affect the general use of those characters for other purposes, such as for general text in documents."* UAX #9 (bidi). `SECURITY-AND-TRUST-MODEL.md` §3.2 |
+| **Alternativas** | (a) rejeitar faixas inteiras — **atual, rejeitada**: quebra persa (ZWNJ), sinhala (ZWJ), toda sequência de emoji ZWJ e **hifenização em pt-BR** se `U+00AD` entrar na lista; (b) aceitar tudo; (c) quatro categorias (Rejeitar / Revisar / Preservar / Exibir escapado) aplicadas por **contexto** (prosa / código / identificador) — **recomendada** |
+| **Recomendação Agent 0** | **(c)**. Categoria **A** só para o que não tem uso legítimo **no contexto**: `U+202A–202E` e `U+2066–2069` em bloco de código, `U+E0000–U+E007F` fora das **três** bandeiras RGI exatas, `U+FEFF` fora do byte 0. Tudo o mais é **B** (revisão) ou **C/D** (preservar) |
+| **O que a correção ganha** | A lista antiga **não cobria** `U+061C` (ALM) nem `U+2066–2069` (isolates, a forma **recomendada** pelo UAX #9). A política nova cobre, e continua rejeitando Trojan Source |
+| **Normalização** | **NFC** para comparação, **nunca NFKC** para gravar — NFKC altera conteúdo legítimo (`ﬁ`→`fi`, `①`→`1`) e mudaria o trabalho do autor |
+| **Limite** | Homóglifos entre escritas **não** são detectados (exigiria `confusables.txt`). Política reduz o espaço de busca; **não substitui revisão humana** |
+| **Pendência de implementação** | Baixar `PropList.txt` e `DerivedCoreProperties.txt` no build e **gerar a tabela a partir delas** — nunca digitar codepoints à mão. `unicode.org/Public/` foi inacessível nesta sessão (HTTP 000) |
+| **Impacto de adiar** | Bloqueia M2 (importar + inspecionar) |
+| **Humano?** | **Sim** — é política de produto com efeito sobre conteúdo de terceiros |
+
+### D-27 — Biblioteca de interface: `pywebview` ou navegador do sistema
+
+| | |
+|---|---|
+| **Estado** | `RECOMMENDED` |
+| **Origem** | Revisão `R7` da Fase 0.1 — a Fase 0 dizia "janela WebView2" como se fosse uma decisão só |
+| **Questão** | Como o usuário vê a interface local: janela própria (`pywebview`) ou aba do navegador? |
+| **Evidências** | `PLATFORM-AND-TECHNOLOGY-DECISION.md` §5.5.4–§5.5.6. Metadados PyPI: `pywebview` 6.2.1 (BSD-3) depende de `pythonnet` no Windows; `pythonnet` 3.2.1 exige **Python ≥ 3.11** |
+| **Alternativas** | (a) **navegador do sistema** (`webbrowser.open`) — zero dependência, zero peso; (b) **`pywebview`** — janela própria, +`pythonnet`/`bottle`/`proxy_tools`, +~10–20 MB; (c) **`pywebview` atrás de `EXTRA`** opcional, com navegador como padrão |
+| **Recomendação Agent 0** | **(a) no MVP (F1b)**, com (c) como evolução. O ativo central do desenho é "núcleo stdlib, sem dependência"; trazer uma ponte CLR (`.NET`) para ganhar uma moldura de janela troca esse ativo por estética. Em F1b o objetivo é **provar o domínio**, não a moldura |
+| **Por que (b) não está rejeitada** | Se a aba do navegador se mostrar inaceitável em teste com usuário real, o custo passa a valer. A decisão é do humano, com o custo medido |
+| **Decisão de arquitetura que reduz o risco** | A UI é web em `127.0.0.1`, então **WebView2 ausente não inutiliza o produto** — degrada para navegador. Essa é a razão técnica de a UI ser web local |
+| **Controles obrigatórios em qualquer opção** | Bind **exclusivo** em `127.0.0.1`; token de sessão; `Origin`/`Host` validados; porta efêmera |
+| **Impacto de adiar** | Bloqueia F1b (interface), **não** bloqueia F1a (domínio + CLI) |
+| **Humano?** | **Sim** |
 
 ---
 
