@@ -153,3 +153,12 @@ ul.issues li.info { border-left-color: var(--info); }
   .kv { grid-template-columns: 1fr; }
   .kv dt { margin-top: .4rem; }
 }
+
+/* opções de configuração */
+.opt { display: flex; gap: .6rem; align-items: flex-start; padding: .55rem 0;
+       border-bottom: 1px solid var(--line); }
+.opt:last-of-type { border-bottom: none; }
+.opt input[type=checkbox] { margin-top: .25rem; width: 1.05rem; height: 1.05rem; flex: none; }
+.opt > span { display: flex; flex-direction: column; gap: .15rem; }
+.opt em { color: var(--muted); font-style: normal; font-size: .8rem; }
+.opt strong { font-weight: 600; font-size: .9rem; }

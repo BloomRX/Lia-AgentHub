@@ -23,6 +23,7 @@
     <button class="tab" data-view="quarantine">Quarentena <span id="qcount" class="pill"></span></button>
     <button class="tab" data-view="import">Importar</button>
     <button class="tab" data-view="shared">Índice e pacotes</button>
+    <button class="tab" data-view="settings">Configurações</button>
     <button class="tab" data-view="diagnostics">Diagnóstico</button>
   </nav>
 </header>
@@ -111,6 +112,63 @@
         <button id="vgo" class="ghost">Verificar</button>
         <div id="vresult"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ CONFIGURAÇÕES ============ -->
+  <section id="view-settings" class="view" hidden>
+    <h2>Configurações</h2>
+    <p class="muted">Preferências deste computador. Ficam num arquivo JSON ao lado
+      dos seus dados — nada sai daqui e nada é sincronizado.</p>
+
+    <div class="card">
+      <h3>Aparência e comportamento</h3>
+
+      <label class="opt">
+        <input type="checkbox" id="s-browser">
+        <span>
+          <strong>Abrir no navegador em vez da janela própria</strong>
+          <em>Útil se o WebView2 não estiver instalado ou se você preferir a aba do navegador.</em>
+        </span>
+      </label>
+
+      <label class="opt">
+        <input type="checkbox" id="s-confirm">
+        <span>
+          <strong>Pedir confirmação antes de descartar</strong>
+          <em>Descartar remove o recurso da quarentena. É irreversível.</em>
+        </span>
+      </label>
+
+      <label class="opt">
+        <input type="checkbox" id="s-escape">
+        <span>
+          <strong>Mostrar caracteres invisíveis como código (U+XXXX)</strong>
+          <em>Recomendado: um caractere invisível não pode se esconder de você.</em>
+        </span>
+      </label>
+
+      <div class="opt">
+        <label for="s-target"><strong>Destino padrão ao exportar</strong></label>
+        <select id="s-target">
+          <option value="private">private — só para você</option>
+          <option value="shared">shared — compartilhar com alguém</option>
+          <option value="public">public — publicação (exige base de redistribuição)</option>
+        </select>
+        <em>Exportar para <code>public</code> é recusado sem base registrada. Isso é intencional.</em>
+      </div>
+
+      <div class="actions">
+        <button id="s-save" class="primary">Salvar</button>
+        <button id="s-reset" class="ghost">Restaurar padrões</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Sobre seus dados</h3>
+      <dl class="kv" id="s-paths"></dl>
+      <p class="muted small">O Hub não guarda senhas, tokens nem chaves. Não há
+        telemetria, conta ou conexão automática com serviços externos.</p>
     </div>
   </section>
 

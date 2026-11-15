@@ -164,13 +164,16 @@ class Handler(BaseHTTPRequestHandler):
     def _route_get(self, path: str, qs: dict):
         hub = self.hub
         if path == "/api/items":
+            # Parâmetro ausente usa o padrão do SearchQuery ("só ativas").
+            # Antes, ausência virava "" e anulava o padrão, devolvendo vazio.
+            ciclo = qs.get("lifecycle")
             query = SearchQuery(
                 text=(qs.get("q") or [""])[0],
                 type=(qs.get("type") or [""])[0],
                 domain=(qs.get("domain") or [""])[0],
                 tag=(qs.get("tag") or [""])[0],
                 trust=(qs.get("trust") or [""])[0],
-                lifecycle=(qs.get("lifecycle") or [""])[0],
+                lifecycle=(ciclo[0] if ciclo else "active"),
             )
             return self._json({"items": hub.items(query)})
         if path.startswith("/api/items/"):
@@ -182,6 +185,8 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/index":
             idx = hub.read_index()
             return self._json({"index": idx, "health": hub.index_health()})
+        if path == "/api/settings":
+            return self._json(self.hub.settings())
         if path == "/api/history":
             cap = (qs.get("id") or [""])[0]
             return self._json({"history": hub.history(cap) if cap else []})
@@ -215,6 +220,13 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(hub.export_many(
                 payload.get("ids", []), payload.get("target", "private"),
                 payload.get("destination")))
+        if path == "/api/settings":
+            return self._json(self.hub.save_settings(payload))
+        if path == "/api/settings-reset":
+            return self._json(self.hub.reset_settings())
+        if path == "/api/update":
+            return self._json(self.hub.update_capability(
+                payload["id"], payload["path"]))
         if path == "/api/verify-package":
             return self._json(hub.verify_package(payload["path"]))
         if path == "/api/publish-index":

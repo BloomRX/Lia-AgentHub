@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import shutil
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 
 from ..domain.errors import ConflictError, NotFound
@@ -147,6 +148,53 @@ class Repository:
         st.capability.lifecycle = Lifecycle.ACTIVE
         atomic_write_json(st.meta / "capability.json", st.capability.as_dict())
         return st
+
+    def supersede(self, old_id: str, new_id: str) -> None:
+        """Substitui `old_id` por `new_id` preservando o anterior no disco.
+
+        A versão antiga NÃO é apagada: vira `superseded` e continua consultável.
+        Atualização silenciosa que perde a anterior é exatamente o que este
+        método existe para impedir.
+        """
+        old = self._load_any(old_id)
+        if (self.locations.library / old_id).exists():
+            old.capability.lifecycle = Lifecycle.SUPERSEDED
+            atomic_write_json(old.meta / "capability.json", old.capability.as_dict())
+            self.append_history(old_id, {
+                "action": "superseded-by", "by": new_id,
+                "at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            })
+        # O novo passa a apontar para o antigo: a linhagem fica explícita.
+        new = self._load_any(new_id)
+        new.capability.version_of = old_id
+        atomic_write_json(new.meta / "capability.json", new.capability.as_dict())
+        self.append_history(new_id, {
+            "action": "supersedes", "previous": old_id,
+            "at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        })
+
+    def versions_of(self, cap_id: str) -> list[dict]:
+        """Linhagem: percute `version_of` para trás e devolve todas as versões."""
+        cadeia, vistos, atual = [], set(), None
+        try:
+            atual = self._load_any(cap_id).capability
+        except NotFound:
+            return []
+        while atual is not None and atual.id not in vistos:
+            vistos.add(atual.id)
+            cadeia.append({
+                "id": atual.id, "name": atual.name, "version": atual.version,
+                "lifecycle": atual.lifecycle.value, "treeHash": atual.tree_hash,
+                "importedAt": atual.source.imported_at,
+            })
+            anterior = atual.version_of
+            if not anterior:
+                break
+            try:
+                atual = self._load_any(anterior).capability
+            except NotFound:
+                break
+        return cadeia
 
     def append_history(self, cap_id: str, entry: dict) -> None:
         st = self._load_any(cap_id)

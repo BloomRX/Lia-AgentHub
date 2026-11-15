@@ -84,15 +84,20 @@ def _detect_license(files: dict[str, bytes]) -> tuple[str | None, str]:
         if rel.upper().split(".")[0] in ("LICENSE", "LICENCE", "COPYING"):
             head = data[:2048].decode("utf-8", "replace")
             for known, label in (
-                ("MIT License", "MIT (declarado no arquivo)"),
-                ("Apache License", "Apache-2.0 (declarado no arquivo)"),
-                ("GNU GENERAL PUBLIC LICENSE", "GPL (declarado no arquivo)"),
-                ("BSD 3-Clause", "BSD-3-Clause (declarado no arquivo)"),
-                ("Mozilla Public License", "MPL (declarado no arquivo)"),
+                ("MIT License", "MIT"),
+                ("Apache License", "Apache-2.0"),
+                ("GNU GENERAL PUBLIC LICENSE", "GPL"),
+                ("GNU LESSER GENERAL PUBLIC LICENSE", "LGPL"),
+                ("BSD 3-Clause", "BSD-3-Clause"),
+                ("BSD 2-Clause", "BSD-2-Clause"),
+                ("Mozilla Public License", "MPL"),
+                ("Creative Commons", "CC (ver arquivo)"),
+                ("The Unlicense", "Unlicense"),
             ):
                 if known in head:
                     return label, LicenseStatus.DECLARED.value
-            return "Arquivo de licença presente, texto não reconhecido", LicenseStatus.UNKNOWN.value
+            # Arquivo presente, texto não reconhecido: NÃO inventamos um código.
+            return None, LicenseStatus.UNKNOWN.value
     return None, LicenseStatus.UNKNOWN.value
 
 
@@ -105,6 +110,23 @@ def _detect_type(files: dict[str, bytes]) -> ResourceType:
     if any(n.endswith((".md", ".txt")) for n in names):
         return ResourceType.REFERENCE
     return ResourceType.UNKNOWN
+
+
+def _resolve_version(manifest: dict | None, skill_text: bytes | None) -> str:
+    """Versão declarada pelo próprio recurso, na ordem mais confiável.
+
+    Manifesto de pacote vence (foi escrito pelo Hub). Depois o frontmatter da
+    SKILL.md. Sem declaração, `0.1.0` — e `0.1.0` significa "não declarada",
+    não "primeira versão": o histórico é quem diz o que aconteceu.
+    """
+    if manifest and manifest.get("version"):
+        return str(manifest["version"])
+    if skill_text is not None:
+        from ..domain.skills import parse_frontmatter
+        fm = parse_frontmatter(skill_text.decode("utf-8", "replace")).frontmatter
+        if fm.get("version"):
+            return str(fm["version"]).strip()
+    return "0.1.0"
 
 
 def _read_manifest(files: dict[str, bytes]) -> dict | None:
@@ -123,7 +145,8 @@ class Importer:
 
     # ---- entrada ---------------------------------------------------------
     def from_path(self, raw_path: str | Path, *, upstream: str | None = None,
-                  dry_run: bool = False) -> ImportReport:
+                  dry_run: bool = False,
+                  version_of: str | None = None) -> ImportReport:
         path = Path(raw_path)
         if not path.exists():
             return ImportReport(False, blocked_reason=f"Caminho não existe: {path}",
@@ -150,10 +173,11 @@ class Importer:
             return ImportReport(False, blocked_reason=e.message, hint=e.hint)
 
         return self.from_extraction(extraction, upstream=upstream or str(path),
-                                    dry_run=dry_run)
+                                    dry_run=dry_run, version_of=version_of)
 
     def from_extraction(self, extraction: Extraction, *, upstream: str | None = None,
-                        dry_run: bool = False) -> ImportReport:
+                        dry_run: bool = False,
+                        version_of: str | None = None) -> ImportReport:
         files = {f.path: f.data for f in extraction.files}
         report = ImportReport(ok=False, warnings=list(extraction.warnings))
         report.contains_scripts = extraction.contains_scripts
@@ -221,9 +245,26 @@ class Importer:
             from ..domain.skills import parse_frontmatter
             fm = parse_frontmatter(text).frontmatter
             skill_name = fm.get("name", "")
-            domain = fm.get("metadata", "")
-            if "tags:" in fm.get("metadata", ""):
-                tags = [t.strip() for t in fm["metadata"].split("tags:")[-1].split(",") if t.strip()]
+            # `metadata` é um saco de chaves livres do formato Agent Skills.
+            # Jogá-lo inteiro em `domain` rotulava toda skill com a string crua
+            # ("tags:juridico,..."). Extraímos só o que sabemos interpretar.
+            meta = fm.get("metadata", "") or ""
+            domain = ""
+            for chave in ("domain", "dominio", "domínio"):
+                for par in meta.replace(";", ",").split(","):
+                    if par.strip().lower().startswith(chave + ":"):
+                        domain = par.split(":", 1)[1].strip()
+            if "tags:" in meta:
+                bruto = meta.split("tags:", 1)[1]
+                # corta na próxima chave conhecida, se houver
+                for sep in (" domain:", " dominio:", " author:", " license:"):
+                    if sep in bruto:
+                        bruto = bruto.split(sep, 1)[0]
+                tags = [x.strip() for x in bruto.replace(";", ",").split(",") if x.strip()]
+            for chave in ("author", "autor"):
+                if chave + ":" in meta:
+                    author = meta.split(chave + ":", 1)[1].split(",")[0].strip() or None
+                    break
 
         # ---- 4. manifesto de pacote .lia-capability ----------------------
         # Preferir o manifesto lido pelo extrator de pacotes: ele não está em
@@ -299,14 +340,17 @@ class Importer:
         cap = Capability(
             id=cap_id,
             name=display,
-            version=str((manifest or {}).get("version", "0.1.0")),
+            version=_resolve_version(manifest, skill_text),
             type=rtype,
             description=(manifest or {}).get("description", "") or "",
             domain=domain,
             tags=tags,
             author=author,
+            # Licença DETECTADA é registrada como declarada — mas nunca como
+            # permissão. Detectar um arquivo MIT não é revisar a licença, e o
+            # direito de redistribuir continua sendo decisão humana.
             license=License(
-                code=None,
+                code=detected,
                 status=LicenseStatus(lstatus),
                 redistributable=False,
             ),
@@ -315,6 +359,7 @@ class Importer:
             content_hash=report.hashes["contentHash"],
             tree_hash=th,
             contains_scripts=report.contains_scripts,
+            version_of=version_of,
         )
         provider = {"schemaVersion": 1, "upstream": upstream, "importedAt": now,
                     "method": "local", "files": report.files,

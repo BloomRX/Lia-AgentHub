@@ -65,7 +65,7 @@ function banner(msg, bad = false) {
 }
 
 /* ---------------- navegação ---------------- */
-const VIEWS = ["library", "quarantine", "import", "shared", "diagnostics"];
+const VIEWS = ["library", "quarantine", "import", "shared", "settings", "diagnostics"];
 function show(view) {
   VIEWS.forEach(v => {
     const s = $(`#view-${v}`);
@@ -77,6 +77,7 @@ function show(view) {
   if (view === "library") loadLibrary();
   if (view === "quarantine") loadQuarantine();
   if (view === "shared") loadIndex();
+  if (view === "settings") loadSettings();
   if (view === "diagnostics") loadDiagnostics();
 }
 document.querySelectorAll(".tab").forEach(t =>
@@ -272,6 +273,19 @@ function renderDetail(d, kind) {
       text: `Conteúdo idêntico já existe em: ${d.duplicates.join(", ")}. Mesmo hash não significa mesma origem.` }));
   }
 
+  if (d.lineage && d.lineage.length > 1) {
+    const ul = el("ul", { class: "issues" });
+    d.lineage.forEach((v, i) => ul.append(el("li", { class: v.lifecycle === "active" ? "info" : "" },
+      el("strong", { text: `v${v.version}` }),
+      el("span", { class: "muted small",
+        text: ` · ${v.lifecycle}${i === 0 ? " (atual)" : " (anterior, preservada)"}` }))));
+    body.append(el("div", { class: "section" },
+      el("h3", { text: "Versões" }),
+      ul,
+      el("p", { class: "muted small",
+        text: "Versões anteriores continuam no disco. Atualizar não apaga o que existia." })));
+  }
+
   if (d.history && d.history.length) {
     body.append(el("div", { class: "section" },
       el("h3", { text: "Histórico" }),
@@ -288,6 +302,7 @@ function renderDetail(d, kind) {
     actions.append(
       el("button", { class: "ghost", text: "Validar", onclick: () => validate(d.id) }),
       el("button", { class: "ghost", text: "Marcar como revisado", onclick: () => setTrust(d.id, "user-provided") }),
+      el("button", { class: "ghost", text: "Atualizar versão", onclick: () => doUpdate(d) }),
       el("button", { class: "primary", text: "Exportar", onclick: () => doExport(d.id) }));
   }
   body.append(el("div", { class: "section" }, el("h3", { text: "Ações" }), actions));
@@ -304,7 +319,8 @@ async function promote(id) {
 }
 
 async function discard(id) {
-  if (!confirm("Descartar este recurso? A remoção é irreversível.")) return;
+  const pedirConfirma = !settingsCache ? true : settingsCache.confirm_discard !== false;
+  if (pedirConfirma && !confirm("Descartar este recurso? A remoção é irreversível.")) return;
   try {
     await api("/api/discard", { method: "POST", body: JSON.stringify({ id }) });
     toast("Descartado.");
@@ -332,9 +348,10 @@ async function setTrust(id, trust) {
 }
 
 async function doExport(id) {
+  const padrao = settingsCache?.default_export_target || "private";
   const target = prompt(
     "Destino da exportação:\n\nprivate — só para você\nshared — para compartilhar com alguém\npublic — publicação (exige base de redistribuição)\n\ntarget:",
-    "private");
+    padrao);
   if (!target) return;
   try {
     const r = await api("/api/export", { method: "POST", body: JSON.stringify({ id, target: target.trim() }) });
@@ -345,6 +362,21 @@ async function doExport(id) {
     const extra = (r.warnings || []).join("\n");
     toast(`Pacote criado: ${r.path.split(/[\\/]/).pop()}`);
     if (extra) alert(`Pacote criado.\n\n${extra}`);
+  } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
+}
+
+async function doUpdate(d) {
+  const caminho = prompt(
+    `Atualizar "${d.name}" a partir de um arquivo ou pasta.\n\n` +
+    "A versão atual NÃO é apagada: ela fica guardada como versão anterior.\n\nCaminho:",
+    "");
+  if (!caminho) return;
+  try {
+    const r = await api("/api/update", { method: "POST", body: JSON.stringify({ id: d.id, path: caminho }) });
+    if (!r.ok) { toast(`${r.reason} ${r.hint || ""}`, true); return; }
+    toast(`Atualizado para v${r.item.version}. A versão anterior continua guardada.`);
+    openDetail(r.id, "active");
+    loadLibrary();
   } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
 }
 
@@ -462,6 +494,52 @@ $("#vgo").addEventListener("click", async () => {
   } catch (e) {
     out.replaceChildren(el("div", { class: "notice bad", text: `${e.message} ${e.hint || ""}` }));
   }
+});
+
+/* ---------------- configurações ---------------- */
+let settingsCache = null;
+
+async function loadSettings() {
+  try {
+    const s = await api("/api/settings");
+    settingsCache = s;
+    $("#s-browser").checked = !!s.prefer_browser;
+    $("#s-confirm").checked = !!s.confirm_discard;
+    $("#s-escape").checked = !!s.escape_invisible;
+    $("#s-target").value = s.default_export_target || "private";
+    const d = await api("/api/diagnostics");
+    $("#s-paths").replaceChildren(
+      ...[["Biblioteca", d.paths.library],
+          ["Quarentena", d.paths.quarantine],
+          ["Exportados", d.paths.exports],
+          ["Índice", d.paths.common],
+          ["Configuração", d.paths.config],
+          ["Logs", d.paths.logs]]
+        .flatMap(([k, v]) => [el("dt", { text: k }), el("dd", {}, el("code", { text: v }))]));
+  } catch (e) {
+    banner(`Falha ao carregar configurações: ${e.message}`, true);
+  }
+}
+
+$("#s-save").addEventListener("click", async () => {
+  try {
+    await api("/api/settings", { method: "POST", body: JSON.stringify({
+      prefer_browser: $("#s-browser").checked,
+      confirm_discard: $("#s-confirm").checked,
+      escape_invisible: $("#s-escape").checked,
+      default_export_target: $("#s-target").value,
+    })});
+    toast("Preferências salvas.");
+  } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
+});
+
+$("#s-reset").addEventListener("click", async () => {
+  if (!confirm("Restaurar todas as preferências para o padrão?")) return;
+  try {
+    await api("/api/settings-reset", { method: "POST", body: "{}" });
+    toast("Preferências restauradas.");
+    loadSettings();
+  } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
 });
 
 /* ---------------- diagnóstico ---------------- */

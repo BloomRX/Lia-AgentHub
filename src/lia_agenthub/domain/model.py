@@ -44,6 +44,8 @@ class Trust(str, Enum):
 class Lifecycle(str, Enum):
     QUARANTINED = "quarantined"
     ACTIVE = "active"
+    #: Substituída por uma versão mais nova. Fica no disco, consultável.
+    SUPERSEDED = "superseded"
     ARCHIVED = "archived"
 
 
@@ -153,6 +155,8 @@ class Capability:
     secrets_env_vars: list[str] = field(default_factory=list)
     requirements: dict | None = None
     history: list[dict] = field(default_factory=list)
+    #: Id da versão que esta substitui, quando houver. Forma a linhagem.
+    version_of: str | None = None
 
     # ---- serialização -----------------------------------------------------
     def as_dict(self) -> dict:
@@ -178,6 +182,7 @@ class Capability:
             "secrets": {"envVars": list(self.secrets_env_vars)},
             "requirements": self.requirements,
             "history": list(self.history),
+            "versionOf": self.version_of,
         }
 
     @classmethod
@@ -203,6 +208,7 @@ class Capability:
             secrets_env_vars=list(d.get("secrets", {}).get("envVars", [])),
             requirements=d.get("requirements"),
             history=list(d.get("history", [])),
+            version_of=d.get("versionOf"),
         )
 
     def to_json(self) -> str:

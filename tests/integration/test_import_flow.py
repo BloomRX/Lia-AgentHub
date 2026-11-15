@@ -208,3 +208,51 @@ def test_exportar_varios_continua_quando_um_falha(hub, imported, tmp_path):
     assert res["exported"] == 1
     assert res["failed"] == 1
     assert not res["ok"]     # o agregado não mente sobre a falha
+
+
+def test_licenca_detectada_e_registrada_mas_nao_autoriza(hub, skill_dir):
+    """Detectar o arquivo MIT não é revisar a licença nem liberar redistribuição."""
+    r = hub.import_path(str(skill_dir))
+    hub.promote(r.capability_id)
+    lic = hub.detail(r.capability_id)["license"]
+    assert lic["code"] == "MIT"
+    assert lic["status"] == "declared"
+    assert lic["redistributable"] is False
+    assert not lic.get("redistribution_basis")
+
+
+def test_licenca_nao_reconhecida_nao_inventa_codigo(hub, tmp_path):
+    d = tmp_path / "livre"
+    d.mkdir()
+    (d / "SKILL.md").write_text("---\nname: x\ndescription: d\n---\n\nCorpo.\n",
+                                encoding="utf-8")
+    (d / "LICENSE").write_text("Faca o que quiser com isso.\n", encoding="utf-8")
+    r = hub.import_path(str(d))
+    hub.promote(r.capability_id)
+    lic = hub.detail(r.capability_id)["license"]
+    assert lic["code"] is None
+    assert lic["redistributable"] is False
+
+
+def test_domain_vem_de_metadata_nao_da_string_crua(hub, tmp_path):
+    d = tmp_path / "comdominio"
+    d.mkdir()
+    (d / "SKILL.md").write_text(
+        "---\nname: comdominio\ndescription: d\n"
+        "metadata: tags:juridico,contratos, domain:juridico, author:Ana\n---\n\nCorpo.\n",
+        encoding="utf-8")
+    r = hub.import_path(str(d))
+    hub.promote(r.capability_id)
+    det = hub.detail(r.capability_id)
+    assert det["domain"] == "juridico"
+    assert det["tags"] == ["juridico", "contratos"]
+    assert det["author"] == "Ana"
+    assert "tags:" not in det["domain"]
+
+
+def test_skill_sem_dominio_nao_ganha_dominio_inventado(hub, skill_dir):
+    r = hub.import_path(str(skill_dir))
+    hub.promote(r.capability_id)
+    det = hub.detail(r.capability_id)
+    assert det["domain"] in ("", None)
+    assert det["tags"] == ["teste", "exemplo"]

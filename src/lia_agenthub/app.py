@@ -11,6 +11,7 @@ from .adapters.index_builder import check_consistency, publish, read_index, vali
 from .adapters.packager import Target, export, verify_package
 from .adapters.paths_resolver import Locations, resolve_locations
 from .adapters.repository import Repository
+from .adapters.settings import SettingsStore
 from .domain.errors import LiaError
 from .domain.integrity import sha256_bytes
 from .domain.model import Capability, Lifecycle, Trust
@@ -22,12 +23,14 @@ log = logging.getLogger("lia_agenthub")
 
 @dataclass
 class SearchQuery:
+    """Filtros da listagem. `lifecycle=None` significa "todos os estados"."""
+
     text: str = ""
     type: str = ""
     domain: str = ""
     tag: str = ""
     trust: str = ""
-    lifecycle: str = ""
+    lifecycle: str | None = "active"
 
 
 class AgentHub:
@@ -38,16 +41,32 @@ class AgentHub:
         self.locations.ensure()
         self.repo = Repository(self.locations)
         self.importer = Importer(self.repo)
+        self.settings_store = SettingsStore(self.locations.config)
+
+    # ---- configurações ---------------------------------------------------
+    def settings(self) -> dict:
+        return self.settings_store.load().as_dict()
+
+    def save_settings(self, changes: dict) -> dict:
+        return self.settings_store.update(changes).as_dict()
+
+    def reset_settings(self) -> dict:
+        return self.settings_store.reset().as_dict()
 
     # ---- C2 biblioteca ---------------------------------------------------
     def items(self, query: SearchQuery | None = None) -> list[dict]:
-        q = query or SearchQuery()
+        """Lista capacidades. Sem filtro de ciclo de vida, mostra só as ATIVAS.
+
+        Versões substituídas continuam no disco e continuam consultáveis por
+        `detail` e `lineage`; elas não pertencem à estante principal.
+        """
+        q = query or SearchQuery(lifecycle="active")
         out = []
         source = (self.repo.list_quarantine()
                   if q.lifecycle == "quarantined" else self.repo.list_all())
         for stored in source:
             cap = stored.capability
-            if q.lifecycle and cap.lifecycle.value != q.lifecycle:
+            if q.lifecycle is not None and cap.lifecycle.value != q.lifecycle:
                 continue
             if q.type and cap.type.value != q.type:
                 continue
@@ -94,6 +113,7 @@ class AgentHub:
             "validation": self.repo.read_validation(cap_id),
             "history": self.repo.history(cap_id),
             "duplicates": self.repo.find_duplicates(cap_id),
+            "lineage": self.repo.versions_of(cap_id),
             "files": sorted(self.repo.payload_files(cap_id).keys()),
             "integrityNow": self.repo.recompute_hashes(cap_id),
         }
@@ -186,6 +206,39 @@ class AgentHub:
 
     def already_present(self, cap_id: str) -> bool:
         return self.repo.exists(cap_id)
+
+    def update_capability(self, old_id: str, source_path: str) -> dict:
+        """Atualiza uma capacidade a partir de um caminho, sem perder a anterior.
+
+        A versão antiga fica como `superseded` — consultável, com hashes — e a
+        nova aponta para ela. Se o conteúdo for idêntico, nada é criado.
+        """
+        antiga = self.repo._load_any(old_id).capability
+        report = self.importer.from_path(source_path, version_of=old_id)
+        if not report.ok:
+            return {"ok": False, "reason": report.blocked_reason,
+                    "hint": report.hint, "report": report.as_dict()}
+        if report.capability_id == old_id or report.already_present:
+            return {"ok": False,
+                    "reason": "O conteúdo importado é idêntico ao já existente.",
+                    "hint": "Não há o que atualizar; nada foi alterado."}
+
+        self.repo.supersede(old_id, report.capability_id)
+        nova = self.repo.promote(report.capability_id).capability
+        self.repo.append_history(report.capability_id, {
+            "action": "update", "from": old_id, "fromVersion": antiga.version,
+            "toVersion": nova.version,
+        })
+        try:
+            publish(self.repo, packages_dir=self.locations.exports)
+        except LiaError:
+            log.warning("índice não republicado após atualização")
+        return {"ok": True, "id": nova.id, "previous": old_id,
+                "item": self._summary(nova),
+                "warnings": report.warnings}
+
+    def lineage(self, cap_id: str) -> list[dict]:
+        return self.repo.versions_of(cap_id)
 
     def diff_versions(self, cap_a: str, cap_b: str) -> dict:
         a, b = self.repo.payload_files(cap_a), self.repo.payload_files(cap_b)

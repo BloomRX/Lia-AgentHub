@@ -256,3 +256,46 @@ def test_fluxo_completo_pela_api(server, skill_dir):
     verificado = json.loads(call(base, token, "/api/verify-package", method="POST",
                                  body={"path": exportado["path"]})[1])
     assert verificado["ok"]
+
+
+def test_listagem_sem_parametro_mostra_ativas(server, skill_dir):
+    """Regressão: ausência de `lifecycle` devolvia lista vazia."""
+    base, token = server
+    r = json.loads(call(base, token, "/api/import", method="POST",
+                        body={"path": str(skill_dir)})[1])
+    call(base, token, "/api/promote", method="POST", body={"id": r["capabilityId"]})
+    itens = json.loads(call(base, token, "/api/items")[1])["items"]
+    assert len(itens) == 1
+
+
+def test_listagem_explicita_de_todos_os_estados(server, skill_dir):
+    base, token = server
+    r = json.loads(call(base, token, "/api/import", method="POST",
+                        body={"path": str(skill_dir)})[1])
+    call(base, token, "/api/promote", method="POST", body={"id": r["capabilityId"]})
+    todos = json.loads(call(base, token, "/api/items?lifecycle=")[1])["items"]
+    assert len(todos) == 1
+
+
+def test_rota_de_configuracoes(server):
+    base, token = server
+    s = json.loads(call(base, token, "/api/settings")[1])
+    assert s["default_export_target"] == "private"
+    salvo = json.loads(call(base, token, "/api/settings", method="POST",
+                            body={"prefer_browser": True})[1])
+    assert salvo["prefer_browser"] is True
+    assert json.loads(call(base, token, "/api/settings")[1])["prefer_browser"] is True
+
+
+def test_aba_de_configuracoes_existe_na_interface():
+    html = Path("src/lia_agenthub/interface/../resources/static/index.html").read_text(encoding="utf-8")
+    assert 'data-view="settings"' in html
+    assert 'id="view-settings"' in html
+
+
+def test_configuracao_tem_rotulos_para_cada_controle():
+    html = Path("src/lia_agenthub/resources/static/index.html").read_text(encoding="utf-8")
+    for campo in ("s-browser", "s-confirm", "s-escape"):
+        assert f'id="{campo}"' in html
+    assert 'for="s-target"' in html
+    assert 'id="s-target"' in html

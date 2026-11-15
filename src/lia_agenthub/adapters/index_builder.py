@@ -57,6 +57,14 @@ SCHEMA = {
 }
 
 
+def _package_for(cap_id: str, packages: list[Path]) -> str | None:
+    """Pacote mais recente (por nome ordenado) que pertence a esta capacidade."""
+    candidatos = [p.name for p in packages
+                  if p.name == f"{cap_id}.lia-capability"
+                  or p.name.startswith(f"{cap_id}-")]
+    return sorted(candidatos)[-1] if candidatos else None
+
+
 def build_index(repo: Repository, *, packages_dir: Path | None = None) -> dict:
     entries = []
     for stored in repo.list_all():
@@ -87,14 +95,16 @@ def build_index(repo: Repository, *, packages_dir: Path | None = None) -> dict:
             ],
         })
 
-    packages = sorted(Path(packages_dir).glob("*.lia-capability")) if packages_dir and Path(packages_dir).is_dir() else []
-    by_prefix = {}
-    for p in packages:
-        by_prefix.setdefault(p.name.split("-0.")[0], p.name)
+    # Liga cada entrada ao seu pacote pelo prefixo do id. Antes isto partia o
+    # nome em "-0.", o que só funcionava com versão 0.x — bastou a versão
+    # declarada na SKILL.md passar a ser respeitada para o vínculo quebrar.
+    packages = (sorted(Path(packages_dir).glob("*.lia-capability"))
+                if packages_dir and Path(packages_dir).is_dir() else [])
 
     for e in entries:
-        if e["id"] in by_prefix:
-            e["package"] = f"packages/{by_prefix[e['id']]}"
+        nome = _package_for(e["id"], packages)
+        if nome:
+            e["package"] = f"packages/{nome}"
 
     return {
         "schemaVersion": INDEX_SCHEMA_VERSION,
@@ -175,7 +185,7 @@ def check_consistency(index: dict, packages_dir: Path, library_dir: Path) -> dic
     if Path(packages_dir).is_dir():
         for p in sorted(Path(packages_dir).glob("*.lia-capability")):
             stem = p.name.replace(".lia-capability", "")
-            if not any(stem.startswith(k) for k in known):
+            if not any(stem == k or stem.startswith(f"{k}-") for k in known):
                 orphan_packages.append(p.name)
 
     indexed = {c["id"] for c in index.get("capabilities", [])}
