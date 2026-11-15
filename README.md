@@ -2,34 +2,86 @@
 
 **Plataforma independente para criar, descobrir, validar, organizar, versionar, empacotar e distribuir capacidades para agentes de IA.**
 
-> **Estado atual: Fase 0 — pesquisa, auditoria e especificação.**
-> Este repositório ainda não autoriza implementação de produto.
+> **Estado atual: Fase 0 — pesquisa, auditoria e especificação CONCLUÍDA.**
+> Aguardando revisão e aprovação humana. **Este repositório ainda não autoriza implementação de produto.**
 
 O Lia Agent Hub é um produto de escopo transversal: deve atender Game Development, programação, arte e design, pesquisa, produtividade, automação, mídia, lazer e outros domínios que utilizem agentes compatíveis.
 
+## O que a Fase 0 concluiu
+
+O Hub **é** viável como aplicação independente — com um escopo mais estreito do que a visão inicial sugeria:
+
+> O Hub registra capacidades: dá a elas **identidade, origem, versão, licença, avaliação de risco e forma de pacote**. Ele **não** as executa, não as autoriza, não guarda credenciais e não orquestra nada.
+
+A auditoria encontrou **oito lacunas** que nenhum dos produtos Lia atende hoje — registro de proveniência, pipeline de intake, formato de pacote portátil, análise de licença, contrato de distribuição, detecção de conteúdo malicioso em prosa, versionamento de capacidade e catálogo de MCP. **Nenhuma exige executar código.**
+
+## O que está pronto e o que não está
+
+### Concluído (documentação)
+
+- [x] Auditoria de 4 repositórios, 30 branches e ~40 módulos, com commit exato
+- [x] Pesquisa de 7 candidatas externas com licença, egress e decisão
+- [x] Fronteiras de produto e arquitetura em 5 camadas
+- [x] Modelo de dados de capacidade e formato de pacote `.lia-capability`
+- [x] Modelo de segurança com 10 classes de ameaça e 7 riscos residuais declarados
+- [x] Armazenamento, portabilidade e backup
+- [x] Comparação de plataforma com 8 critérios ponderados
+- [x] MVP de 8 capacidades e roadmap em 6 fases
+- [x] 24 decisões registradas com recomendação — **0 aprovadas**
+
+### Não iniciado (e proposital)
+
+- [ ] **Nenhum código de produto.** Sem app, UI, CLI, banco ou instalador
+- [ ] **Nenhuma dependência instalada**, nenhuma ferramenta externa executada
+- [ ] **Nenhuma alteração** em Lia Studio, Lia Forge ou Lia Project
+- [ ] **Fase 1 não autorizada** — depende de aprovação humana
+
 ## Fronteira dos produtos
 
-- **Lia Agent Hub:** autoria, curadoria, validação, versionamento, empacotamento e distribuição de capacidades.
-- **Lia Studio:** contexto de desenvolvimento, sessões, permissões, orquestração e execução de agentes no ambiente do projeto.
-- **Lia Forge:** produção especializada de assets, providers, pipelines, workflows e validação técnica de assets.
+| Produto | É dono de | Não faz |
+|---|---|---|
+| **Lia Agent Hub** | Identidade, proveniência, licença, confiança, validação estrutural, versionamento, empacotamento, distribuição | Executar, autorizar, guardar credencial, orquestrar, produzir asset |
+| **Lia Studio** | Sessão, contexto de desenvolvimento, permissões, aprovações, execução de agentes, QA de jogo | Ser o dono exclusivo da biblioteca de capacidades |
+| **Lia Forge** | Providers, modelos, pesos, workflows, pipelines, validação técnica de assets | Catalogar capacidades genéricas |
 
-O Hub não será runtime obrigatório, gerenciador central de credenciais, orquestrador do Studio ou substituto dos sistemas especializados da Forge.
+**A única integração entre o Hub e os demais é arquivo em disco.** Não há runtime, não há API obrigatória, não há serviço residente. Se o Hub for desinstalado, os hosts continuam funcionando.
 
 ## Princípios
 
-Independência, portabilidade, local-first, neutralidade de providers, controle humano, segurança por padrão, separação entre autoria e execução, rastreabilidade e extensibilidade.
+Independência, portabilidade, local-first, neutralidade de providers, controle humano, **segurança por padrão**, separação entre autoria e execução, rastreabilidade e extensibilidade.
 
-## Documentação inicial
+Três que merecem destaque porque a pesquisa mostrou que são fáceis de perder:
 
+1. **Nada é executado no MVP.** Sem sandbox comprovado em Windows, prometer "testado" seria alegação falsa.
+2. **Confiança é decisão humana registrada**, não score. Scanner verde produz evidência, nunca aprovação.
+3. **Nenhum segredo tem lugar no schema.** `secrets.envVars` aceita apenas nomes de variáveis.
+
+## Documentação
+
+### Research
+- [Auditoria de repositórios e branches](docs/research/REPOSITORY-AND-BRANCH-AUDIT.md)
+- [Candidatos de integração e pesquisa externa](docs/research/INTEGRATION-CANDIDATES.md)
+
+### Architecture
+- [Fronteiras de produto, arquitetura e modelo de dados](docs/architecture/PRODUCT-BOUNDARIES-AND-ARCHITECTURE.md)
+- [Modelo de segurança e confiança](docs/architecture/SECURITY-AND-TRUST-MODEL.md)
+- [Dados, armazenamento e portabilidade](docs/architecture/DATA-STORAGE-AND-PORTABILITY.md)
+
+### Product
+- [Plataforma e stack](docs/product/PLATFORM-AND-TECHNOLOGY-DECISION.md)
+- [MVP e roadmap](docs/product/MVP-AND-ROADMAP.md)
+
+### Governança
+- [Relatório final da Fase 0](docs/PHASE-0-FINAL-REPORT.md)
+- [Registro de decisões](docs/DECISION-REGISTER.md)
 - [Visão de produto e direção arquitetural](docs/PRODUCT-VISION.md)
-- [Mandato de pesquisa da Fase 0 / Arena](docs/PHASE-0-ARENA-BRIEF.md)
-- [Registro de decisões abertas](docs/DECISION-REGISTER.md)
+- [Mandato de pesquisa da Fase 0](docs/PHASE-0-ARENA-BRIEF.md)
 - [Fluxo de branches e releases](docs/BRANCH-AND-RELEASE-FLOW.md)
 
-## Como o trabalho começa
+## Próximo passo
 
-A Fase 0 é documental e investigativa. O Arena deve auditar o ecossistema, pesquisar fontes oficiais, comparar opções e propor arquitetura, contratos, segurança e MVP. Não deve escrever código de produto, instalar ferramentas ou alterar outros repositórios.
+A Fase 1 depende de quatro decisões humanas (`D-13` escopo do MVP, `D-14` stack, `D-03` formato, `D-06` armazenamento) e de uma quinta que pode correr em paralelo: pesquisa de isolamento em Windows (`D-05`/`D-18`), que determina se o produto terá Test Lab algum dia.
 
 A implementação só começa após revisão humana e aprovação explícita da especificação resultante.
 
-Consulte também [AGENTS.md](AGENTS.md) para as regras deste repositório.
+Consulte também [AGENTS.md](AGENTS.md) para as regras deste repositório, inclusive a distinção obrigatória entre `IMPLEMENTED`, `EXECUTED`, `VALIDATED`, `PROPOSED`, `PLANNED`, `RESEARCH` e `UNKNOWN`.
