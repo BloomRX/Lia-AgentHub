@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Gera dist\LiaAgentHub.exe a partir do código, com validação prévia.
 
@@ -45,10 +45,9 @@ function Find-Python {
     if ($PythonExe) { return $PythonExe }
 
     for ($minor = 15; $minor -ge 11; $minor--) {
-        $candidato = "py -3.$minor"
         try {
-            $v = & py "-3.$minor" -c "import sys;print('%d.%d'%sys.version_info[:2])" 2>$null
-            if ($LASTEXITCODE -eq 0 -and $v) { return $candidato }
+            $exe = & py "-3.$minor" -c "import sys;print(sys.executable)" 2>$null
+            if ($LASTEXITCODE -eq 0 -and $exe) { return $exe }
         } catch { }
     }
     foreach ($c in @("python", "python3")) {
@@ -131,8 +130,6 @@ if ($SkipTests) {
 
 # ---------------------------------------------------------------- build
 Write-Step "5/6 Empacotamento"
-if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
-if (Test-Path "dist")  { Remove-Item -Recurse -Force "dist" }
 
 & $vpy -m PyInstaller --noconfirm --clean packaging\lia_agenthub.spec
 if ($LASTEXITCODE -ne 0) { Fail "PyInstaller falhou (veja a saida acima)" }

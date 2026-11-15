@@ -273,11 +273,12 @@ class _LocalServer(ThreadingHTTPServer):
     """
 
     daemon_threads = True
+    allow_reuse_address = False
+    allow_reuse_port = False
 
     def server_bind(self):
-        # Define a opção ANTES do bind. `HTTPServer.server_bind` chamaria
-        # `setsockopt(SO_REUSEADDR)` por conta própria, então pulamos direto
-        # para a implementação de TCPServer.
+        # Desativamos as opções herdadas de reuso para que TCPServer não
+        # combine SO_REUSEADDR com SO_EXCLUSIVEADDRUSE no Windows.
         if sys.platform == "win32" and hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
         else:
