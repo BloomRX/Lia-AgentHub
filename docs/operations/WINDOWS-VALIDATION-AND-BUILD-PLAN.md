@@ -33,8 +33,8 @@ Verificado por comando, não por memória:
 | Item | Valor |
 |---|---|
 | Branch | `arena/a92004be-lia-agenthub` |
-| Commit de referência | `33e366e` |
-| Ancestral comum com `main` | `34a27f484e5f85987390a27fe7e0c0b3cd205bb2` |
+| Commit de referência | o commit que introduziu este documento — obtenha com `git log --oneline -1 -- docs/operations/WINDOWS-VALIDATION-AND-BUILD-PLAN.md` |
+| Base da branch em `main` | `34a27f484e5f85987390a27fe7e0c0b3cd205bb2` |
 | `main` (local e remoto) | `34a27f48` — **intacta** |
 | Upstream configurado | **nenhum** para a branch de trabalho |
 | PR / merge | nenhum |
@@ -197,8 +197,19 @@ python -m lia_agenthub --diagnostico
 python -m lia_agenthub --no-window --home %TEMP%\lia-teste
 ```
 
-`--no-window` imprime a URL e o token e fica servindo. É assim que você valida
-backend sem depender de a janela abrir.
+`--no-window` imprime a URL e o token e **fica servindo até ser morto** — não
+retorna. Use outro terminal, ou `Start-Process` (roteiro na §3.B.1). É assim
+que você valida backend sem depender de a janela abrir.
+
+A saída tem exatamente duas linhas, verificada aqui **[EXECUTADO]**:
+
+```
+http://127.0.0.1:39935/
+TOKEN=<43 caracteres url-safe, diferente a cada execucao>
+```
+
+O token muda a cada execução, e a porta é efêmera. Nada disso é configurável
+pelo usuário — de propósito.
 
 `--diagnostico` **funciona** e imprime os caminhos resolvidos **[EXECUTADO]**:
 
@@ -349,22 +360,38 @@ só fez `curl`.
 
 Roteiro de HTTP (PowerShell, com o Hub em `--no-window`):
 
-```powershell
-$out = & python -m lia_agenthub --no-window --home $env:TEMP\lia-h 2>&1 | Select-Object -First 2
-$url  = ($out[0] -split '\s+')[0]
-$tok  = ($out[1] -replace '^TOKEN=','')
+O Hub fica servindo até ser morto — `--no-window` **bloqueia**. Escreva a
+saída num arquivo e leia de lá:
 
-# sem token → 403
+```powershell
+# 1. subir em background, capturando as duas linhas
+$proc = Start-Process python -ArgumentList "-u","-m","lia_agenthub","--no-window","--home","$env:TEMP\lia-h" `
+        -RedirectStandardOutput "$env:TEMP\hub.txt" -PassThru -WindowStyle Hidden
+Start-Sleep -Seconds 3
+
+# 2. ler URL e token
+$linhas = Get-Content "$env:TEMP\hub.txt"
+$url = ($linhas[0] -split '\s+')[0]          # http://127.0.0.1:PORTA/
+$tok = ($linhas[1] -replace '^TOKEN=','')     # token de sessão
+
+# 3. sem token → deve ser 403
 try { Invoke-WebRequest "$url/api/items" -UseBasicParsing } catch { $_.Exception.Response.StatusCode.value__ }
 
-# com token → 200 e JSON
+# 4. com token → deve ser 200
 (Invoke-WebRequest "$url/api/items" -Headers @{"X-Lia-Token"=$tok} -UseBasicParsing).Content
 
-# Host estranho → 403
+# 5. Host estranho → deve ser 403
 try { Invoke-WebRequest "$url/api/items" -Headers @{"X-Lia-Token"=$tok; "Host"="evil.example"} -UseBasicParsing } catch { $_.Exception.Response.StatusCode.value__ }
+
+# 6. encerrar
+Stop-Process -Id $proc.Id
 ```
 
 Esperado: `403`, `{"items": []}` ou lista, `403`.
+
+A forma exata das duas linhas foi verificada aqui **[EXECUTADO]**:
+`http://127.0.0.1:39935/` seguida de `TOKEN=...`. Se o seu `$linhas[1]` não
+começar com `TOKEN=`, algo mudou — inspecione o arquivo antes de continuar.
 
 Este roteiro é derivado de um teste que **passou no Linux** com `GET /api/items`
 + `X-Lia-Token` → `200 {"items": []}` **[EXECUTADO]**. Repetir no Windows é
@@ -518,6 +545,18 @@ Detalhamento dos abertos na §8.
 ---
 
 ## 5. O que testar, e como saber que passou
+
+> **Atenção a uma colisão de nomes.** Dois prefixos parecidos convivem neste
+> documento e significam coisas diferentes:
+>
+> - **`D-01` … `D-09`** aqui na §5 são **testes de distribuição**.
+> - **`D-01`, `D-05`, `D-16`, `D-18`** na §9 são **decisões de produto** do
+>   `docs/DECISION-REGISTER.md`.
+>
+> Mesmo texto, assuntos distintos. Quando houver dúvida, o contexto diz: testes
+> aparecem em tabela com coluna "Esperado"; decisões aparecem na §9 com estado
+> `OPEN`/`RECOMMENDED`. Se você for reportar "D-01 falhou", diga **"teste D-01"**
+> para não parecer que uma decisão de produto foi reprovada.
 
 Cada linha é uma afirmação verificável. **Não marque PASS sem rodar.** O
 vocabulário é rígido:
@@ -678,8 +717,10 @@ git status --short
 git log --oneline -1
 ```
 
-Esperado: `arena/a92004be-lia-agenthub`, HEAD `33e366e` ou descendente,
-árvore limpa. Se divergir, **pare e reporte** — pode haver trabalho paralelo.
+Esperado: `arena/a92004be-lia-agenthub`, árvore limpa, e `main` em
+`34a27f48`. O HEAD deve ser o commit que trouxe este documento, ou um
+descendente dele — confira com o comando acima. Se divergir, **pare e
+reporte**: pode haver trabalho paralelo.
 
 ### Estágio 1 — Ambiente
 
@@ -730,9 +771,11 @@ conserta (§8).
 
 ```bat
 python -m lia_agenthub --diagnostico
-python -m lia_agenthub --no-window --home %TEMP%\lia-h
 python -m lia_agenthub
 ```
+
+`--no-window` **bloqueia** (fica servindo). Use num terminal separado, ou pelo
+roteiro em background da §3.B.1.
 
 Critério de saída: janela abre, UI renderiza, fechar não deixa processo, porta
 libera. Rode o roteiro HTTP da §3.B.1 para provar o backend separadamente.
@@ -1054,9 +1097,10 @@ em detalhe técnico e este prompt vence em prioridade.
 1. Branch: arena/a92004be-lia-agenthub. NUNCA toque em main. Sem merge, sem
    PR, sem force push, sem trocar de branch.
 2. Antes de começar, registre: git branch --show-current, git rev-parse HEAD,
-   git status --short. Esperado: arena/a92004be-lia-agenthub, HEAD 33e366e ou
-   descendente, árvore limpa. Se divergir, PARE e reporte. Pode haver trabalho
-   paralelo.
+   git status --short. Esperado: arena/a92004be-lia-agenthub, árvore limpa.
+   O HEAD deve ser o commit que trouxe este documento ou descendente dele;
+   obtenha-o com: git log --oneline -1 -- docs/operations/WINDOWS-VALIDATION-AND-BUILD-PLAN.md
+   Se divergir, PARE e reporte. Pode haver trabalho paralelo.
 3. NUNCA invente resultado. Se não rodou, escreva BLOQUEADO e o motivo. Um
    relatório com três BLOQUEADOS honestos vale mais que um com trinta PASS
    inventados.
@@ -1093,8 +1137,9 @@ ESTÁGIO 2 — TESTES BASE
 
 ESTÁGIO 3 — EXECUÇÃO NATIVA
   python -m lia_agenthub --diagnostico
-  python -m lia_agenthub --no-window --home %TEMP%\lia-h
   python -m lia_agenthub
+  (para o teste HTTP, use o roteiro em background da secao 3.B.1 --
+   --no-window BLOQUEIA, nao retorna)
   PROVE quatro coisas SEPARADAMENTE (não escreva "UI validada" se só fez curl):
     a) backend responde: Invoke-WebRequest com e sem X-Lia-Token (403 / 200)
     b) janela nativa abriu: você está vendo na tela
