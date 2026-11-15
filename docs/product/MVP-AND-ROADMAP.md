@@ -54,15 +54,44 @@ Cada exclusão tem motivo técnico, não de prazo:
 | # | Capacidade | Por que é obrigatória | Lacuna coberta | Teste de aceite |
 |---|---|---|---|---|
 | **M1** | **Biblioteca local em arquivos** com estrutura `Lia\AgentHub\Biblioteca\<id>\` | É o produto. Sem ela não há nada | L-01 | Copiar a pasta para outra máquina e ler tudo em editor de texto |
-| **M2** | **Importar + inspecionar** com relatório honesto de verificações | É o que separa o Hub de um gerenciador de arquivos | L-01, L-02, L-06 | Importar uma Skill com caractere Unicode invisível → **rejeitada** com linha e coluna |
+| **M2** | **Importar + inspecionar** com relatório honesto de verificações | É o que separa o Hub de um gerenciador de arquivos | L-01, L-02, L-06 | Skill com `U+202E` em bloco de código → **rejeitada** com linha e coluna. Skill com **ZWNJ em texto persa** → **preservada**, sem rejeição (`§3.2` do doc de segurança) |
 | **M3** | **Validador estrutural** de Agent Skills (frontmatter contra a spec) | Único verificador com confiabilidade alta | L-02 | Skill com `name` de 65 chars ou hífen duplo → erro com a regra citada |
 | **M4** | **Contenção de caminho** (C1–C12 do doc de segurança) | Vetor real já explorado em projeto público | L-02 | Pacote com `../../evil.md` e com symlink → rejeitado antes de extrair |
-| **M5** | **Proveniência** (`provenance.json` + `source`) e **licença por camada** | Resolve a lacuna central e o risco jurídico | L-01, L-04 | Toda capacidade importada tem `source.upstream` + `commit` + `contentHash`; export sem licença revisada **falha** |
+| **M5** | **Proveniência** (`provenance.json` + `source`) e **licença por camada** | Resolve a lacuna central e o risco jurídico | L-01, L-04 | Toda capacidade importada tem `source.upstream` + `commit` + `contentHash`. Export **privado** com `license: null` funciona; export **público** é recusado |
 | **M6** | **Versionamento** (semver + `contentHash` + `history.json` + diff entre versões) | Atualização sem diff é atualização silenciosa | L-07 | Duas versões da mesma Skill → diff de corpo, `description` e `declaredPermissions` |
 | **M7** | **Empacotar / exportar** `.lia-capability` com `manifest.json` + hashes | É o formato de distribuição do produto | L-03 | Pacote abre no Explorer; `payload.files[]` confere; arquivo a mais no zip → erro |
-| **M8** | **Catálogo publicável** `Comum\Capacidades\index.json` que o host lê | É o contrato com o Studio/Forge | L-05 | Host lê o índice **com o Hub fechado** e recebe `trust`, `license`, `requirements` |
+| **M8** | **Catálogo publicável** `Comum\Capacidades\index.json` — **publicar + validar + leitor de referência** (`§3.1.1`) | É o contrato de distribuição, e o único artefato que sobrevive ao Hub | L-05 | O índice valida contra o schema; **o leitor de referência roda com o Hub desinstalado** e imprime `trust`, `license`, `requirements` |
 
-### 3.2 Capacidades desejáveis se houver folga (N1–N3)
+#### 3.1.1 M8 — os quatro níveis que a Fase 0 confundiu
+
+A Fase 0 dizia "catálogo publicável **que o host lê**" no MVP, e ao mesmo tempo colocava
+"integração com hosts" na Fase 3. As duas coisas não podem ser verdade. Separação corrigida:
+
+| Nível | O que é | Depende de Studio/Forge? | Fase |
+|---|---|---|---|
+| **IDX-1 — Publicar** | O Hub **escreve** `Comum\Capacidades\index.json` + `index.schema.json`, atomicamente, quando a biblioteca muda | **Não** | **MVP (M8)** |
+| **IDX-2 — Validar** | O Hub valida o índice contra o próprio schema e **recusa publicar** se estiver inconsistente | **Não** | **MVP (M8)** |
+| **IDX-3 — Consumir de referência** | Um **leitor mínimo documentado** (~50 linhas, fora do Hub) prova que o contrato é consumível sem o Hub | **Não** | **MVP (M8)** |
+| **IDX-4 — Integrar de verdade** | Studio e Forge passam a ler o índice e exibir `trust`/`license`/`requirements` | **Sim** | **Fase 3** |
+
+**Por que IDX-3 está no MVP e não na Fase 3:** sem ele, M8 é a afirmação de que um contrato
+funciona sem que ninguém jamais o tenha lido. O leitor de referência é barato e é o que
+transforma "publicável" em **verificado**.
+
+**Por que IDX-4 não está no MVP:** requer alterar Studio e Forge — proibido nesta fase e fora do
+escopo do Hub.
+
+**Critérios de aceite de M8:**
+
+| Critério | Verificação |
+|---|---|
+| Escrita atômica | Kill do processo no meio não deixa `index.json` truncado |
+| Valida contra o schema | `index.schema.json` versionado; validação no publish |
+| Consumível sem o Hub | Leitor de referência roda com o Hub **desinstalado** |
+| Declara o que não sabe | Campos desconhecidos são `null`, nunca valor inventado |
+| **Não é assinado** | Nenhum campo `signed`; nenhuma pasta `signatures/` é lida |
+
+### 3.2 Capacidades desejáveis se houver folga (IDX-1–IDX-3)
 
 | # | Capacidade | Valor | Risco se entrar |
 |---|---|---|---|
