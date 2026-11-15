@@ -162,7 +162,7 @@ parte da biblioteca padrão do Python.** No Windows ele arrasta:
 - `pythonnet` (ponte CLR ↔ .NET, que é o que fala com WebView2)
 - `proxy_tools`, `bottle` (servidor WSGI embutido), `typing_extensions`
 
-E o `pywebview` **não é a única forma** de falar com WebView2. As três opções estão em `D-17`.
+E o `pywebview` **não é a única forma** de falar com WebView2. As três opções estão em `D-27`.
 
 #### 3.1.5 Como manter o núcleo independente de framework
 
@@ -277,9 +277,13 @@ distintas**, aplicadas por **contexto** (prosa vs. identificador vs. bloco de c�
 
 | Contexto | Lista aplicada |
 |---|---|
-| **Prosa** (`description`, corpo do `SKILL.md`, `README`) | A = `U+202A–202E` apenas em bloco de código; `U+E0000–E007F` fora das 3 RGI. B = todo o resto de invisível. C/D = ZWNJ, ZWJ, NBSP, soft hyphen |
-| **Identificador** (`name`, `id`, nome de arquivo, chave de frontmatter) | Perfil UTS #39 **General Security Profile**: só `Identifier_Status=Allowed` + Exception documentada. ZWNJ/ZWJ só nas condições A1/A2/B |
-| **Bloco de código** (cerca ``` e conte\lúdo de `scripts/`) | `U+202A–202E`, `U+2066–2069`, `U+200E/200F/061C` → **A (rejeitar)**. São a assinatura de Trojan Source |
+| **Prosa** (`description`, corpo do `SKILL.md`, `README`) | **A** = apenas `U+E0000–E007F` fora das 3 RGI. **B** = `U+202A–202E`, `U+2066–2069`, `U+200B`, `U+200E/200F/061C`, `U+2060–2064`, `U+3164`, `U+115F/1160`, `U+180E`, `U+FFF9–FFFB`. **C/D** = ZWNJ, ZWJ, NBSP, soft hyphen. **BOM** no byte 0 normaliza e remove |
+| **Identificador** (`name`, `id`, nome de arquivo, chave de frontmatter) | Perfil UTS #39 **General Security Profile**: só `Identifier_Status=Allowed` + Exception documentada. **A** = `U+202A–202E`, `U+2066–2069`, `U+200B`, `U+200E/200F/061C`, `U+FEFF`, `U+E0000–E007F`. ZWNJ/ZWJ só nas condições A1/A2/B |
+| **Bloco de código** (cerca ``` e conteúdo de `scripts/`) | **A (rejeitar)** = `U+202A–202E`, `U+2066–2069`, `U+200E/200F/061C`, `U+FEFF`, `U+E0000–E007F`, `U+FFF9–FFFB`. São a assinatura de Trojan Source |
+
+**Fonte única da verdade:** a tabela normativa das duas faixas bidi está em
+`SECURITY-AND-TRUST-MODEL.md` §3.2.2.1 e é **idêntica** a esta. Verificação registrada em
+`PHASE-0-1-1-FINAL-CONSISTENCY-FIXES.md`.
 
 **Isto não enfraquece a proteção.** Trocar "rejeitar tudo" por "rejeitar o que é perigoso
 naquele contexto, sinalizar o que é ambíguo, preservar o que é legítimo" aumenta o poder de
@@ -655,7 +659,7 @@ Isto **não** transforma o Hub em produto web: ele continua desktop, local, sem 
 ao processo. Uma alternativa é **não** usar `pywebview` e falar com WebView2 diretamente ou via
 uma janela de navegador (`webbrowser.open`), que não tem dependência nenhuma.
 
-As três opções entram em `D-17` como alternativas explícitas, com custo medido:
+As três opções entram em `D-27` como alternativas explícitas, com custo medido:
 
 | Opção | Dependências | Tamanho aproximado no instalador | Fallback se WebView2 ausente | Risco |
 |---|---|---|---|---|
@@ -665,7 +669,7 @@ As três opções entram em `D-17` como alternativas explícitas, com custo medi
 
 **Recomendação:** **B no MVP (F1b)**, com C como evolução. Razão: o núcleo stdlib é o ativo mais
 valioso do desenho; trocá-lo por uma ponte CLR para ganhar uma moldura de janela é um mau
-negócio em F1b, quando o objetivo é provar o domínio. **Isto é `D-17`, não uma decisão tomada.**
+negócio em F1b, quando o objetivo é provar o domínio. **Isto é `D-27`, não uma decisão tomada.**
 
 #### 3.7.4 Bind em `127.0.0.1` e proteção de origem
 
@@ -778,7 +782,7 @@ pendente. Ambas estão corretas.
 | # | Questão | Por que não foi resolvida | Quem decide |
 |---|---|---|---|
 | **Q-01** | Qual licença para este repositório | `D-16` é decisão humana; escolher seria violar o mandato | Usuário |
-| **Q-02** | `pywebview` vs. navegador do sistema | Ambas viáveis; depende de tolerância a dependência CLR | Usuário (`D-17`) |
+| **Q-02** | `pywebview` vs. navegador do sistema | Ambas viáveis; depende de tolerância a dependência CLR | Usuário (`D-27`) |
 | **Q-03** | Alvo 3.12 vs. 3.13 | Ambas suportadas; 3.13 tem EOL maior | Usuário (`D-14`) |
 | **Q-04** | Isolamento Windows | Precisa de máquina Windows real; não há no sandbox | Agent 3 (`D-05`/`D-18`) |
 | **Q-05** | Lista `Default_Ignorable` desta versão do Unicode | `PropList.txt` inacessível (HTTP 000) | F1a — baixar no build |
@@ -839,7 +843,7 @@ pendente. Ambas estão corretas.
 | `docs/architecture/SECURITY-AND-TRUST-MODEL.md` | §3.2 reescrita (política Unicode por categoria); §3.7 renomeada; seis conceitos de integridade |
 | `docs/architecture/PRODUCT-BOUNDARIES-AND-ARCHITECTURE.md` | "Índice assinado" → "índice com hashes"; nota em `signatures/` |
 | `docs/architecture/DATA-STORAGE-AND-PORTABILITY.md` | §5.2 política por destino; §8 nota de índice não assinado |
-| `docs/DECISION-REGISTER.md` | `D-14`, `D-17` revisadas; `D-21` com nota; **`D-25`, `D-26` novas** |
+| `docs/DECISION-REGISTER.md` | `D-14` revisada; `D-17` com nota remetendo a `D-27`; `D-21` com nota; **`D-25`, `D-26` e `D-27` novas** |
 | `docs/PHASE-0-FINAL-REPORT.md` | Resumo de M8; remissão a esta revisão; L11/L12 |
 | `README.md` | Estado Fase 0.1; links novos |
 

@@ -3,7 +3,7 @@
 **Documento:** `docs/product/PLATFORM-AND-TECHNOLOGY-DECISION.md`
 **Sessão:** Agent 0 — Fundação, Pesquisa e Arquitetura
 **Branch:** `arena/a92004be-lia-agenthub`
-**Status:** `PROPOSED` — recomendação para decisão humana (`D-14`, `D-17`). **Não autoriza implementação.**
+**Status:** `PROPOSED` — recomendação para decisão humana (`D-14`, `D-17`, `D-27`). **Não autoriza implementação.**
 **Data:** 2026-11-15 (UTC)
 
 ---
@@ -13,7 +13,8 @@
 | ID | Pergunta | Este documento recomenda |
 |---|---|---|
 | `D-14` | Tecnologia da aplicação (Electron, web local ou outra) | **Seção 5** |
-| `D-17` | Sistemas operacionais do primeiro MVP | **Seção 6** |
+| `D-17` | **Sistemas operacionais** do primeiro MVP | **Seção 6** |
+| `D-27` | **Biblioteca de interface** (`pywebview`, navegador do sistema ou opção híbrida) | **Seção 5.5.4** |
 | — | O Hub deve ser mobile? | **Não** (Seção 4.3) |
 | — | O Hub deve ter API local? | **Não no MVP** (Seção 7) |
 
@@ -235,7 +236,7 @@ uma ponte CLR (`.NET`) a um produto cujo valor é ser auditável e portátil tro
 valioso por uma moldura de janela. Em F1b o objetivo é **provar o domínio**, não a estética.
 
 **Por que B não está rejeitada:** se a experiência de "aba do navegador" se mostrar inaceitável
-em teste com usuário real, B passa a valer o custo. A decisão é `D-17`.
+em teste com usuário real, B passa a valer o custo. A decisão é `D-27`.
 
 #### 5.5.5 WebView2 pode estar ausente — e o que fazer
 
@@ -379,5 +380,5 @@ Para não transformar recomendação em aprovação:
 - `docs/architecture/PRODUCT-BOUNDARIES-AND-ARCHITECTURE.md` §5 — camadas e regra de dependência
 - `docs/architecture/DATA-STORAGE-AND-PORTABILITY.md` §3 — layout de pastas adotado
 - `docs/product/MVP-AND-ROADMAP.md` — fases F1a/F1b/F1c
-- `docs/DECISION-REGISTER.md` — `D-13`, `D-14`, `D-17`
+- `docs/DECISION-REGISTER.md` — `D-13`, `D-14`, `D-17` (sistemas operacionais), `D-27` (biblioteca de interface)
 - Evidência de código: `BloomRX/Lia-Studio@arena/01a0f4ab-lia-gamedev` (`README.md`, `app/lia/*.py`, `desktop.py`); `BloomRX/Lia-Forge@arena/649f88bd-3dspritesheet` (`package.json`, `README.md`); `BloomRX/Lia-Project@arena/01a10290-lia-project` (volume de código, auditoria de runtime Electron)

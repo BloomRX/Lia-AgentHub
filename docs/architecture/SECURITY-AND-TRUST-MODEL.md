@@ -125,7 +125,7 @@ Formato: ameaça → vetor → impacto → detecção → mitigação → limite
 | `U+200E` | LRM | Texto latino dentro de parágrafo RTL | Trojan Source em código | **B** | **A** | A |
 | `U+200F` | RLM | Texto RTL dentro de parágrafo LTR | Idem | **B** | **A** | A |
 | `U+061C` | ALM | Contraparte árabe de LRM/RLM — **ausente na lista da Fase 0** | Idem | **B** | **A** | A |
-| `U+202A`–`U+202E` | LRE, RLE, PDF, LRO, RLO | Formatação direcional legada | **Trojan Source (CVE-2021-42574)** | **A** | **A** | A |
+| `U+202A`–`U+202E` | LRE, RLE, PDF, LRO, RLO | Formatação direcional legada; raríssimo em prosa moderna, existe em texto árabe/hebraico antigo | **Trojan Source (CVE-2021-42574)** | **B** | **A** | A |
 | `U+2066`–`U+2069` | LRI, RLI, FSI, PDI | **Forma moderna recomendada pelo UAX #9** — **ausente na lista da Fase 0** | Isolamento direcional malicioso | **B** | **A** | A |
 | `U+2060` | WORD JOINER | Manter `R$ 1.000` junto | Esconde texto | **B** | B | A |
 | `U+2061`–`U+2064` | FUNCTION APPLICATION, INVISIBLE TIMES/SEPARATOR/PLUS | Notação matemática | Fórmula escondida | **B** | B | A |
@@ -137,10 +137,40 @@ Formato: ameaça → vetor → impacto → detecção → mitigação → limite
 | `U+180E` | MONGOLIAN VOWEL SEPARATOR | Histórico | Marginal | **B** | B | A |
 | `U+FFF9`–`U+FFFB` | Interlinear annotation | Anotação interlinear | Esconde texto | **B** | **A** | A |
 
-**Regra de precedência:** `A` em qualquer contexto vence. Se o mesmo texto é prosa legítima mas
-contém `U+202A–202E`, e o arquivo tem bloco de código, a análise é **por região**, não por
-arquivo — rejeitar o arquivo inteiro por um caractere legítimo em prosa seria o erro da Fase 0
-de novo, em escala menor.
+#### 3.2.2.1 Tabela normativa das duas faixas bidi — fonte única
+
+Esta tabela é a **fonte única da verdade** para `U+202A–U+202E` e `U+2066–U+2069`. Qualquer
+divergência em outro documento é erro daquele documento, não desta tabela. Ela é idêntica em
+`PHASE-0-1-CONSISTENCY-REVIEW.md` §3.2.2 e na decisão `D-26`, e a verificação está registrada em
+`PHASE-0-1-1-FINAL-CONSISTENCY-FIXES.md`.
+
+| Faixa | Nome | **Prosa** | **Bloco de código** | **Identificador** |
+|---|---|---|---|---|
+| `U+202A`–`U+202E` | LRE, RLE, PDF, LRO, RLO (embeddings e overrides) | **B** — sinalizar e exigir revisão | **A** — rejeitar | **A** — rejeitar |
+| `U+2066`–`U+2069` | LRI, RLI, FSI, PDI (isolates) | **B** — sinalizar e exigir revisão | **A** — rejeitar | **A** — rejeitar |
+
+**Por que as duas faixas não têm o mesmo tratamento em prosa:** `U+202A–U+202E` inclui
+**overrides** (`LRO`/`RLO`), que invertem a ordem visual sem alterar o byte — é o mecanismo do
+Trojan Source. `U+2066–U+2069` são **isolates**, a construção que o UAX #9 recomenda **no lugar**
+dos embeddings para texto bilíngue legítimo. Rejeitar isolates em prosa puniria exatamente o
+uso correto, sem ganho de segurança: o que torna o Trojan Source perigoso é a reordenação, e
+`RLI`/`PDI` isolam em vez de reordenar o texto ao redor.
+
+**Por que ambas são rejeitadas em bloco de código:** em código não existe prosa bilíngue legítima
+que exija controle bidi. Qualquer ocorrência ali é sinal de injeção. Em identificador, a mesma
+razão do UTS #39: `Identifier_Status=Allowed` não as inclui, e o perfil de segurança não abre
+exceção para elas.
+
+**Regra de precedência e análise por região.** A análise é **por região do arquivo**, nunca por
+arquivo inteiro. Um `SKILL.md` com `U+202E` em prosa (categoria **B**) e sem controles em bloco
+de código é **importado para quarentena e sinalizado**, não rejeitado. O mesmo caractere dentro
+de uma cerca tripla é **rejeitado**. Rejeitar o arquivo inteiro por uma ocorrência legítima em
+prosa seria repetir o erro da Fase 0 em escala menor.
+
+> **Nota sobre precedência de categorias.** A categoria `A` vence **dentro da mesma região** —
+> se um identificador aparece dentro de um bloco de código, a regra do identificador e a do
+> bloco de código coincidem (`A`). Não há caso em que `A` em uma região force `A` em outra
+> região do mesmo arquivo.
 
 #### 3.2.3 As três exceções de bandeira — allowlist literal, não regex
 

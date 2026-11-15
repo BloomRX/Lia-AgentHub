@@ -44,7 +44,7 @@ pesquisa da Fase 0 e da verificação de metadados da Fase 0.1.
 | **PyInstaller** | **GPLv2-or-later, com exceção especial** que permite empacotar software proprietário | **A exceção é o que torna o `.exe` possível.** Sem ela, o bundle seria obra derivada de GPL. A exceção precisa ser citada **no momento em que PyInstaller for usado**, com a redação da licença preservada. Não é opcional |
 | **PyInstaller hooks-contrib** | GPL (mesma família) | Empacotado como dependência de build |
 
-### 2.2 Interface (se `D-17` escolher `pywebview`)
+### 2.2 Interface (se `D-27` escolher `pywebview`)
 
 | Componente | Licença | Observação |
 |---|---|---|
