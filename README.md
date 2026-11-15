@@ -2,8 +2,10 @@
 
 **Plataforma independente para criar, descobrir, validar, organizar, versionar, empacotar e distribuir capacidades para agentes de IA.**
 
-> **Estado atual: Fase 0 concluída e Fase 0.1 (revisão de consistência) concluída.**
-> Aguardando revisão e aprovação humana. **Este repositório ainda não autoriza implementação de produto.**
+> **Estado atual: MVP implementado e testado.** Fase 0 e Fase 0.1 concluídas;
+> Fase 1 (implementação do MVP) executada nesta rodada. 214 testes automatizados
+> passando. Ver [docs/MVP-GUIA.md](docs/MVP-GUIA.md) para instalar e usar e
+> [docs/DESENVOLVIMENTO.md](docs/DESENVOLVIMENTO.md) para desenvolver.
 
 O Lia Agent Hub é um produto de escopo transversal: deve atender Game Development, programação, arte e design, pesquisa, produtividade, automação, mídia, lazer e outros domínios que utilizem agentes compatíveis.
 
@@ -30,12 +32,25 @@ A auditoria encontrou **oito lacunas** que nenhum dos produtos Lia atende hoje �
 - [x] 27 decisões registradas com recomendação — **0 aprovadas**
 - [x] Revisão de consistência (Fase 0.1): piso de Python corrigido, política Unicode por categoria, terminologia de integridade, exportação por destino
 
-### Não iniciado (e proposital)
+### Implementado (MVP)
 
-- [ ] **Nenhum código de produto.** Sem app, UI, CLI, banco ou instalador
-- [ ] **Nenhuma dependência instalada**, nenhuma ferramenta externa executada
+- [x] Aplicação desktop local com interface web embarcada (7 módulos de domínio,
+      6 adaptadores, servidor local com token de sessão)
+- [x] Biblioteca com busca e filtros por tipo, confiança e tag
+- [x] Importação de arquivo, pasta, `.zip` e `.lia-capability`, com quarentena
+      obrigatória e promoção explícita
+- [x] Validação estrutural de `SKILL.md` e política Unicode por região
+- [x] Procedência, licença (presença ≠ permissão) e risco por regras explícitas
+- [x] SHA-256 por arquivo e de árvore; deduplicação por conteúdo
+- [x] Exportação `.lia-capability` com verificação de adulteração
+- [x] `index.json` portátil, validável, sem segredos
+- [x] 214 testes: funcional, segurança, persistência e interface
+- [x] Build configurado para Windows via PyInstaller
+- [ ] **Executável Windows gerado e testado** — não validado neste ambiente
+      (sem Windows nem WebView2); o script de build roda testes e aborta se
+      algum falhar
+- [ ] **Licença do repositório** — D-16 aberta, aguarda decisão humana
 - [ ] **Nenhuma alteração** em Lia Studio, Lia Forge ou Lia Project
-- [ ] **Fase 1 não autorizada** — depende de aprovação humana
 
 ## Fronteira dos produtos
 

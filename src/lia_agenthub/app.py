@@ -210,6 +210,21 @@ class AgentHub:
                 "warnings": result.warnings or [], "refusedReason": result.refused_reason,
                 "hint": result.hint}
 
+    def export_many(self, cap_ids: list[str], target: str = "private",
+                    destination: str | None = None) -> dict:
+        """Exporta vários. Um resultado por recurso — falha de um não aborta os outros."""
+        resultados = []
+        for cid in cap_ids:
+            r = self.export(cid, target=target, destination=destination)
+            resultados.append({"id": cid, **r})
+        ok = [r for r in resultados if r["ok"]]
+        return {
+            "ok": len(ok) == len(resultados) and bool(resultados),
+            "exported": len(ok),
+            "failed": len(resultados) - len(ok),
+            "results": resultados,
+        }
+
     def verify_package(self, path: str) -> dict:
         return verify_package(path)
 
@@ -251,4 +266,7 @@ class AgentHub:
                                    if p.is_dir()]) if self.locations.quarantine.is_dir() else 0,
             },
             "index": self.index_health(),
+            "environment": __import__(
+                "lia_agenthub.adapters.platform_check",
+                fromlist=["system_info"]).system_info(),
         }

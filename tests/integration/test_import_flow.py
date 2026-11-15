@@ -181,3 +181,30 @@ def test_importacao_preserva_acentos(hub, tmp_path, texto, esperado):
     assert r.ok
     conteudo = hub.repo.payload_files(r.capability_id)["SKILL.md"].decode("utf-8")
     assert esperado in conteudo
+
+
+def test_exportar_varios_de_uma_vez(hub, tmp_path):
+    d = tmp_path / "src"
+    for nome in ("skill-a", "skill-b"):
+        pasta = d / nome
+        pasta.mkdir(parents=True)
+        (pasta / "SKILL.md").write_text(
+            f"---\nname: {nome}\ndescription: {nome}\n---\n\nCorpo.\n", encoding="utf-8")
+        r = hub.import_path(str(pasta))
+        hub.promote(r.capability_id)
+
+    ids = [i["id"] for i in hub.items()]
+    destino = tmp_path / "pacotes"
+    res = hub.export_many(ids, target="private", destination=str(destino))
+    assert res["ok"]
+    assert res["exported"] == 2
+    assert len(list(destino.glob("*.lia-capability"))) == 2
+
+
+def test_exportar_varios_continua_quando_um_falha(hub, imported, tmp_path):
+    destino = tmp_path / "mix"
+    res = hub.export_many([imported["id"], "inexistente-00000000"],
+                          target="private", destination=str(destino))
+    assert res["exported"] == 1
+    assert res["failed"] == 1
+    assert not res["ok"]     # o agregado não mente sobre a falha

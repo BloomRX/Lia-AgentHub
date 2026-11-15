@@ -211,6 +211,10 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/export":
             return self._json(hub.export(payload["id"], payload.get("target", "private"),
                                          payload.get("destination")))
+        if path == "/api/export-many":
+            return self._json(hub.export_many(
+                payload.get("ids", []), payload.get("target", "private"),
+                payload.get("destination")))
         if path == "/api/verify-package":
             return self._json(hub.verify_package(payload["path"]))
         if path == "/api/publish-index":

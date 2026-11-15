@@ -153,11 +153,20 @@ def main(argv: list[str] | None = None) -> int:
             pass
         return 0
 
+    from .adapters.platform_check import detect_webview2, explain_launch
+
+    wv2 = detect_webview2()
+    log.info("WebView2 disponível=%s %s", wv2.available, wv2.version or wv2.reason)
+
     try:
         if args.browser:
+            print(explain_launch(True))
             webbrowser.open(url)
             thread.join()
         else:
+            if not wv2.available:
+                print(f"\n[WebView2] {wv2.reason}")
+                print(f"[WebView2] {wv2.how_to_fix}\n", file=sys.stderr)
             blocked = _open_view(url, hub, log)
             if not blocked:
                 print(f"\n{APP_NAME} está em {url}\nFeche esta janela para encerrar.\n")
