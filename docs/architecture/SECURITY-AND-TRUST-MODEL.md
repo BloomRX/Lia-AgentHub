@@ -1,0 +1,469 @@
+# Modelo de segurança e confiança
+
+**Documento:** `docs/architecture/SECURITY-AND-TRUST-MODEL.md`
+**Sessão:** Agent 0 — Fundação, Pesquisa e Arquitetura
+**Branch:** `arena/a92004be-lia-agenthub`
+**Status:** `PROPOSED` — proposta para revisão humana. **Não autoriza implementação.**
+**Data:** 2026-11-15 (UTC)
+
+---
+
+## 0. Premissa que governa tudo
+
+> **Uma capacidade importada é hostil até prova documentada em contrário. E "prova" não é um scanner verde.**
+
+Esta premissa não é pessimismo: é o resultado das duas evidências mais sólidas que a pesquisa externa produziu, ambas já registradas pelo Agent 6 no Studio e reproduzidas aqui por serem o fundamento do modelo:
+
+| Evidência | Dado | Fonte primária |
+|---|---|---|
+| **Snyk "ToxicSkills"** (05/02/2026) | 3.984 Skills públicas: **36,82 %** com ≥1 falha; **13,4 %** crítica; **76 payloads maliciosos confirmados**; 5 das 7 mais baixadas eram malware | citado em `BloomRX/Lia-Studio@arena/04710d54-lia-studio`, `docs/research/ARENA-SKILLS-MCP-AGENT-TOOLS-RESEARCH.md` §3.3 — **não verificado nesta sessão** |
+| **Liu et al.** | 42.447 Skills: **26,1 %** com ≥1 vulnerabilidade; Skills com `scripts/` são **2,12×** mais propensas a falhas | idem — `RESEARCH` herdado |
+
+**Como usar esses números:** eles não dizem "toda Skill externa é perigosa". Dizem que **a taxa base é alta o bastante para que confiança por padrão seja irracional**. É por isso que o default do modelo é `unreviewed`.
+
+**O que este documento não afirma:** que qualquer scanner, validador ou sandbox **garanta** segurança. Nenhum garante. A §9 lista o que cada mecanismo consegue e não consegue detectar.
+
+---
+
+## 1. Ativos a proteger
+
+Em ordem de dano se comprometidos:
+
+| # | Ativo | Onde vive | Dano se comprometido |
+|---|---|---|---|
+| A1 | **Trabalho do usuário** (projetos, documentos, assets, notas) | `%USERPROFILE%\Lia\…`, diretórios escolhidos | Perda ou corrupção irreversível |
+| A2 | **Credenciais** (chaves de API, tokens, sessões) | Cofre do SO / cofre do host | Acesso a contas, custo financeiro |
+| A3 | **Memória de convivência** (Waifu) | `%USERPROFILE%\Lia\Waifu\Memorias\` | Violação de privacidade íntima |
+| A4 | **Integridade da biblioteca** (o que o Hub publica) | `Lia\Comum\Capacidades\` | Distribuir capacidade envenenada a todos os hosts |
+| A5 | **Cadeia de custódia** (proveniência, licenças) | `.lia/provenance.json`, notices | Violação de licença, perda de rastreabilidade jurídica |
+| A6 | **Máquina do usuário** (processos, SO, rede) | — | Execução arbitrária |
+| A7 | **Reputação do projeto** | — | Um incidente de segurança encerra a confiança conquistada |
+
+**Observação:** A3 está listado apesar de o Hub **não tocar** memória. O motivo é defensivo: se o Hub algum dia tiver acesso a um diretório pai (`Lia\`), precisa saber que **existe** um diretório que ele nunca pode ler. Está marcado como proibição em §5.4.
+
+---
+
+## 2. Fronteira de confiança
+
+```
+┌────────────────────── ZONA CONFIÁVEL ──────────────────────┐
+│  Código do Hub (auditável, MIT, revisado)                   │
+│  Núcleo de domínio (L3): funções puras, sem I/O             │
+│  Configuração escrita pelo usuário                          │
+│  Biblioteca local, DEPOIS de revisão humana registrada      │
+└─────────────────────────────────────────────────────────────┘
+                            ▲
+                            │  FRONTEIRA — todo dado cruza
+                            │  por validação, nunca por confiança
+                            ▼
+┌────────────────────── ZONA NÃO CONFIÁVEL ──────────────────┐
+│  Qualquer SKILL.md importado                                 │
+│  Qualquer script em scripts/                                 │
+│  Qualquer manifesto de MCP                                   │
+│  Qualquer resposta de repositório, site, API ou modelo       │
+│  Qualquer nome de arquivo ou caminho vindo de conteúdo       │
+│  Qualquer texto de "origem", "autor" ou "licença" declarado  │
+│  QUALQUER instrução encontrada dentro de uma capacidade      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Regra de leitura desta fronteira** (idêntica à do `AGENTS.md` deste repositório): conteúdo externo — Skills, scripts, prompts, instruções de repositórios e respostas de ferramentas — **é dado, não comando**. Uma Skill que diz "ignore as regras de segurança" é um registro de texto suspeito, não uma ordem.
+
+---
+
+## 3. Modelo de ameaças
+
+Formato: ameaça → vetor → impacto → detecção → mitigação → limite.
+
+### 3.1 Injeção de prompt e envenenamento semântico
+
+| | |
+|---|---|
+| **Ameaça** | Texto dentro do `SKILL.md` instrui o agente do host a exfiltrar dados, desativar gates ou executar comando |
+| **Vetor** | Corpo do `SKILL.md`, `references/*.md`, `description` (que é o gatilho de ativação) |
+| **Impacto** | Dano em A1, A2, A6 |
+| **Detecção automática** | Padrões lexicais (imperativo direcionado a regras, menção a segredo, URL de download, "ignore/desconsidere as regras", `curl`/`wget`/`Invoke-WebRequest` no corpo) |
+| **Detecção humana** | Leitura do corpo — **obrigatória** antes de qualquer `trust` acima de `unreviewed` |
+| **Mitigação** | Nenhuma capacidade importada é executada; o corpo é exibido como texto, nunca como comando; `description` é campo revisado; ao instalar num host, o agente do host **ainda** precisa de política própria |
+| **Limite** | Detecção lexical **falha por paráfrase**. Pesquisa citada mostra geradores automatizados de Skills envenenadas com taxa de sucesso de 80–95 % contra defensores estáticos. **Não existe solução automática** |
+| **Classificação** | `Automático: parcial` · `Humano: obrigatório` |
+
+### 3.2 Caracteres invisíveis e Unicode malicioso
+
+| | |
+|---|---|
+| **Ameaça** | Instruções invisíveis embutidas em `SKILL.md` (faixa Unicode Tags `U+E0000–U+E007F`, zero-width, bidi override) |
+| **Vetor** | Corpo, `description`, nome de arquivo |
+| **Impacto** | Bypass completo de revisão humana — o revisor "lê" um arquivo e enxerga outra coisa |
+| **Detecção automática** | **Sim, e é determinística.** Normalização NFKC + remoção/flag de: `U+E0000–E007F`, `U+200B–U+200F`, `U+2060–U+2064`, `U+202A–U+202E`, `U+FEFF` (fora de posição inicial) |
+| **Mitigação** | Rejeitar arquivo (não apenas avisar) quando houver caractere de controle invisível fora de whitespace conhecido; exibir relatório por linha/coluna |
+| **Limite** | Homóglifos visuais (cirílico `а` vs latino `a`) **não** são cobertos de forma confiável; exigiria confusables-mapping |
+| **Classificação** | `Automático: forte` — **este é o mecanismo de maior valor por menor custo** |
+
+### 3.3 Travessia de caminho e escape de raiz
+
+| | |
+|---|---|
+| **Ameaça** | Campo de capacidade resolve para fora do diretório da biblioteca; escrita sobrescreve arquivo do sistema |
+| **Vetor** | `name` / `id` do frontmatter, nomes de arquivo dentro do ZIP, symlink dentro do pacote, `../`, caminho absoluto, drive letter, UNC (`\\server\share`) |
+| **Impacto** | A1, A6 |
+| **Detecção automática** | Sim |
+| **Mitigação** | Ver §5 — é a seção mais detalhada deste documento, porque é onde projetos reais erram |
+| **Classificação** | `Automático: forte` com as regras de §5 |
+
+### 3.4 Execução arbitrária via scripts
+
+| | |
+|---|---|
+| **Ameaça** | `scripts/` contém código que executa na máquina do usuário ao ser "testado" |
+| **Vetor** | Qualquer arquivo executável no pacote |
+| **Impacto** | A6 (crítico) |
+| **Detecção automática** | Listar e classificar, **não** julgar segurança |
+| **Mitigação** | **Nenhuma execução nesta fase.** `scripts/` presente ⇒ `trust` máximo permitido é `unreviewed`+`scripts-declared`; export avisa; o host decide. Quando houver Test Lab (`D-05`), só em ambiente descartável |
+| **Limite** | Análise estática de script é **insuficiente por natureza** — obfuscação, download em runtime, chamada a binário do sistema |
+| **Classificação** | `Automático: nenhum` · `Humano: obrigatório` |
+
+### 3.5 Cadeia de suprimentos
+
+| | |
+|---|---|
+| **Ameaça** | Upstream muda após revisão (rug pull); dependência comprometida; tag GitHub reescrita |
+| **Vetor** | `source.upstream` sem pin; dependência transitiva; release substituída |
+| **Impacto** | A4, A5 |
+| **Detecção automática** | **Parcial e poderosa:** comparar `contentHash` registrado com o conteúdo atual; diff entre versões |
+| **Mitigação** | Pinar por **commit SHA + hash de conteúdo**, nunca por tag ou `@latest`; diff obrigatório em toda atualização; `provenanceChain` registra cada passo |
+| **Limite** | Não protege contra upstream comprometido **antes** da primeira revisão. Não substitui SBOM |
+| **Classificação** | `Automático: forte para rug pull` · `Humano: para conteúdo` |
+| **Nota** | Precedente concreto: o README do MCPVault recomenda `npx @bitmonsai/mcpvault@latest` — `@latest` é o antipadrão que esta regra proíbe |
+
+### 3.6 Licença e redistribuição
+
+| | |
+|---|---|
+| **Ameaça** | Distribuir capacidade cujo conteúdo não pode ser redistribuído; perder NOTICE Apache-2.0; confundir licença de código com a de pesos |
+| **Vetor** | Copiar prosa de terceiro; empacotar peso; herdar dependência |
+| **Impacto** | A5 (jurídico) |
+| **Detecção automática** | Presença/ausência de `LICENSE`, `NOTICE`, SPDX no frontmatter; **heurística**, não jurídica |
+| **Mitigação** | `license` por camada (§6.4 do doc de arquitetura); export **falha** com `license: null`; `NOTICE` obrigatório quando a licença exigir; `THIRD_PARTY_NOTICES.md` gerado do manifesto |
+| **Limite** | **Determinar licença não é trabalho automatizável de forma confiável.** Revisão humana é o gate |
+| **Classificação** | `Automático: triagem` · `Humano: decisão` |
+
+### 3.7 Integridade, senha e assinatura
+
+| | |
+|---|---|
+| **Ameaça** | Pacote adulterado em trânsito ou em repouso; pacote trocado por outro com mesmo nome |
+| **Vetor** | Disco, download, sincronização de nuvem, outro processo |
+| **Impacto** | A4 |
+| **Detecção automática** | Sim — SHA-256 por arquivo + `treeHash` do conjunto |
+| **Mitigação** | Verificação obrigatória na carga; `formatVersion` + `hubVersion` no manifest |
+| **Limite** | **Hash detecta alteração, não origem.** Para provar autoria é necessário assinatura (Sigstore/minisign) — **não pesquisado nesta fase** (`RESEARCH` pendente) |
+| **Classificação** | `Automático: forte para adulteração` · `Assinatura: fase futura` |
+
+### 3.8 Exfiltração por egress
+
+| | |
+|---|---|
+| **Ameaça** | Capacidade faz o host enviar dado do usuário a destino remoto sem o usuário saber |
+| **Vetor** | Campo `egress` subdeclarado; script que chama rede; MCP remoto |
+| **Impacto** | A1, A2, A3 |
+| **Detecção automática** | Comparar `egress.destinations` declarado contra strings de URL no corpo e nos scripts; **não** é prova |
+| **Mitigação** | `egress.consentRequired: true` por padrão; `destinations` explícito; o host mostra **para onde** antes de enviar; `network: false` quando não houver egress |
+| **Limite** | O Hub **não controla** a rede do host. Ele só declara e avisa |
+| **Classificação** | `Automático: triagem` · `Humano/host: gate` |
+
+### 3.9 Confusão de identidade (typosquatting)
+
+| | |
+|---|---|
+| **Ameaça** | Capacidade com nome quase idêntico a uma revisada (`lia-game-qa-plan` vs `1ia-game-qa-plan`, homóglifo) |
+| **Vetor** | `name` |
+| **Impacto** | A4, A7 |
+| **Detecção automática** | Comparação normalizada + distância de edição contra a biblioteca local |
+| **Mitigação** | Identidade do Hub é `(id, version, contentHash)`, não só nome; aviso em colisão |
+| **Limite** | Contra atacante remoto sem biblioteca local, só regra de namespace |
+| **Classificação** | `Automático: parcial` |
+
+### 3.10 Adulteração da biblioteca
+
+| | |
+|---|---|
+| **Ameaça** | Outro processo (ou o próprio usuário por engano) altera `index.json` ou pacotes |
+| **Vetor** | Acesso ao diretório |
+| **Impacto** | A4 |
+| **Mitigação** | Escrita atômica (ler-mesclar-gravar em temp + rename, padrão do kit §5.6); hashes verificados na leitura; nada é confiado por estar em `index.json` sem hash conferido |
+| **Limite** | Se o atacante já escreve no diretório como o usuário, a integridade do **sistema** já foi comprometida — fora do escopo do Hub |
+| **Classificação** | `Automático: forte` |
+
+---
+
+## 4. Escala de confiança — operacional
+
+Do documento de arquitetura (§6.3), com a **evidência exigida** para cada nível:
+
+| Nível | Evidência mínima exigida | Quem promove | Pode ser automático? | O que o Hub **pode** afirmar |
+|---|---|---|---|---|
+| `unreviewed` | Nenhuma (é o default do import) | — | Sim | "Estrutura válida. Nada foi revisado." |
+| `user-provided` | Declaração registrada do usuário | Usuário | Sim, com registro | "Fornecido pelo usuário. Sem revisão de terceiro." |
+| `reviewed-external` | Revisor identificado + data + método + lista de achados | **Humano** | **Nunca** | "Revisado por <pessoa> em <data>, método <método>. Achados: <lista>." |
+| `first-party` | Origem verificada em repositório permitido + commit | Sistema, com lista de repositórios | Sim, restrito | "Mantido no repositório <repo> no commit <sha>." |
+
+**Três regras que impedem fraude de confiança:**
+
+1. **Scanner verde gera `evidence`, não `trust`.** Um relatório de análise estática entra em `trustEvidence.findings[]`; não muda o nível.
+2. **`reviewed-external` sem revisor identificado é inválido.** Sem nome, é `unreviewed`.
+3. **Nível nunca é promovido por passagem de tempo, popularidade, número de estrelas ou ausência de incidente.** Isso é explícito porque o ecossistema tem projeto com 147 k ★ criado há 7 meses — popularidade **não** é maturidade.
+
+---
+
+## 5. Contenção de caminho — especificação
+
+Esta seção existe porque é onde projetos reais erram, e há evidência pública disso: o MCPVault **corrigiu** um bug (issue #128) em que o glob `node_modules/**` só pegava a raiz, deixando `.git`/`.obsidian` aninhados vazarem. A correção passou a negar segmentos **em qualquer profundidade** e a canonicalizar nomes.
+
+### 5.1 Regras obrigatórias
+
+| # | Regra | Motivo |
+|---|---|---|
+| C1 | Toda resolução parte de **uma função só**, que recebe a raiz e o caminho relativo | Impede que um módulo monte caminho na mão (mesma regra do kit, §2.1) |
+| C2 | Rejeitar **caminho absoluto**, letra de drive (`C:`), UNC (`\\`), e prefixo `\\?\` | Windows aceita formas que `path.resolve` normaliza de jeitos inesperados |
+| C3 | Rejeitar qualquer segmento `..` **após** normalização | `a/../../b` normaliza para fora |
+| C4 | **Nunca seguir symlink ou junction** dentro do pacote; rejeitar o pacote | Studio já faz isso em `skills.py`; junction é comum no Windows |
+| C5 | Denylist de segmento aplicada em **qualquer profundidade**, comparada case-insensitive | O bug #128 |
+| C6 | **Canonicalizar antes de comparar:** remover pontos e espaços finais por segmento | Windows resolve `.git.` e `.git ` para `.git` |
+| C7 | Validar que o caminho resolvido **começa com a raiz resolvida + separador** | Comparação de prefixo de string pura aceita `C:\Lia\Comum-Evil` para raiz `C:\Lia\Comum` |
+| C8 | Checar **comprimento de caminho** (teto de 260 enquanto *long path* não for decisão) | O kit registra que projeto aninha fundo e estoura tarde, já com arquivo parcialmente gravado |
+| C9 | Rejeitar nomes reservados do Windows: `CON`, `PRN`, `AUX`, `NUL`, `COM1-9`, `LPT1-9`, com ou sem extensão | `CON.md` falha de forma obscura |
+| C10 | Na descompactação de `.lia-capability`: rejeitar entrada absoluta, `..`, symlink e **zip-slip**; validar antes de extrair, não depois | Zip-slip é a falha clássica de pacote |
+| C11 | Validar `payload.files[]` contra o conteúdo extraído: arquivo a mais **é erro**, não aviso | Senão o manifest deixa de descrever o payload |
+| C12 | Escrever **fora** da raiz somente via caminho escolhido explicitamente pelo usuário na interface | Exportação é ação do usuário, não de conteúdo |
+
+### 5.2 Denylist de segmento (mínimo)
+
+```
+.git  .obsidian  node_modules  .trash  .DS_Store  Thumbs.db
+.lia/provenance.json (somente leitura pelo Hub, nunca escrita por capacidade)
+```
+
+Além disso, o Hub **nunca** resolve caminho para dentro de:
+```
+%USERPROFILE%\Lia\Waifu\          ← memória de convivência (A3)
+%APPDATA%\Lia\*\config\           ← configuração de outros apps
+%LOCALAPPDATA%\Lia\*\{cache,logs} ← dados técnicos de outros apps
+```
+
+### 5.3 Allowlist de extensão por tipo de payload
+
+Não é denylist. É lista fechada, por tipo de capacidade:
+
+| Tipo | Extensões aceitas no payload |
+|---|---|
+| `skill` | `.md`, `.markdown`, `.txt`, `.json`, `.yaml`, `.yml`, `.csv` + `scripts/` com extensões declaradas no manifest |
+| `knowledge` | `.md`, `.markdown`, `.txt`, `.pdf`, `.json`, `.csv` |
+| `mcp-server` | `.json`, `.md` (configuração e doc — **nunca** binário) |
+| `reference` | qualquer arquivo **não executável**, declarado no manifest |
+
+**Regra:** extensão não declarada ⇒ pacote rejeitado. Não existe "tolerância".
+
+### 5.4 Proibições absolutas
+
+O Hub **nunca**:
+
+1. Escreve fora do diretório da biblioteca ou de um destino escolhido pelo usuário naquele ato.
+2. Lê A3 (memória de convivência) — nem para "indexar", nem para "verificar".
+3. Grava valor de credencial — em arquivo, log, índice, cache ou mensagem de erro.
+4. Executa `scripts/`, binário, comando de shell ou cliente MCP.
+5. Abre porta de rede além do loopback, e mesmo no loopback só se `D-09` aprovar API.
+6. Resolve caminho a partir de texto vindo de capacidade.
+7. Segue symlink/junction de conteúdo importado.
+8. Remove dado do usuário sem confirmação explícita com tamanho exibido.
+
+---
+
+## 6. Detecção automática — catálogo honesto
+
+Esta tabela é o coração da honestidade deste documento. **Cada linha diz o que um verificador consegue e o que não consegue.**
+
+| Verificação | Detecta | **Não** detecta | Confiabilidade |
+|---|---|---|---|
+| Frontmatter válido contra a spec | `name` fora de 1–64; hífen duplo; `description` >1024; chave extra | Intenção, qualidade, segurança | **Alta** (determinístico) |
+| Diretório = `name` | Divergência | Divergência **intencional** de atacante com nome igual e conteúdo malicioso | Alta |
+| Unicode invisível | Tags, zero-width, bidi | Homóglifos visuais | **Alta** (esta é a de maior valor) |
+| Travessia / symlink / zip-slip | Vetores de §5 | — | Alta |
+| Hash / treeHash | Alteração após registro | Origem | Alta |
+| Diff entre versões | Mudança de conteúdo | Mudança **maliciosa irrelevante** em volume | Alta |
+| Egress declarado vs. URLs no texto | URL no corpo não declarada | URL construída em runtime por script | Média |
+| Dependência declarada vs. real | Import não declarado em script Python/JS | Rede, `subprocess`, eval, obfuscação | **Baixa** |
+| Análise de licença (presença) | Ausência de `LICENSE`/`NOTICE`; SPDX malformado | Compatibilidade jurídica; licença de peso; licença de dado | **Baixa** |
+| Scanner de conteúdo externo (ex.: `snyk/agent-scan`) | Padrões conhecidos de tool poisoning | Paráfrase, ataque novo | Média, **com falso-positivo** |
+| Prompt injection no corpo | Padrões lexicais | Paráfrase, instrução indireta, multi-arquivo | **Baixa a média** |
+| Segurança de script | **Nada confiável** | Praticamente tudo | **Nenhuma** |
+
+### 6.1 A frase que o produto deve usar
+
+> **"As verificações automáticas encontraram N itens. Elas não avaliam segurança. A revisão humana é obrigatória para elevar o nível de confiança."**
+
+Nunca: "validado", "aprovado", "seguro", "passou nos testes".
+
+---
+
+## 7. O que exige julgamento humano — e não pode ser automatizado
+
+| Julgamento | Por que não há automação confiável |
+|---|---|
+| **"Esta Skill faz o que diz que faz?"** | Semântica de prosa. Comparar intenção declarada com procedimento exige compreensão |
+| **"Este licenciamento permite redistribuir?"** | Envolve jurisdição, termos de uso, licença de pesos, direitos de imagem/asset. Nenhum scanner é parecer jurídico |
+| **"O autor é confiável?"** | Reputação não é dado em arquivo |
+| **"Este comportamento é aceitável para o usuário?"** | É decisão de produto/risco, reservada ao humano (`D-18`) |
+| **"Este script é seguro?"** | Indecidível na prática |
+| **"A descrição foi otimizada para sequestrar a seleção?"** | Envenenamento semântico de `description` documentado; só leitura crítica pega |
+| **"Este MCP é adequado ao meu projeto?"** | Depende de contexto que o Hub não tem |
+
+**Consequência de produto:** o fluxo de revisão é **assistido**, não **substituído**. O Hub apresenta evidência organizada e registra a decisão humana com autor, data e método.
+
+---
+
+## 8. Fluxo de importação — o único caminho permitido
+
+```
+1. RECEBER
+   ├─ caminho local, arquivo .lia-capability ou diretório
+   └─ NADA é executado, NADA é copiado para a biblioteca ainda
+
+2. ANALISAR (somente leitura, em área temporária isolada)
+   ├─ descompactar em temp com C10/C11 aplicados
+   ├─ validar frontmatter contra spec
+   ├─ varrer Unicode invisível  ← rejeita se encontrar
+   ├─ validar caminhos (C1–C12)
+   ├─ inventariar arquivos + hashes
+   ├─ extrair URLs, comandos, imports declarados
+   ├─ listar `scripts/` (sem executar)
+   └─ triagem de licença (presença, não parecer)
+
+3. RELATAR  →  trust = `unreviewed` sempre neste ponto
+   └─ relatório com: o que é, de onde veio, o que declara,
+      o que contém, o que as verificações viram E NÃO viram
+
+4. AGUARDAR DECISÃO HUMANA
+   └─ sem revisão: fica em "quarentena", não entra no índice publicável
+
+5. ADMITIR (após revisão registrada com autor + data + método)
+   ├─ copiar para a biblioteca
+   ├─ gravar provenance.json + capability.json
+   ├─ gravar hash de conteúdo
+   └─ status = `catalogued`, trust conforme decisão
+
+6. PUBLICAR  →  só o que passou por 5 entra em index.json
+```
+
+**Regra dura:** os passos 1–4 **não têm efeito colateral** fora de um diretório temporário. Cancelar no passo 4 deixa a máquina como estava. Isso é verificável por teste e deve ser critério de aceite.
+
+---
+
+## 9. Atualização, rollback e reversão
+
+| Requisito | Como |
+|---|---|
+| **Nenhuma atualização silenciosa** (`D-10`) | Cada versão é explícita; `index.json` lista versões, não "latest"; host fixa a versão que quer |
+| **Diff obrigatório** | Atualizar exige exibir diff de conteúdo, de `description` (que é o gatilho!) e de `declaredPermissions` |
+| **Revalidação de confiança** | Atualização **não herda** `reviewed-external`; volta a `unreviewed` até nova revisão |
+| **Rollback** | Versões anteriores ficam na biblioteca; reverter = apontar para a versão anterior |
+| **Reversão de instalação** | O Hub não instala. Reversão é do host. O Hub pode **declarar** o que o host deve remover |
+| **Nada é apagado sem confirmação** | Desinstalar mostra tamanho e pergunta; padrão do kit |
+| **Histórico append-only** | `history.json` registra eventos; não reescreve |
+
+---
+
+## 10. Auditoria
+
+| Evento registrado | Campos | Onde |
+|---|---|---|
+| Importação analisada | timestamp, origem, hash, resultado das verificações, achados | `history.json` + log local |
+| Revisão humana | autor, data, método, achados, decisão | `provenance.json` |
+| Admissão na biblioteca | id, versão, hash, trust, quem admitiu | `history.json` |
+| Exportação | id, versão, destino, hash do pacote | `history.json` |
+| Atualização | de/para, diff resumido, nova revisão | `history.json` |
+| Rejeição / quarentena | motivo, timestamp | `history.json` |
+| Erro de validação de pacote recebido | hash, regra violada | log local |
+
+**Regra:** o log **não** contém conteúdo de capacidade, caminho de memória de convivência, nem valor de credencial. Registra **metadado de operação**.
+
+**Formato:** JSON Lines em `%LOCALAPPDATA%\Lia\AgentHub\logs\audit-YYYY-MM.jsonl` (dado técnico, segundo o kit, não vai para backup nem roaming). O `history.json` da capacidade é dado do usuário, fica junto do pacote.
+
+---
+
+## 11. Isolamento e Test Lab
+
+**Estado nesta fase: `PLANNED`, bloqueado por `D-05` e `D-18`.** Não existe — e o documento não propõe construir.
+
+O que posso afirmar com segurança:
+
+| Afirmação | Base |
+|---|---|
+| `uv tool install` **não é sandbox** | É um gerenciador de ambiente por ferramenta. Instala no perfil do usuário com acesso normal ao SO |
+| `--allowedTools` **não é sandbox** | O próprio Studio documenta isso em `agent_cli.py` |
+| Contêiner **não é sandbox por padrão** no Windows para app de desktop que precisa de GUI | Requer configuração explícita; WSL2 é ambiente separado, não isolamento |
+| Windows Sandbox **isola**, mas é uma VM interativa por sessão e não tem integração com app desktop | Comportamento documentado da Microsoft — **não verificado nesta sessão** |
+| Não houve pesquisa de SBOM nem de assinatura | `RESEARCH` pendente |
+
+**Conclusão:** Test Lab é a funcionalidade de maior risco e maior custo do Hub. Ela **não** pode entrar antes de uma sessão dedicada a isolamento em Windows com prova real. O MVP entrega valor grande sem ela (`MVP-AND-ROADMAP.md`).
+
+---
+
+## 12. Cadeia de suprimentos — o mínimo defensável
+
+| Prática | Estado recomendado | Fase |
+|---|---|---|
+| Pinar por commit SHA, nunca tag ou `@latest` | **Obrigatório** | MVP |
+| Hash de conteúdo por arquivo + `treeHash` | **Obrigatório** | MVP |
+| `provenanceChain` persistida | **Obrigatório** | MVP |
+| Diff obrigatório em atualização | **Obrigatório** | MVP |
+| `formatVersion` + `hubVersion` no manifest | **Obrigatório** | MVP |
+| `NOTICE` preservado quando exigido | **Obrigatório** | MVP |
+| `THIRD_PARTY_NOTICES.md` gerado do manifesto | **Obrigatório** | MVP |
+| SBOM (SPDX/CycloneDX) por pacote | Desejável | Fase 2 |
+| Assinatura (minisign/Sigstore) | Desejável | Fase 3 |
+| Transparência (log de assinatura público) | Não recomendado agora | Não pertence ao MVP |
+
+**O que deliberadamente não está na lista:** bloqueio de execução, reputação de autor, "trust score" calculado. Nenhum é verificável.
+
+---
+
+## 13. Riscos residuais aceitos (declarados)
+
+Estes riscos **permanecem** mesmo com todos os controles acima. O produto deve declará-los:
+
+| # | Risco residual | Por que permanece |
+|---|---|---|
+| R1 | Uma Skill revisada pode ser inofensiva na revisão e maliciosa na execução pelo host | O Hub não controla o modelo do host |
+| R2 | Revisão humana pode ser superficial | Processo, não garantia técnica |
+| R3 | Homóglifos visuais passam | Sem confusables-mapping |
+| R4 | Licença pode estar errada mesmo revisada | Não é parecer jurídico |
+| R5 | Upstream pode ser comprometido antes da primeira revisão | Sem histórico anterior |
+| R6 | Um host pode executar capacidade `unreviewed` por decisão própria | Fora do controle do Hub |
+| R7 | Exfiltração via script não é detectável | Indecidível |
+
+**Declaração obrigatória no produto:** *"O Lia Agent Hub organiza, valida estrutura e registra decisões humanas. Ele não garante que uma capacidade seja segura, nem executa nada. Quem autoriza e executa é o host, com a política dele."*
+
+---
+
+## 14. Conclusões
+
+1. **O maior valor de segurança por menor custo é a varredura determinística de Unicode invisível + contenção de caminho.** Ambas são baratas, totalmente automatizáveis e cobrem vetores reais (o bug #128 do MCPVault é evidência).
+2. **Análise estática de script não é oferecida como proteção**, porque não funciona. Isso deve estar escrito no produto, não omitido.
+3. **Nenhuma capacidade importada é executada.** Isso remove a maior classe de risco e é compatível com a arquitetura proposta.
+4. **Confiança é decisão humana registrada**, não score. Scanner produz evidência; humano produz nível.
+5. **Sete riscos residuais ficam abertos e precisam ser declarados ao usuário.** Um produto que esconde risco residual viola a regra nº 4 da marca.
+6. **Test Lab é a parte perigosa e está bloqueada** por decisão pendente, não por falta de tempo.
+
+---
+
+## Referências
+
+- `docs/research/INTEGRATION-CANDIDATES.md` §3.2 — evidência de contenção de caminho no MCPVault (código lido, `src/pathfilter.ts`)
+- `docs/research/INTEGRATION-CANDIDATES.md` §2 — especificação Agent Skills e seus limites de segurança
+- `docs/architecture/PRODUCT-BOUNDARIES-AND-ARCHITECTURE.md` §6 — escala de confiança e licença por camada
+- `docs/architecture/DATA-STORAGE-AND-PORTABILITY.md` §3 — onde logs e auditoria vivem
+- `BloomRX/Lia-Studio@arena/04710d54-lia-studio`, `docs/research/ARENA-SKILLS-MCP-AGENT-TOOLS-RESEARCH.md` §3.3–3.4 — evidência de incidentes e scanners (**`RESEARCH` herdado, não verificado nesta sessão**)
+- `BloomRX/Lia-Studio@arena/01a0f4ab-lia-gamedev`, `app/lia/{permissions,tool_registry,skills}.py` — precedentes de função pura, negação prevalecente e rejeição de symlink
+- `BloomRX/Lia-Forge@arena/649f88bd-3dspritesheet`, `shared/fs/path-containment.mjs`, `docs/SKILLS-KNOWLEDGE-ENGINE.md` §"Segurança de conteúdo"
+- `KIT-PROJETO-NOVO.zip` → `APP-WINDOWS/PADRAO-DA-MARCA.md` §5.6 (escrita atômica), §5.5 (validação de caminho, teto de 260)
