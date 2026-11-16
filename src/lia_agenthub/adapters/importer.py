@@ -17,6 +17,7 @@ from ..domain.model import (
     Capability, License, LicenseStatus, ResourceType, Severity, Source, Trust,
     new_id, notice_obrigatorio,
 )
+from ..domain.mcp import DESCRITOR, MCPServer, DescritorInvalido, ler_descritor
 from ..domain.paths import looks_like_script
 from ..domain.skills import (
     check_references, folder_name_do_recurso, has_blocking, summarize,
@@ -103,6 +104,22 @@ def _detect_license(files: dict[str, bytes]) -> tuple[str | None, str]:
             # Arquivo presente, texto não reconhecido: NÃO inventamos um código.
             return None, LicenseStatus.UNKNOWN.value
     return None, LicenseStatus.UNKNOWN.value
+
+
+def _extra_do_registro(namespace: str, servidor: "MCPServer | None") -> dict:
+    """Metadado de origem que vive fora do schema fixo do registro.
+
+    `extra` é o mecanismo do Hub para campo que não é conhecido do modelo mas
+    precisa sobreviver ao roundtrip: namespace do plugin e descritor MCP.
+    Manter aqui evita inchar `Capability` com campo específico de um
+    ecossistema e continua serializando no arquivo.
+    """
+    extra: dict = {}
+    if namespace:
+        extra["namespace"] = namespace
+    if servidor is not None:
+        extra["mcp"] = servidor.as_dict()
+    return extra
 
 
 def _detect_type(files: dict[str, bytes]) -> ResourceType:
@@ -252,6 +269,35 @@ class Importer:
         # ---- 3. tipo + validação estrutural ------------------------------
         rtype = _detect_type(files)
         report.resource_type = rtype.value
+
+        # ---- 3a. descritor de servidor MCP ------------------------------
+        # `mcp.json` no payload classifica o recurso como `mcp-server`. O Hub
+        # REGISTRA endpoint, transporte e fluxo de autenticação — não conecta,
+        # não autentica e não guarda segredo.
+        #
+        # Descritor com cara de credencial RECUSA o recurso inteiro em vez de
+        # sanear em silêncio: sanear deixaria o autor achando que o segredo
+        # estava protegido, quando o certo é ele nunca ter estado ali.
+        servidor_mcp = None
+        if DESCRITOR in files:
+            if rtype is ResourceType.AGENT_SKILL:
+                report.issues.append({
+                    "severity": "warning", "code": "MCP_DESCRIPTOR_IGNORED",
+                    "message": f"O recurso tem `{DESCRITOR}` e `SKILL.md`. Fica "
+                               f"classificado como Skill; o descritor é "
+                               f"preservado como arquivo.",
+                    "where": DESCRITOR})
+            else:
+                try:
+                    servidor_mcp = ler_descritor(files)
+                    rtype = ResourceType.MCP_SERVER
+                    report.resource_type = rtype.value
+                except DescritorInvalido as exc:
+                    report.blocked_reason = str(exc)
+                    report.hint = (f"Corrija `{DESCRITOR}` ou remova-o. O Hub "
+                                   f"não conecta, não autentica e não guarda "
+                                   f"segredo algum.")
+                    return report
 
         # Armadilha do `or`: um SKILL.md VAZIO é `b""`, que é FALSO em Python.
         # A expressão `files.get("SKILL.md") or ...` pulava a validação
@@ -476,7 +522,12 @@ class Importer:
             ),
             source=Source(upstream=upstream, imported_at=now, method="local"),
             trust=Trust.UNREVIEWED,
-            extra={"namespace": namespace_declarado} if namespace_declarado else {},
+            extra=_extra_do_registro(namespace_declarado, servidor_mcp),
+            # Saída de rede DECLARADA. Para um servidor MCP o endpoint é a
+            # informação de egress mais importante que existe: é para lá que
+            # o host vai falar. Registrá-lo faz o risco e a revisão humana
+            # enxergarem o destino, em vez de o dado ficar só no descritor.
+            egress=([servidor_mcp.endpoint] if servidor_mcp else []),
             content_hash=report.hashes["contentHash"],
             tree_hash=th,
             contains_scripts=report.contains_scripts,
