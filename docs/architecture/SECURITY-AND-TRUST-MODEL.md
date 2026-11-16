@@ -277,14 +277,14 @@ trabalho do usuário pertence ao usuário".
 | **Limite** | **Determinar licença não é trabalho automatizável de forma confiável.** Revisão humana é o gate |
 | **Classificação** | `Automático: triagem` · `Humano: decisão` |
 
-### 3.7 Integridade, hash e assinatura (não implementada)
+### 3.7 Integridade, hash e assinatura (hash implementado; assinatura não)
 
 | | |
 |---|---|
 | **Ameaça** | Pacote adulterado em trânsito ou em repouso; pacote trocado por outro com mesmo nome |
 | **Vetor** | Disco, download, sincronização de nuvem, outro processo |
 | **Impacto** | A4 |
-| **Detecção automática** | Sim — SHA-256 por arquivo (`contentHash`) + hash da árvore (`treeHash`) |
+| **Detecção automática** | Sim — SHA-256 por arquivo (`contentHash`) + hash da árvore (`treeHash`). **Implementado e testado**: adulterar um byte no payload invalida o pacote (`test_pacote_adulterado_e_detectado`); roundtrip entre dois Hubs preserva os dois hashes |
 | **Mitigação** | Verificação obrigatória na carga; `formatVersion` + `hubVersion` no manifest |
 | **Limite** | **Hash detecta alteração, não origem.** Provar autoria exige assinatura criptográfica (Sigstore/minisign) — **não pesquisada nesta fase**, **não implementada**, **fora do MVP** |
 | **Classificação** | `Automático: forte para adulteração` · `Assinatura: fase futura, RESEARCH` |

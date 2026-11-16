@@ -301,9 +301,18 @@ This document records a proposal received from the Lia Go workstream and expande
 - **PROPOSED:** two host classes and three distribution profiles.
 - **PROPOSED:** complementary manifest at `.lia/capability.json`.
 - **PROPOSED:** package-independent host validation and host-owned runtime authority.
-- **NOT IMPLEMENTED:** manifest schema, package format, host SDK, distribution tooling, or Lia Go integration.
-- **NOT VALIDATED:** compatibility with a real Lia Go assistant runtime or mobile package.
-- **HUMAN DECISION REQUIRED:** approval of the architecture, schema, distribution policy, legal review process, and implementation scope.
+- **IMPLEMENTED SINCE:** manifest schema, package format and distribution
+  tooling — see §15 for the verified list and the test that proves each one.
+  (This line previously read "NOT IMPLEMENTED"; it was true when written and
+  stopped being true.)
+- **NOT IMPLEMENTED:** host SDK, and any integration with a real Lia Go
+  runtime. The Hub exposes an API and a package format; it does not ship a
+  client library, and no host has been integrated yet.
+- **NOT VALIDATED:** compatibility with a real Lia Go assistant runtime or a
+  mobile package. This remains unverified — no such runtime was available to
+  test against. The contract tests prove the *Hub side* of the interface only.
+- **HUMAN DECISION REQUIRED:** approval of the architecture, schema,
+  distribution policy, legal review process, and implementation scope.
 
 
 ---

@@ -438,7 +438,14 @@ O modelo **obriga** as três primeiras a serem campos separados. `null` quando n
 
 **Regra:** o host **lê** `biblioteca/`. O Hub **escreve** nela. Nenhum dos dois escreve na pasta do outro. Isso evita o bug clássico do kit (§5.6): *"ler, mesclar, gravar em arquivo temporário e renomear por cima"*.
 
-### 7.3 Contrato com o Studio (proposta, não implementada)
+### 7.3 Contrato com o Studio (proposta)
+
+> **Nota de estado (2026-11-15).** A *coluna do Hub* desta tabela está
+> implementada e testada — índice publicável, pacotes, hash verificável,
+> `trust`/`license` no metadado (`tests/integration/test_host_contracts.py`,
+> classe `TestContratoLiaStudio`). A *coluna do Studio* continua proposta: o
+> Hub não implementa a UI de escolha nem a cópia para `.agents/skills/`, e
+> não deve implementar — seria replicar funcionalidade do host.
 
 O Studio já tem `forge_brief.py` com um padrão correto: preview → hash → `sent: False` → confirmação. O Hub deve seguir o **mesmo desenho**:
 
@@ -452,7 +459,13 @@ O Studio já tem `forge_brief.py` com um padrão correto: preview → hash → `
 
 **O Hub não sabe que o Studio existe.** Não há callback, não há handshake, não há sessão. Isso é a garantia de T1–T3.
 
-### 7.4 Contrato com o Forge (proposta, não implementada)
+### 7.4 Contrato com o Forge (proposta)
+
+> **Nota de estado (2026-11-15).** Do lado do Hub: metadado de descoberta
+> (`description`, `domain`, `tags`, licença) entregue e testado
+> (`TestContratoLiaForge`). Do lado do Forge: admissão de provider e política
+> de modelo continuam **dele**, por desenho — o Hub registra metadado público
+> e não decide admissão.
 
 Idêntico em forma, diferente em conteúdo: o Forge consome capacidades do tipo `mcp-server`, `cli`, `api`, `model` com mais frequência que `skill`. O `requirements` do Hub (adotado do Forge) já é o vocabulário que o Forge entende.
 
