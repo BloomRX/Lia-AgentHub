@@ -21,11 +21,17 @@ INDEX_NAME = "index.json"
 SCHEMA_NAME = "index.schema.json"
 INDEX_SCHEMA_VERSION = 1
 
+#: Chaves que TODO índice publicado precisa ter. Constante pública porque os
+#: hosts consomem o índice e precisam poder verificar o contrato sem depender
+#: de detalhe interno: é o contrato, não a implementação. Há teste que falha
+#: se uma chave exigida sair do schema e outro que falha se um host não achar.
+INDEX_REQUIRED_KEYS = ("schemaVersion", "generatedAt", "capabilities")
+
 SCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Lia Agent Hub — índice de capacidades",
     "type": "object",
-    "required": ["schemaVersion", "generatedAt", "capabilities"],
+    "required": INDEX_REQUIRED_KEYS,
     "properties": {
         "schemaVersion": {"type": "integer"},
         "generatedAt": {"type": "string"},

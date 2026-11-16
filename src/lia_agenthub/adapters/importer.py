@@ -281,21 +281,42 @@ class Importer:
             # ("tags:juridico,..."). Extraímos só o que sabemos interpretar.
             meta = fm.get("metadata", "") or ""
             domain = ""
-            for chave in ("domain", "dominio", "domínio"):
-                for par in meta.replace(";", ",").split(","):
-                    if par.strip().lower().startswith(chave + ":"):
-                        domain = par.split(":", 1)[1].strip()
-            if "tags:" in meta:
+            # Forma aninhada primeiro (`metadata:\n  domain: x`), que é a que
+            # o parser agora preserva. Se lêssemos só a forma inline, o
+            # `domain` continuaria vazio para quem usa bloco — e o campo é
+            # usado para descoberta no catálogo.
+            for chave in ("metadata.domain", "metadata.dominio", "metadata.domínio"):
+                if fm.get(chave):
+                    domain = fm[chave].strip()
+                    break
+            if not domain:
+                for chave in ("domain", "dominio", "domínio"):
+                    for par in meta.replace(";", ",").split(","):
+                        if par.strip().lower().startswith(chave + ":"):
+                            domain = par.split(":", 1)[1].strip()
+            if fm.get("metadata.tags"):
+                # Bloco aninhado: o valor já vem limpo do parser.
+                tags = [x.strip() for x in
+                        fm["metadata.tags"].replace(";", ",").split(",") if x.strip()]
+            elif "tags:" in meta:
                 bruto = meta.split("tags:", 1)[1]
                 # corta na próxima chave conhecida, se houver
                 for sep in (" domain:", " dominio:", " author:", " license:"):
                     if sep in bruto:
                         bruto = bruto.split(sep, 1)[0]
                 tags = [x.strip() for x in bruto.replace(";", ",").split(",") if x.strip()]
-            for chave in ("author", "autor"):
-                if chave + ":" in meta:
-                    author = meta.split(chave + ":", 1)[1].split(",")[0].strip() or None
+            # `author` pode vir do `metadata:` aninhado (forma dominante no
+            # acervo real: `metadata:\n  author: ...`) ou inline. O parser
+            # achatou o aninhado em `metadata.author`, então checamos os dois.
+            for chave in ("metadata.author", "metadata.autor"):
+                if fm.get(chave):
+                    author = fm[chave].split(",")[0].strip() or None
                     break
+            if author is None:
+                for chave in ("author", "autor"):
+                    if chave + ":" in meta:
+                        author = meta.split(chave + ":", 1)[1].split(",")[0].strip() or None
+                        break
 
         # ---- 4. manifesto de pacote .lia-capability ----------------------
         # Preferir o manifesto lido pelo extrator de pacotes: ele não está em
@@ -354,6 +375,19 @@ class Importer:
         report.capability_id = cap_id
         report.name = display
 
+        # Hashes ANTES de qualquer atalho: o relatório precisa dos mesmos
+        # campos em todos os caminhos. Antes o atalho de "já existe" voltava
+        # com `hashes` vazio, e o consumidor que verifica integridade recebia
+        # um relatório sem hash nenhum — silenciosamente pior justo no caso em
+        # que ele mais precisa comparar com o que já tem.
+        per_file = {rel: sha256_bytes(data) for rel, data in files.items()}
+        th = tree_hash(per_file)
+        primario = files.get("SKILL.md")
+        if primario is None:
+            primario = files.get("skill.md") or b""
+        ch = sha256_bytes(primario) if primario else ""
+        report.hashes = {"contentHash": ch, "treeHash": th}
+
         # Conteúdo idêntico já na biblioteca: o id é derivado do conteúdo,
         # então isto é IDENTIDADE, não conflito. Reportar como tal é mais
         # honesto do que fingir que é uma importação nova.
@@ -370,9 +404,6 @@ class Importer:
             report.ok = True
             report.warnings.append("Simulação: nada foi gravado no disco.")
             return report
-
-        per_file = {rel: sha256_bytes(data) for rel, data in files.items()}
-        th = tree_hash(per_file)
         primary = files.get("SKILL.md") or files.get("skill.md") or b""
         report.hashes = {"contentHash": sha256_bytes(primary) if primary else "", "treeHash": th}
         report.files = [

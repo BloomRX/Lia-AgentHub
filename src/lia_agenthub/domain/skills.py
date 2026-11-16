@@ -52,16 +52,39 @@ def parse_frontmatter(text: str) -> ParsedSkill:
     body = text[end + 4:]
 
     fm: dict[str, str] = {}
+    # Um nível de aninhamento é preservado, achatado em `pai.filho`.
+    #
+    # Antes, linhas indentadas eram descartadas e o pai ficava com valor
+    # VAZIO: `metadata:` virava `""`. Não era "ignorar de propósito" — era
+    # CORROMPER. E não é caso de borda: 9 dos 53 SKILL.md reais do acervo
+    # escrevem `metadata:` com `author:` e `version:` indentados, então esses
+    # dois campos se perdiam em silêncio.
+    #
+    # Continua sem PyYAML: só o recorte que o formato usa (um nível,
+    # `chave: valor`). Aninhamento mais profundo continua fora, e continua
+    # virando valor textual em vez de erro.
+    pai: str | None = None
     for line in raw.splitlines():
-        line = line.rstrip()
-        if not line.strip() or line.lstrip().startswith("#"):
+        bruto = line.rstrip()
+        if not bruto.strip() or bruto.lstrip().startswith("#"):
             continue
-        if line.startswith((" ", "\t")):
-            continue  # aninhamento: ignorado de propósito
-        if ":" not in line:
+        indentado = bruto.startswith((" ", "\t"))
+        linha = bruto.strip()
+        if ":" not in linha:
             continue
-        key, _, value = line.partition(":")
-        fm[key.strip()] = value.strip().strip('"').strip("'")
+        key, _, value = linha.partition(":")
+        key, value = key.strip(), value.strip().strip('"').strip("'")
+        if indentado:
+            if pai is None:
+                continue                      # indentado sem pai: ignora
+            chave = f"{pai}.{key}"
+            # O pai só tinha cabeçalho (`metadata:`). Mantemos o mapa
+            # achatado e também o cabeçalho vazio, para quem lê o formato
+            # bruto saber que existe.
+            fm[chave] = value
+            continue
+        fm[key] = value
+        pai = key if value == "" else None
 
     return ParsedSkill(frontmatter=fm, body=body, raw_frontmatter=raw, ok=True)
 
@@ -91,7 +114,12 @@ def validate_skill(text: str, *, folder_name: str | None = None) -> list[Issue]:
         issues.append(Issue(Severity.ERROR, "MISSING_FIELD",
                             f"Campo obrigatório ausente: `{m}`.", "frontmatter"))
 
-    unknown = set(fm) - KNOWN_FIELDS
+    # Só chaves de NÍVEL DE CIMA contam para "campo desconhecido". Subchave
+    # aninhada (`metadata.author`) é campo do pai, não do frontmatter — sem
+    # isto o parser achatado faria todo `metadata:` aninhado do acervo real
+    # emitir dois avisos falsos por Skill.
+    de_topo = {k for k in fm if "." not in k}
+    unknown = de_topo - KNOWN_FIELDS
     for u in sorted(unknown):
         issues.append(Issue(Severity.WARNING, "UNKNOWN_FIELD",
                             f"Campo desconhecido no frontmatter: `{u}`. Clientes que "
