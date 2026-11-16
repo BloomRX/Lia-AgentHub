@@ -1,0 +1,12 @@
+{
+  "C1_list_all": "ok, 3 de 3 registros acessiveis",
+  "C2_notice_no_registro": true,
+  "C2_NOTICE_no_pacote": true,
+  "C3_lia_no_payload": "recusado: Entrada proibida no pacote: `.lia`.",
+  "C5_folder_name_flat": "s",
+  "C5_folder_name_subpasta": "s",
+  "C8_entradas_no_indice": 0,
+  "C8_notIndexed": [],
+  "C8_consistencia_ok": true,
+  "C8_schema_tem_lifecycle": true
+}
