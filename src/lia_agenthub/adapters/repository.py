@@ -41,6 +41,11 @@ class StoredCapability:
 class Repository:
     def __init__(self, locations):
         self.locations = locations
+        #: Registros que existem no disco mas não puderam ser lidos. Preenchido
+        #: a cada varredura; nunca é limpo automaticamente para não mascarar
+        #: uma falha antiga. Quem chama `list_all()`/`list_quarantine()` deve
+        #: olhar aqui antes de afirmar que a biblioteca está vazia.
+        self.erros_de_leitura: list[dict] = []
 
     # ---- leitura ---------------------------------------------------------
     def exists(self, cap_id: str) -> bool:
@@ -55,28 +60,20 @@ class Repository:
                 "Ela pode ter sido removida. Recarregue a biblioteca.")
         return StoredCapability(capability=Capability.from_dict(data), root=root)
 
-    def list_all(self) -> list[StoredCapability]:
-        """Varre o disco. Não confia no índice — ele é conveniência."""
-        out: list[StoredCapability] = []
-        lib = self.locations.library
-        if not lib.is_dir():
-            return out
-        for entry in sorted(lib.iterdir()):
-            if not entry.is_dir():
-                continue
-            data = read_json(entry / ".lia" / "capability.json")
-            if data is None:
-                continue
-            try:
-                out.append(StoredCapability(Capability.from_dict(data), entry))
-            except (KeyError, ValueError):
-                continue  # entrada corrompida: ignorada, não derruba a lista
-        return out
+    def _ler_entradas(self, base: Path) -> list[StoredCapability]:
+        """Varre um diretório e devolve o que conseguir ler.
 
-    def list_quarantine(self) -> list[StoredCapability]:
-        """Varre a quarentena. Mesma regra: o disco é a verdade."""
+        Regra: um registro ilegível não pode derrubar a lista inteira, mas
+        também não pode desaparecer em silêncio. Antes, `except (KeyError,
+        ValueError)` engolia o item e o usuário via a biblioteca "menor" sem
+        saber por quê — e um `TypeError` (campo desconhecido em `Source`)
+        escapava do filtro e derrubava tudo.
+
+        Agora cada falha é registrada em `self.erros_de_leitura`, com o id da
+        pasta e o motivo. Quem chama decide o que fazer: a UI mostra, o
+        diagnóstico lista, os testes verificam.
+        """
         out: list[StoredCapability] = []
-        base = self.locations.quarantine
         if not base.is_dir():
             return out
         for entry in sorted(base.iterdir()):
@@ -84,12 +81,30 @@ class Repository:
                 continue
             data = read_json(entry / ".lia" / "capability.json")
             if data is None:
+                # Sem metadata legível não há capacidade. Ainda assim registra:
+                # uma pasta com payload e sem registro é sinal de dado perdido.
+                self.erros_de_leitura.append({
+                    "id": entry.name, "pasta": str(entry),
+                    "motivo": "capability.json ausente ou ilegível (JSON inválido)"})
                 continue
             try:
                 out.append(StoredCapability(Capability.from_dict(data), entry))
-            except (KeyError, ValueError):
-                continue
+            except Exception as e:  # noqa: BLE001 — fronteira de leitura de disco
+                # Amplo de propósito: qualquer falha ao interpretar um registro
+                # de terceiro/antigo é isolada no item, nunca na biblioteca.
+                # Não é `pass`: o erro fica registrado e é devolvido a quem lê.
+                self.erros_de_leitura.append({
+                    "id": entry.name, "pasta": str(entry),
+                    "motivo": f"{type(e).__name__}: {e}"})
         return out
+
+    def list_all(self) -> list[StoredCapability]:
+        """Varre o disco. Não confia no índice — ele é conveniência."""
+        return self._ler_entradas(self.locations.library)
+
+    def list_quarantine(self) -> list[StoredCapability]:
+        """Varre a quarentena. Mesma regra: o disco é a verdade."""
+        return self._ler_entradas(self.locations.quarantine)
 
     def payload_files(self, cap_id: str) -> dict[str, bytes]:
         """Lê o payload de onde a capacidade estiver: biblioteca ou quarentena.

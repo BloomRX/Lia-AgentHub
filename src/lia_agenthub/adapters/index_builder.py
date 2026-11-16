@@ -31,6 +31,10 @@ SCHEMA = {
         "generatedAt": {"type": "string"},
         "signed": {"const": False,
                    "description": "Sempre false: assinatura não é implementada."},
+        "scope": {"const": "active",
+                  "description": "Estados incluídos neste índice. Sempre 'active': "
+                                 "conteúdo em quarentena nunca é publicado."},
+        "scopeNote": {"type": "string"},
         "capabilities": {
             "type": "array",
             "items": {
@@ -43,6 +47,12 @@ SCHEMA = {
                     "type": {"type": "string"},
                     "trust": {"enum": ["unreviewed", "user-provided",
                                        "reviewed-external", "first-party"]},
+                    "lifecycle": {"enum": ["active", "superseded",
+                                           "archived", "quarantined"],
+                                  "description": "Estado do registro. Presente para que "
+                                                 "um leitor saiba POR QUE um recurso "
+                                                 "está fora do índice, em vez de "
+                                                 "concluir que ele sumiu."},
                     "license": {"type": ["string", "null"]},
                     "licenseKnown": {"type": "boolean"},
                     "treeHash": {"type": "string"},
@@ -81,6 +91,7 @@ def build_index(repo: Repository, *, packages_dir: Path | None = None) -> dict:
             "tags": list(cap.tags),
             "author": cap.author,
             "trust": cap.trust.value,
+            "lifecycle": cap.lifecycle.value,
             "license": cap.license.code,
             "licenseKnown": cap.license.is_known,
             "redistributable": cap.license.redistributable,
@@ -109,6 +120,21 @@ def build_index(repo: Repository, *, packages_dir: Path | None = None) -> dict:
     return {
         "schemaVersion": INDEX_SCHEMA_VERSION,
         "generatedAt": _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds"),
+        # O índice é a lista do que pode ser CONSUMIDO, então só entram
+        # registros `active`. Declarar o escopo é o que evita a leitura
+        # errada: sem isto, um recurso `superseded` ausente do índice parecia
+        # ter sumido do disco. Ele não sumiu — mudou de estado.
+        #
+        # Segurança: conteúdo em QUARENTENA não entra num arquivo feito para
+        # ser compartilhado. Incluí-lo publicaria recurso não revisado e
+        # converteria quarentena em vitrine.
+        "scope": "active",
+        "scopeNote": (
+            "Somente registros com lifecycle=active. Registros em "
+            "quarentena, superseded ou archived continuam no disco e são "
+            "consultáveis pela biblioteca, mas não fazem parte desta lista "
+            "compartilhável. Ausência aqui NÃO significa ausência no disco."
+        ),
         "signed": False,
         "signatureNote": (
             "Este índice NÃO é assinado. Hashes provam integridade do arquivo, "
@@ -156,6 +182,18 @@ def validate_index(index: dict) -> list[str]:
         for key in ("id", "name", "version", "type", "trust", "license"):
             if key not in c:
                 problems.append(f"Entrada {i} sem `{key}`")
+        # `lifecycle` e `scope` são NOVOS: entradas geradas por versões
+        # anteriores não os têm. Validamos a forma quando presentes, sem
+        # exigir presença — exigir invalidaria todo índice antigo e forçaria
+        # migração para uma mudança que é aditiva.
+        ciclo = c.get("lifecycle")
+        if ciclo is not None and ciclo not in ("active", "superseded",
+                                               "archived", "quarantined"):
+            problems.append(f"Entrada {i} com `lifecycle` inválido: {ciclo}")
+        if ciclo == "quarantined":
+            problems.append(
+                f"Entrada {i} está em quarentena mas aparece no índice público. "
+                f"Índice é lista de consumo; quarentena não pode estar nele.")
         cid = c.get("id")
         if cid in seen:
             problems.append(f"`id` duplicado no índice: {cid}")
@@ -189,20 +227,47 @@ def check_consistency(index: dict, packages_dir: Path, library_dir: Path) -> dic
                 orphan_packages.append(p.name)
 
     indexed = {c["id"] for c in index.get("capabilities", [])}
-    on_disk = set()
+
+    # Lê o estado de CADA registro do disco, não só a presença. A versão
+    # anterior tratava "existe no disco e não está no índice" como problema,
+    # o que produzia alarme falso para `superseded`/`archived` — estados que
+    # estão corretamente fora de um índice que só publica `active`.
+    estado_no_disco: dict[str, str] = {}
+    fora_do_indice_esperado: dict[str, str] = {}
     if Path(library_dir).is_dir():
         for entry in Path(library_dir).iterdir():
-            if (entry / ".lia" / "capability.json").is_file():
-                on_disk.add(entry.name)
+            meta = entry / ".lia" / "capability.json"
+            if not meta.is_file():
+                continue
+            data = read_json(meta) or {}
+            ciclo = data.get("lifecycle", "quarantined")
+            estado_no_disco[entry.name] = ciclo
 
+    on_disk = set(estado_no_disco)
     fantasmas = sorted(indexed - on_disk)
+
+    faltando = sorted(on_disk - indexed)
+    for cap_id in faltando:
+        if estado_no_disco.get(cap_id) != "active":
+            fora_do_indice_esperado[cap_id] = estado_no_disco[cap_id]
+
+    # Só é problema um registro ATIVO que ficou fora do índice. Registro em
+    # outro estado está fora por desenho, e misturá-lo com erro esconderia o
+    # erro real no meio de ruído esperado.
+    nao_indexados_ativos = [c for c in faltando
+                            if estado_no_disco.get(c) == "active"]
 
     return {
         # Uma capacidade indexada que não existe no disco é inconsistência:
         # o índice estaria prometendo algo que o usuário não tem.
-        "ok": not missing_packages and not orphan_packages and not fantasmas,
+        "ok": (not missing_packages and not orphan_packages
+               and not fantasmas and not nao_indexados_ativos),
         "missingPackages": missing_packages,
         "orphanPackages": orphan_packages,
-        "notIndexed": sorted(on_disk - indexed),
+        # Ativos que deveriam estar no índice e não estão: isto é divergência.
+        "notIndexed": nao_indexados_ativos,
+        # Fora do índice por estado (superseded/archived/quarantined): normal,
+        # listado à parte para o relatório distinguir "ausente" de "fora".
+        "notIndexedByState": fora_do_indice_esperado,
         "indexedButMissingOnDisk": fantasmas,
     }

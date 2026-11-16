@@ -16,7 +16,9 @@ from .domain.errors import LiaError
 from .domain.integrity import sha256_bytes
 from .domain.model import Capability, Lifecycle, Trust
 from .domain.risk import assess
-from .domain.skills import check_references, has_blocking, validate_skill
+from .domain.skills import (
+    check_references, folder_name_do_recurso, has_blocking, validate_skill,
+)
 
 log = logging.getLogger("lia_agenthub")
 
@@ -150,7 +152,10 @@ class AgentHub:
                       "note": "Este recurso não tem SKILL.md; só a contenção de "
                               "caminho e o Unicode foram verificados."}
         else:
-            folder = next((p.split("/")[0] for p in files if "/" in p), None)
+            # Mesma regra do importador: pasta = origem, não layout interno.
+            # Estes dois pontos divergiam do resto do pipeline.
+            folder = folder_name_do_recurso(
+                stored.capability.source.upstream if stored else None, list(files))
             texto = primary.decode("utf-8", "replace")
             issues = validate_skill(texto, folder_name=folder)
             issues.extend(check_references(texto, set(files)))

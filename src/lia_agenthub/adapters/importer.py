@@ -15,10 +15,12 @@ from ..domain.errors import ImportRejected, SecurityError
 from ..domain.integrity import content_hashes, sha256_bytes, tree_hash
 from ..domain.model import (
     Capability, License, LicenseStatus, ResourceType, Source, Trust, new_id,
+    notice_obrigatorio,
 )
 from ..domain.paths import looks_like_script
 from ..domain.skills import (
-    check_references, has_blocking, summarize, validate_skill,
+    check_references, folder_name_do_recurso, has_blocking, summarize,
+    validate_skill,
 )
 from ..domain.unicode_policy import Context, has_bom, scan, strip_bom
 from .repository import Repository
@@ -237,7 +239,11 @@ class Importer:
 
         if rtype is ResourceType.AGENT_SKILL and skill_text is not None:
             text = skill_text.decode("utf-8", "replace")
-            folder = next((p.split("/")[0] for p in files if "/" in p), None)
+            # A pasta do recurso vem do CAMINHO DE ORIGEM, não do layout
+            # interno do payload. Antes usava-se o primeiro segmento de
+            # qualquer arquivo com "/", então um recurso flat com `docs/x.md`
+            # era comparado contra a pasta `docs`. Ver folder_name_do_recurso.
+            folder = folder_name_do_recurso(upstream, list(files))
             issues = validate_skill(text, folder_name=folder)
             # Referências a arquivos: só faz sentido com o pacote completo em mãos.
             issues.extend(check_references(text, set(files)))
@@ -353,10 +359,17 @@ class Importer:
             # Licença DETECTADA é registrada como declarada — mas nunca como
             # permissão. Detectar um arquivo MIT não é revisar a licença, e o
             # direito de redistribuir continua sendo decisão humana.
+            #
+            # `notice_required` é DERIVADO da licença identificada, não lido do
+            # payload: um recurso importado não decide obrigação legal sobre si
+            # mesmo. Antes o campo era omitido e voltava sempre False, então
+            # um MIT era exportado sem NOTICE — obrigação do texto MIT
+            # descumprida por omissão, não por decisão.
             license=License(
                 code=detected,
                 status=LicenseStatus(lstatus),
                 redistributable=False,
+                notice_required=notice_obrigatorio(detected),
             ),
             source=Source(upstream=upstream, imported_at=now, method="local"),
             trust=Trust.UNREVIEWED,

@@ -1,0 +1,19 @@
+{
+  "C1_list_all": "FALHA TypeError: Source.__init__() got an unexpected keyword argument 'campoFuturo'",
+  "C2_notice_no_registro": false,
+  "C2_NOTICE_no_pacote": false,
+  "C3_lia_no_payload": [
+    ".lia/capability.json"
+  ],
+  "C3_lia_no_pacote": [
+    "payload/.lia/capability.json"
+  ],
+  "C5_folder_name_flat": null,
+  "C5_folder_name_subpasta": "scripts",
+  "C8_entradas_no_indice": 0,
+  "C8_notIndexed": [
+    "skill-valida-b87a5b2b"
+  ],
+  "C8_consistencia_ok": true,
+  "C8_schema_tem_lifecycle": false
+}

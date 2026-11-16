@@ -22,6 +22,13 @@ WINDOWS_RESERVED = {
 # C3: o que nunca entra, em qualquer profundidade. `.git.` e `.git ` são
 # equivalentes a `.git` no Windows — daí a canonicalização antes do teste.
 DENY_NAMES = {
+    # `.lia` é o diretório de METADADOS DO HUB dentro de cada capacidade
+    # (`capability.json`, `provenance.json`, `history.json`). Se um payload
+    # trouxer `.lia/`, esses arquivos seriam gravados ao lado dos metadados
+    # reais e poderiam se passar por eles — contradiz a fronteira de confiança
+    # e faz o `.lia` forjado viajar para dentro do pacote exportado.
+    # Não há uso legítimo: o `.lia` pertence ao Hub, nunca ao recurso.
+    ".lia",
     "node_modules", "thumbs.db", "desktop.ini",
     # Credenciais e chaves: um pacote não transporta segredo, nem para
     # "só documentar". Não há uso legítimo num acervo de capacidades.
