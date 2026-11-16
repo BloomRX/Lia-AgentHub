@@ -13,6 +13,8 @@ import re
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 
+from .errors import LiaError
+
 SCHEMA_VERSION = 1
 
 
@@ -220,9 +222,22 @@ class Capability:
     #: Id da versão que esta substitui, quando houver. Forma a linhagem.
     version_of: str | None = None
 
+    #: Campos de versão futura preservados sem interpretação (mesma regra de
+    #: `License`, aplicada ao nível de cima). Sem isto, um catálogo que
+    #: ganhasse `campoNovo` num Hub novo perderia o campo ao ser LIDO por um
+    #: Hub antigo: a informação desaparecia no roundtrip, sem aviso.
+    extra: dict = field(default_factory=dict)
+
+    _CAMPOS_SERIALIZADOS = (
+        "id", "name", "version", "type", "description", "domain", "tags",
+        "author", "license", "source", "trust", "lifecycle", "contentHash",
+        "treeHash", "containsScripts", "declaredPermissions", "egress",
+        "secrets", "requirements", "history", "versionOf",
+    )
+
     # ---- serialização -----------------------------------------------------
     def as_dict(self) -> dict:
-        return {
+        d = {
             "schemaVersion": SCHEMA_VERSION,
             "id": self.id,
             "name": self.name,
@@ -246,10 +261,20 @@ class Capability:
             "history": list(self.history),
             "versionOf": self.version_of,
         }
+        # Campo de versão futura volta ao nível de cima, mas NUNCA sobrescreve
+        # campo conhecido: o registro não muda de forma nem por conteúdo.
+        for k, v in (self.extra or {}).items():
+            d.setdefault(k, v)
+        return d
 
     @classmethod
     def from_dict(cls, d: dict) -> "Capability":
+        if not isinstance(d, dict):
+            raise LiaError("Registro de capacidade inválido.",
+                           "O arquivo de metadado não é um objeto JSON.")
+        extras = {k: v for k, v in d.items() if k not in cls._CAMPOS_SERIALIZADOS}
         return cls(
+            extra=extras,
             id=d["id"],
             name=d.get("name", d["id"]),
             version=d.get("version", "0.0.0"),

@@ -371,3 +371,55 @@ class TestReimportacao:
         r = hub.import_path(str(src))
         assert hub.repo.exists(r.capability_id) is False
         assert hub.repo.exists_anywhere(r.capability_id) is True
+
+
+class TestCapabilityTolerante:
+    """Mesma classe de defeito da R-1.2, um nível acima.
+
+    `License.from_dict` descartava campo desconhecido (corrigido). Mas
+    `Capability.from_dict` fazia o mesmo no nível de cima, e ninguém tinha
+    olhado: um registro gravado por um Hub mais novo perdia o campo ao ser
+    LIDO por um Hub mais antigo. Perda silenciosa no roundtrip.
+    """
+
+    def test_campo_futuro_sobrevive_ao_roundtrip(self):
+        from lia_agenthub.domain.model import Capability
+        c = Capability.from_dict({"id": "x", "name": "x", "version": "1",
+                                  "campoDeVersaoFutura": {"a": 1}})
+        assert c.extra == {"campoDeVersaoFutura": {"a": 1}}
+        assert c.as_dict()["campoDeVersaoFutura"] == {"a": 1}
+
+    def test_campo_futuro_nao_sobrescreve_campo_conhecido(self):
+        from lia_agenthub.domain.model import Capability
+        c = Capability.from_dict({"id": "x", "name": "x", "version": "1",
+                                  "extra": {"id": "HACK"}})
+        assert c.as_dict()["id"] == "x"
+
+    def test_regstro_que_nao_e_objeto_da_erro_claro(self):
+        from lia_agenthub.domain.model import Capability
+        from lia_agenthub.domain.errors import LiaError
+        with pytest.raises(LiaError):
+            Capability.from_dict(["nao", "e", "objeto"])
+
+
+class TestUnicodeNome:
+    """O nome do arquivo é conteúdo não confiável tanto quanto o corpo."""
+
+    def test_nome_com_bidi_e_sinalizado(self, hub, tmp_path):
+        src = tmp_path / "bidi"
+        src.mkdir()
+        (src / "SKILL.md").write_text(
+            "---\nname: bidi\ndescription: d\n---\n\nCorpo.\n", encoding="utf-8")
+        (src / "a\u202egnp.exe").write_bytes(b"x")
+        r = hub.import_path(str(src))
+        assert "UNICODE_FILENAME" in [i["code"] for i in r.issues]
+        assert r.requires_review is True
+
+    def test_nome_normal_nao_gera_ruido(self, hub, tmp_path):
+        src = tmp_path / "ok"
+        src.mkdir()
+        (src / "SKILL.md").write_text(
+            "---\nname: ok\ndescription: d\n---\n\nCorpo.\n", encoding="utf-8")
+        (src / "guia.md").write_text("texto\n", encoding="utf-8")
+        r = hub.import_path(str(src))
+        assert "UNICODE_FILENAME" not in [i["code"] for i in r.issues]
