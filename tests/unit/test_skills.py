@@ -1,7 +1,15 @@
 """Validação estrutural de SKILL.md — Agent Skills (D-03)."""
 import pytest
 
+from lia_agenthub.adapters.paths_resolver import resolve_locations
+from lia_agenthub.app import AgentHub
+from lia_agenthub.domain.model import Severity
 from lia_agenthub.domain.skills import has_blocking, parse_frontmatter, validate_skill
+
+
+def _hub(tmp_path):
+    """Hub isolado: nada toca a biblioteca real do usuário."""
+    return AgentHub(resolve_locations(tmp_path / "hub"))
 
 
 def codes(issues):
@@ -159,3 +167,78 @@ def test_link_markdown_relativo_detectado():
 def test_referencia_com_barra_invertida_normaliza():
     from lia_agenthub.domain.skills import check_references
     assert check_references("`scripts\\run.py`", {"SKILL.md", "scripts/run.py"}) == []
+
+
+# --------------------------------------------------------------------------
+# Namespace `plugin::skill` — formato oficial do ecossistema de Skills
+# --------------------------------------------------------------------------
+class TestNamespace:
+    """Medido: 8 das 16 Skills oficiais de google-labs-code/stitch-skills usam
+    `stitch::<skill>`. A regra anterior recusava todas as 8 como NAME_FORMAT —
+    o Hub rejeitava Skills oficiais do Google por usarem a convenção do
+    próprio ecossistema.
+    """
+
+    def test_namespace_valido_nao_e_erro(self):
+        issues = validate_skill("---\nname: stitch::react-components\ndescription: d\n---\n\nCorpo.\n")
+        assert "NAME_FORMAT" not in codes(issues)
+        assert "NAME_NAMESPACED" in codes(issues)
+
+    def test_namespace_e_info_nao_aviso(self):
+        issues = validate_skill("---\nname: stitch::x\ndescription: d\n---\n\nCorpo.\n")
+        ns = [i for i in issues if i.code == "NAME_NAMESPACED"][0]
+        assert ns.severity is Severity.INFO
+
+    @pytest.mark.parametrize("nome", [
+        "Stitch::x",      # parte com maiúscula
+        "a::B",           # parte final com maiúscula
+        "a:::b",          # parte vazia
+        "::x",            # namespace vazio
+        "x::",            # nome local vazio
+        "a::b c",         # espaço
+        "a::b__c",        # underscore
+    ])
+    def test_namespace_invalido_continua_erro(self, nome):
+        """A regra não afrouxa: cada parte precisa ser válida isoladamente."""
+        issues = validate_skill(f"---\nname: {nome}\ndescription: d\n---\n\nCorpo.\n")
+        assert "NAME_FORMAT" in codes(issues), nome
+
+    def test_pasta_compara_com_nome_local(self):
+        """`stitch::react-components` vive em `.../skills/react-components/`."""
+        issues = validate_skill(
+            "---\nname: stitch::react-components\ndescription: d\n---\n\nCorpo.\n",
+            folder_name="react-components")
+        assert "NAME_FOLDER_MISMATCH" not in codes(issues)
+
+    def test_pasta_diferente_do_nome_local_ainda_avisa(self):
+        issues = validate_skill(
+            "---\nname: stitch::outro\ndescription: d\n---\n\nCorpo.\n",
+            folder_name="react-components")
+        assert "NAME_FOLDER_MISMATCH" in codes(issues)
+
+
+class TestNamespaceNaImportacao:
+    """O id e o nome exibido usam o nome LOCAL; o namespace é preservado."""
+
+    def test_importa_e_indexa_pelo_nome_local(self, tmp_path):
+        d = tmp_path / "react-components"
+        d.mkdir()
+        (d / "SKILL.md").write_text(
+            "---\nname: stitch::react-components\ndescription: Converte designs.\n"
+            "---\n\nCorpo.\n", encoding="utf-8")
+        hub = _hub(tmp_path)
+        r = hub.import_path(str(d))
+        assert r.ok, r.blocked_reason
+        assert r.name == "react-components"
+        assert r.capability_id.startswith("react-components-")
+
+    def test_namespace_preservado_no_registro(self, tmp_path):
+        d = tmp_path / "sk"
+        d.mkdir()
+        (d / "SKILL.md").write_text(
+            "---\nname: stitch::sk\ndescription: d\n---\n\nCorpo.\n", encoding="utf-8")
+        hub = _hub(tmp_path)
+        r = hub.import_path(str(d))
+        det = hub.detail(r.capability_id)
+        assert det["namespace"] == "stitch"
+        assert "namespace" in det

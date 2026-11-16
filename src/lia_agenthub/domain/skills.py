@@ -132,14 +132,37 @@ def validate_skill(text: str, *, folder_name: str | None = None) -> list[Issue]:
             issues.append(Issue(Severity.ERROR, "NAME_TOO_LONG",
                                 f"`name` tem {len(name)} caracteres; o limite é {NAME_MAX}.",
                                 "name"))
-        if not NAME_RE.match(name):
+        # Nome com namespace (`plugin::skill`) é formato de mercado, não erro.
+        #
+        # Medido: 8 das 16 Skills oficiais do google-labs-code/stitch-skills
+        # usam `stitch::<skill>` no frontmatter. A regra anterior recusava
+        # todas as 8 como NAME_FORMAT — ou seja, o Hub rejeitava Skills
+        # oficiais do Google por usarem a convenção do próprio ecossistema.
+        #
+        # A regra não afrouxa: CADA parte precisa ser válida isoladamente.
+        # `stitch::react-components` passa; `Stitch::x`, `a::B` e `a:::b`
+        # continuam erro. Namespace não é desculpa para aceitar nome ruim.
+        partes = name.split("::")
+        nome_local = partes[-1]
+        if not all(NAME_RE.match(parte) for parte in partes):
             issues.append(Issue(Severity.ERROR, "NAME_FORMAT",
                                 "`name` deve ser minúsculo, com hífens simples "
-                                "(ex.: `minha-skill`), sem hífen duplo nem hífen nas pontas.",
+                                "(ex.: `minha-skill`), sem hífen duplo nem hífen nas pontas. "
+                                "Namespace `plugin::skill` é aceito desde que cada parte "
+                                "obedeça à mesma regra.",
                                 "name"))
-        if folder_name and name != folder_name:
+        elif len(partes) > 1:
+            issues.append(Issue(Severity.INFO, "NAME_NAMESPACED",
+                                f"`name` usa namespace (`{name}`). O Hub indexa pelo "
+                                f"nome local `{nome_local}` e preserva o namespace "
+                                f"no metadado — ele identifica o plugin de origem.",
+                                "name"))
+        # A pasta é comparada com o nome LOCAL: `stitch::react-components`
+        # vive em `.../skills/react-components/`, não em
+        # `.../skills/stitch::react-components/`.
+        if folder_name and nome_local != folder_name:
             issues.append(Issue(Severity.WARNING, "NAME_FOLDER_MISMATCH",
-                                f"`name` é `{name}` mas a pasta é `{folder_name}`. A "
+                                f"`name` é `{nome_local}` mas a pasta é `{folder_name}`. A "
                                 f"especificação recomenda que sejam iguais.",
                                 "name"))
 

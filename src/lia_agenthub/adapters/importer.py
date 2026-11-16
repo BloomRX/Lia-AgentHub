@@ -262,6 +262,7 @@ class Importer:
             skill_text = files.get("skill.md")
         skill_name = ""
         declared_license: str | None = None
+        namespace_declarado = ""
         declared_description = ""
         domain, tags, author = "", [], None
 
@@ -293,6 +294,14 @@ class Importer:
             from ..domain.skills import parse_frontmatter
             fm = parse_frontmatter(text).frontmatter
             skill_name = fm.get("name", "")
+            # Namespace (`stitch::react-components`): o id, o nome exibido e
+            # a pasta usam o nome LOCAL. O namespace identifica o plugin de
+            # origem e vai para `extra.namespace`, para não se perder nem
+            # poluir o identificador do recurso.
+            if "::" in skill_name:
+                namespace_declarado, _, skill_name = skill_name.rpartition("::")
+            else:
+                namespace_declarado = ""
             # P-E2: declaração de licença no frontmatter.
             declared_license = (fm.get("license") or "").strip() or None
             declared_description = (fm.get("description") or "").strip()
@@ -467,6 +476,7 @@ class Importer:
             ),
             source=Source(upstream=upstream, imported_at=now, method="local"),
             trust=Trust.UNREVIEWED,
+            extra={"namespace": namespace_declarado} if namespace_declarado else {},
             content_hash=report.hashes["contentHash"],
             tree_hash=th,
             contains_scripts=report.contains_scripts,
