@@ -14,8 +14,8 @@ from pathlib import Path
 from ..domain.errors import ImportRejected, SecurityError
 from ..domain.integrity import content_hashes, sha256_bytes, tree_hash
 from ..domain.model import (
-    Capability, License, LicenseStatus, ResourceType, Source, Trust, new_id,
-    notice_obrigatorio,
+    Capability, License, LicenseStatus, ResourceType, Severity, Source, Trust,
+    new_id, notice_obrigatorio,
 )
 from ..domain.paths import looks_like_script
 from ..domain.skills import (
@@ -235,6 +235,8 @@ class Importer:
 
         skill_text = files.get("SKILL.md") or files.get("skill.md")
         skill_name = ""
+        declared_license: str | None = None
+        declared_description = ""
         domain, tags, author = "", [], None
 
         if rtype is ResourceType.AGENT_SKILL and skill_text is not None:
@@ -246,15 +248,28 @@ class Importer:
             folder = folder_name_do_recurso(upstream, list(files))
             issues = validate_skill(text, folder_name=folder)
             # Referências a arquivos: só faz sentido com o pacote completo em mãos.
-            issues.extend(check_references(text, set(files)))
+            # folder_name é necessário aqui: sem ele, uma referência no
+            # formato `<a-propria-skill>/x.md` não é reconhecida como interna.
+            issues.extend(check_references(text, set(files), folder_name=folder))
             report.issues.extend(i.as_dict() for i in issues)
             if has_blocking(issues):
-                report.blocked_reason = "O arquivo SKILL.md é estruturalmente inválido."
-                report.hint = "Corrija os campos apontados como erro e importe de novo."
+                # R-4.1d: citar o CÓDIGO real. A mensagem genérica mandava
+                # "corrigir os campos apontados como erro" mesmo quando a
+                # causa era outra — o usuário caçava um problema inexistente
+                # no frontmatter.
+                erros = [i for i in issues if i.severity is Severity.ERROR]
+                codigos = sorted({i.code for i in erros})
+                report.blocked_reason = (
+                    "O recurso foi recusado por erro estrutural: "
+                    + ", ".join(codigos) + ".")
+                report.hint = "; ".join(sorted({i.message for i in erros})[:3])
                 return report
             from ..domain.skills import parse_frontmatter
             fm = parse_frontmatter(text).frontmatter
             skill_name = fm.get("name", "")
+            # P-E2: declaração de licença no frontmatter.
+            declared_license = (fm.get("license") or "").strip() or None
+            declared_description = (fm.get("description") or "").strip()
             # `metadata` é um saco de chaves livres do formato Agent Skills.
             # Jogá-lo inteiro em `domain` rotulava toda skill com a string crua
             # ("tags:juridico,..."). Extraímos só o que sabemos interpretar.
@@ -303,7 +318,23 @@ class Importer:
                 })
 
         # ---- 5. licença: presença, nunca inferência ----------------------
+        #
+        # P-E2 / R-2.3: o campo `license` do frontmatter é uma DECLARAÇÃO do
+        # autor, não permissão. Antes ele era ignorado: se não houvesse
+        # arquivo `LICENSE`, o registro saía `unknown` — 47 recursos do acervo
+        # real "sem licença" que na verdade tinham licença escrita no texto.
+        #
+        # Ordem de confiança: arquivo de licença (evidência física) vence
+        # frontmatter (afirmação). Se só há frontmatter, registramos como
+        # declarado e a base aponta que a evidência é textual — nunca
+        # `redistributable=True`, que continua exigindo decisão humana.
         detected, lstatus = _detect_license(files)
+        base_declarada = "arquivo de licença no payload" if detected else ""
+        if detected is None and declared_license:
+            detected = declared_license
+            lstatus = LicenseStatus.DECLARED.value
+            base_declarada = ("frontmatter da SKILL.md — afirmação do autor, "
+                              "não verificação")
         report.detected_license = detected
         report.license_status = lstatus
         if detected is None:
@@ -352,7 +383,12 @@ class Importer:
             name=display,
             version=_resolve_version(manifest, skill_text),
             type=rtype,
-            description=(manifest or {}).get("description", "") or "",
+            # P-E1: manifesto primeiro; frontmatter como fallback quando não
+            # houver manifesto. Antes o fallback não existia e o catálogo
+            # inteiro saía com 48 descrições vazias mesmo tendo o texto no
+            # SKILL.md. Só preenche o que estava vazio — aditivo.
+            description=((manifest or {}).get("description", "") or ""
+                         or declared_description),
             domain=domain,
             tags=tags,
             author=author,
@@ -370,6 +406,7 @@ class Importer:
                 status=LicenseStatus(lstatus),
                 redistributable=False,
                 notice_required=notice_obrigatorio(detected),
+                redistribution_basis=base_declarada or None,
             ),
             source=Source(upstream=upstream, imported_at=now, method="local"),
             trust=Trust.UNREVIEWED,

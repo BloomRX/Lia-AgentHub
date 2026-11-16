@@ -74,6 +74,10 @@ class Repository:
         diagnóstico lista, os testes verificam.
         """
         out: list[StoredCapability] = []
+        # R-1.3: limpa ANTES de varrer, senão o erro de uma chamada anterior
+        # fica misturado com os desta — e o chamador não consegue saber o que
+        # é atual. O atributo é por varredura, não acumulativo.
+        self.erros_de_leitura = []
         if not base.is_dir():
             return out
         for entry in sorted(base.iterdir()):

@@ -158,7 +158,7 @@ class AgentHub:
                 stored.capability.source.upstream if stored else None, list(files))
             texto = primary.decode("utf-8", "replace")
             issues = validate_skill(texto, folder_name=folder)
-            issues.extend(check_references(texto, set(files)))
+            issues.extend(check_references(texto, set(files), folder_name=folder))
             report = {
                 "issues": [i.as_dict() for i in issues],
                 "summary": {

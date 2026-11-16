@@ -218,7 +218,13 @@ def test_licenca_detectada_e_registrada_mas_nao_autoriza(hub, skill_dir):
     assert lic["code"] == "MIT"
     assert lic["status"] == "declared"
     assert lic["redistributable"] is False
-    assert not lic.get("redistribution_basis")
+    # `redistribution_basis` documenta ONDE a evidência da licença foi achada
+    # (aqui, o arquivo no payload). Isso descreve procedência, NÃO direito de
+    # redistribuir — o direito continua exigindo decisão humana, e é por isso
+    # que `redistributable` acima é False. Até a rodada anterior este campo
+    # ficava vazio porque o importador não o preenchia; P-E2 passou a
+    # preenchê-lo justamente para o revisor saber em que se baseou.
+    assert lic["redistribution_basis"] == "arquivo de licença no payload"
 
 
 def test_licenca_nao_reconhecida_nao_inventa_codigo(hub, tmp_path):

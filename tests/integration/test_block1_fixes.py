@@ -22,7 +22,7 @@ from lia_agenthub.adapters.paths_resolver import resolve_locations
 from lia_agenthub.adapters.repository import Repository
 from lia_agenthub.app import AgentHub
 from lia_agenthub.domain.model import (
-    Capability, License, Lifecycle, Source, notice_obrigatorio,
+    Capability, License, Lifecycle, Severity, Source, notice_obrigatorio,
 )
 from lia_agenthub.domain.paths import WINDOWS_RESERVED
 from lia_agenthub.domain.skills import (
@@ -353,20 +353,43 @@ class TestC4Referencias:
         assert [i.code for i in iss] == []
 
     def test_referencia_cross_skill_ausente_nao_e_erro(self):
-        iss = check_references("Veja `outra-skill/SKILL.md`.", {"SKILL.md"})
-        assert iss and iss[0].severity.value == "warning"
+        """Citar outra Skill é informativo, nunca bloqueio.
+
+        Antes isto virava REFERENCE_MISSING (warning) porque o detector só
+        reconhecia Skill quando ela estava DENTRO do payload — que é o caso
+        raro. O caso real do acervo é `.agents/skills/<outra>/SKILL.md`.
+        """
+        iss = check_references("Veja `.agents/skills/outra-skill/SKILL.md`.",
+                               {"SKILL.md"})
+        assert [i.code for i in iss] == ["REFERENCE_CROSS_SKILL"]
+        assert iss[0].severity is Severity.INFO
 
     @pytest.mark.parametrize("texto", [
         "[x](../fora.md)",
         "[x](../../etc/passwd)",
-        "[x](/etc/passwd)",
         "[x](C:/Windows/win.ini)",
         "`C:/Windows/x.md`",
+        "[x](\\\\servidor\\share\\x.md)",
     ])
-    def test_fuga_de_fronteira_e_erro_explicito(self, texto):
+    def test_escape_e_reportado_como_aviso_nunca_como_bloqueio(self, texto):
+        """Citar caminho fora do payload é aviso de portabilidade.
+
+        A versão anterior promovia isto a ERROR e recusava a importação. Medido
+        contra os 48 SKILL.md reais: 16 de 53 Skills (33%) que importavam
+        passaram a ser recusadas — incluindo Skills de monorepo que citam
+        `../../../docs/...` de propósito. Referência é TEXTO; a segurança de
+        caminho real acontece em paths.py/safe_extract.py. Nenhuma Skill pode
+        ser recusada por causa do que ela escreve.
+        """
         iss = check_references(texto, {"SKILL.md"})
-        assert any(i.code == "REFERENCE_INVALID" for i in iss), texto
-        assert any(i.severity.value == "error" for i in iss)
+        assert any(i.code == "REFERENCE_ESCAPE" for i in iss), texto
+        assert all(i.severity is not Severity.ERROR for i in iss), texto
+
+    @pytest.mark.parametrize("rota", ["/json/list", "/json/version", "/", "/api/v1/x"])
+    def test_rota_http_em_prosa_nao_e_referencia_de_arquivo(self, rota):
+        """Endpoint CDP numa Skill de operação não é caminho de arquivo."""
+        assert check_references(f"Enumere `{rota}` no endpoint.", {"SKILL.md"}) == []
+        assert escaping_references(f"`{rota}`") == []
 
     def test_escaping_references_reporta_em_vez_de_silenciar(self):
         assert escaping_references("[x](../fora.md)") == ["../fora.md"]
@@ -405,13 +428,13 @@ class TestC4Referencias:
         assert r.ok is True
         assert any(i["code"] == "REFERENCE_MISSING" for i in r.issues)
 
-    def test_importacao_com_fuga_de_fronteira_registra_erro(self, tmp_path):
+    def test_importacao_com_fuga_de_fronteira_importa_e_avisa(self, tmp_path):
+        """O recurso importa; a fuga vira aviso. O alvo nunca é lido."""
         hub = _hub(tmp_path)
-        src = _skill(tmp_path / "src", corpo="Veja [x](/etc/passwd).\n")
+        src = _skill(tmp_path / "src", corpo="Veja [x](../../../docs/guia.md).\n")
         r = hub.import_path(str(src))
-        # Registra o problema; o conteúdo citado não é lido nem copiado.
-        codigos = [i["code"] for i in r.issues]
-        assert "REFERENCE_INVALID" in codigos or r.ok is False
+        assert r.ok is True, "referência em prosa não pode recusar o recurso"
+        assert any(i["code"] == "REFERENCE_ESCAPE" for i in r.issues)
 
 
 # =========================================================== C5 — folder_name

@@ -54,39 +54,58 @@ class ExportResult:
     hint: str = ""
 
 
-#: Nomes de arquivo de licença aceitos, em ordem de preferência. Espelha a
-#: detecção do importador para que os dois concordem sobre o que é "o texto".
-_NOMES_LICENCA = ("LICENSE", "LICENCE", "COPYING", "LICENSE.md", "LICENSE.txt")
+#: Nomes de arquivo de licença aceitos.
+_NOMES_LICENCA = ("LICENSE", "LICENCE", "COPYING", "LICENSE.md", "LICENSE.txt",
+                  "LICENSE-MIT", "LICENSE.txt", "NOTICE.md")
 
 
 def _e_metadado_interno(rel: str) -> bool:
-    """`rel` aponta para dentro de um diretório `.lia/`?
-
-    Mesma canonicalização do validador de caminho (`.lia`, `.LIA`, `.lia.` no
-    fim todos colapsam), aplicada a CADA segmento — um `.lia` aninhado em
-    qualquer profundidade é metadado do Hub, nunca conteúdo de recurso.
-    """
+    """`rel` aponta para dentro de um diretório `.lia/`?"""
     for parte in rel.replace("\\", "/").split("/"):
         if parte.rstrip(" .").lower() == ".lia":
             return True
     return False
 
 
-def _texto_da_licenca(files: dict[str, bytes]) -> str:
-    """Texto do arquivo de licença na RAIZ do payload, se houver.
+def _arquivos_de_licenca(files: dict[str, bytes]) -> list[tuple[str, str]]:
+    """Todos os textos de licença no payload, com o caminho de cada um.
 
-    Só a raiz: um `LICENSE` dentro de `vendor/` é de outra pessoa e não é o
-    texto que se aplica a este recurso. Devolve "" quando não achar texto
-    legível — quem chama decide como avisar.
+    Antes isto só olhava a RAIZ. Para o acervo real a licença costuma ser
+    POR SKILL (`skills/<nome>/LICENSE.txt`), não na raiz do repositório —
+    então um recurso Apache-2.0 era exportado sem NOTICE, e o
+    THIRD_PARTY_NOTICES dizia "NÃO DECLARADA". O pacote saía sem o texto que
+    a licença exige que o acompanhe: falha de conformidade do artefato.
+
+    Devolve TODOS, cada um com caminho, para o aviso poder citar a origem em
+    vez de escolher um arbitrariamente. Ignora subárvores que claramente são
+    de terceiro embutido (`vendor/`, `node_modules/`, já barrados na entrada)
+    e `.lia/` (metadado interno).
     """
-    for nome in _NOMES_LICENCA:
-        for rel in files:
-            if "/" in rel or rel.upper() != nome.upper():
-                continue
-            texto = files[rel].decode("utf-8", "replace").strip()
-            if texto:
-                return texto[:20_000]   # teto: texto de licença é curto
-    return ""
+    achados: list[tuple[str, str]] = []
+    for rel in sorted(files):
+        norm = rel.replace("\\", "/")
+        partes = [p.lower() for p in norm.split("/")]
+        if _e_metadado_interno(norm):
+            continue
+        if any(p in ("vendor", "node_modules", "third_party", "third-party")
+               for p in partes[:-1]):
+            continue
+        if not any(partes[-1].upper().startswith(n)
+                   for n in ("LICENSE", "LICENCE", "COPYING")):
+            continue
+        texto = files[rel].decode("utf-8", "replace").strip()
+        if texto:
+            achados.append((rel, texto[:20_000]))
+    return achados
+
+
+def _texto_da_licenca(files: dict[str, bytes]) -> str:
+    """Texto da licença mais provável (a da raiz, senão a primeira achada)."""
+    achados = _arquivos_de_licenca(files)
+    if not achados:
+        return ""
+    raiz = [a for a in achados if "/" not in a[0]]
+    return (raiz or achados)[0][1]
 
 
 def _manifest_for(cap: Capability, files: list[dict], target: Target,
@@ -225,28 +244,37 @@ def export(cap_id: str, repo: Repository, destination: Path, *,
         if cap.license.notice_required:
             # O texto da licença encontrado no payload vai junto. MIT, BSD e
             # Apache exigem que o aviso de copyright e o texto acompanhem a
-            # redistribuição — um NOTICE que só aponta para o nome da licença
-            # não cumpre isso. Se o arquivo não estiver no payload, dizemos
-            # isso em vez de fingir que está.
-            texto_licenca = _texto_da_licenca(files)
-            if texto_licenca:
-                zf.writestr("NOTICE",
-                            f"{cap.name} — licença {cap.license.code}\n"
-                            f"{'=' * 60}\n\n"
-                            f"Texto da licença encontrado no pacote:\n\n"
-                            f"{texto_licenca}\n"
-                            f"{'=' * 60}\n\n"
-                            f"Este aviso foi incluído porque a licença "
-                            f"{cap.license.code} exige que o texto acompanhe a "
-                            f"redistribuição. O Lia Agent Hub não verificou "
-                            f"autoria nem titularidade.\n")
+            # redistribuição — um NOTICE que só aponta o nome da licença não
+            # cumpre isso. Se o arquivo não estiver no payload, dizemos isso
+            # em vez de fingir que está.
+            #
+            # TODOS os arquivos de licença entram, com caminho. Escolher um
+            # arbitrariamente perderia atribuição quando o recurso tem mais de
+            # uma (skill + dependência embutida).
+            achados = _arquivos_de_licenca(files)
+            cabeca = (f"{cap.name} — licença declarada: "
+                      f"{cap.license.code or '(não identificada)'}\n"
+                      f"{'=' * 68}\n\n")
+            if achados:
+                blocos = []
+                for rel, texto in achados:
+                    blocos.append(f"--- {rel} ---\n\n{texto}\n")
+                zf.writestr("NOTICE", (
+                    cabeca
+                    + f"Texto(s) de licença encontrados no pacote "
+                      f"({len(achados)}):\n\n"
+                    + "\n".join(blocos)
+                    + f"\n{'=' * 68}\n\n"
+                    + f"Este aviso foi incluído porque a licença "
+                      f"{cap.license.code} exige que o texto acompanhe a "
+                      f"redistribuição. O Lia Agent Hub não verificou autoria "
+                      f"nem titularidade.\n"))
             else:
-                zf.writestr("NOTICE",
-                            f"{cap.name} — licença {cap.license.code}\n\n"
-                            f"A licença identificada exige aviso, mas nenhum "
-                            f"arquivo de licença legível foi encontrado no "
-                            f"payload. Peça o texto ao autor original antes de "
-                            f"redistribuir.\n")
+                zf.writestr("NOTICE", (
+                    cabeca
+                    + "A licença identificada exige aviso, mas nenhum arquivo "
+                      "de licença legível foi encontrado no payload. Peça o "
+                      "texto ao autor original antes de redistribuir.\n"))
         zf.writestr("THIRD_PARTY_NOTICES.md",
                     "# Avisos de terceiros\n\n"
                     f"Recurso: {cap.name}\n\n"

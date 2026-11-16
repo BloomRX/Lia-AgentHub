@@ -94,24 +94,34 @@ class License:
     redistribution_basis: str | None = None
     notice_required: bool = False
 
+    #: Campos de versões futuras preservados sem interpretação (R-1.2).
+    extra: dict = field(default_factory=dict)
+
+    _CAMPOS_CONHECIDOS = ("code", "content", "weights", "status",
+                          "redistributable", "redistribution_basis",
+                          "notice_required")
+
     def as_dict(self) -> dict:
         d = asdict(self)
         d["status"] = self.status.value
-        return d
+        extras = d.pop("extra", {}) or {}
+        # R-1.1: campo desconhecido nunca sobrescreve campo conhecido.
+        return {**{k: v for k, v in extras.items() if k not in d}, **d}
 
     @classmethod
     def from_dict(cls, d: dict | None) -> "License":
         if not d:
             return cls()
+        if not isinstance(d, dict):
+            return cls(extra={"_valorOriginal": d})
         code = d.get("code")
         # `notice_required` ausente = registro gravado antes do campo existir.
-        # Não inventamos `False` silenciosamente: derivamos da licença
-        # identificada pela tabela de obrigações. Registro EXPLÍCITO (True ou
-        # False) é sempre respeitado, inclusive o False de Unlicense.
+        # Derivamos da licença identificada; valor EXPLÍCITO é respeitado.
         if "notice_required" in d:
             notice = bool(d.get("notice_required"))
         else:
             notice = notice_obrigatorio(code)
+        extras = {k: v for k, v in d.items() if k not in cls._CAMPOS_CONHECIDOS}
         return cls(
             code=code,
             content=d.get("content"),
@@ -120,6 +130,7 @@ class License:
             redistributable=bool(d.get("redistributable", False)),
             redistribution_basis=d.get("redistribution_basis"),
             notice_required=notice,
+            extra=extras,
         )
 
     @property
@@ -179,7 +190,9 @@ class Source:
         # `extra` volta ao nível de cima, como se sempre tivesse estado lá:
         # quem lê o arquivo não precisa saber que houve separação interna.
         extras = d.pop("extra", {}) or {}
-        return {**extras, **d}
+        # R-1.1: campo desconhecido NUNCA sobrescreve campo conhecido —
+        # dados de terceiro não reescrevem o contrato do modelo.
+        return {**{k: v for k, v in extras.items() if k not in d}, **d}
 
 
 @dataclass
@@ -319,9 +332,3 @@ def notice_obrigatorio(codigo: str | None) -> bool:
     if not codigo:
         return False
     return _NOTICE_POR_LICENCA.get(codigo, False)
-
-
-def exige_notice_conhecido(codigo: str | None) -> bool:
-    """A licença está na tabela? Usado para não confundir "não exige" com
-    "não sei" quando o registro é antigo e não traz `notice_required`."""
-    return bool(codigo) and codigo in _NOTICE_POR_LICENCA

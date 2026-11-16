@@ -157,62 +157,46 @@ def validate_skill(text: str, *, folder_name: str | None = None) -> list[Issue]:
     return sorted(issues, key=lambda i: (order[i.severity], i.code))
 
 
-#: Referências a arquivos no corpo: links Markdown relativos e caminhos citados
-#: em código. Só o que aponta para DENTRO do recurso — URL e âncora ficam fora.
+#: Referências a arquivos no corpo: links Markdown relativos e caminhos
+#: citados em código.
 _MD_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
 _CODE_PATH_RE = re.compile(r"`([\w./-]+\.(?:md|py|js|ts|json|ya?ml|txt|sh|csv|toml))`")
 
+#: Trecho em crase que "parece caminho". Usado só para LINT de prosa — nunca
+#: para decidir se um pacote é aceito.
+_CODE_PATH_AMPLO_RE = re.compile(r"`((?:[A-Za-z]:)?[^`\s:]*[\\/][^`\s]*)`")
 
-#: Referências que tentam sair do recurso. Detectadas separadamente para
-#: poderem ser REPORTADAS como problema em vez de sumirem no filtro.
-_ESCAPE_RE = re.compile(r"^(?:[a-zA-Z]:[\\/]|[/\\]{2}|[/\\])")
+#: Esquemas de URL que aparecem em prosa técnica e não são arquivo.
+_URL_PREFIXOS = ("http://", "https://", "mailto:", "ftp://", "ws://", "wss://",
+                 "file://", "chrome://", "devtools://")
 
-
-def referenced_files(text: str) -> list[str]:
-    """Caminhos relativos citados no corpo. Ignora URL, âncora e absoluto."""
-    vistos, saida = set(), []
-    for alvo in _referencias_brutas(text):
-        if alvo.startswith(("..", "/", "\\")) or _ESCAPE_RE.match(alvo):
-            continue
-        if alvo not in vistos:
-            vistos.add(alvo)
-            saida.append(alvo)
-    return saida
+#: Prefixo UNC (`\\servidor\share`).
+_UNC_RE = re.compile(r"^[/\\]{2}")
 
 
-def escaping_references(text: str) -> list[str]:
-    """Referências que apontariam para FORA do recurso (`..` ou absoluto).
+def _parece_url_ou_rota(alvo: str) -> bool:
+    """`/json/list`, `/`, `/api/v1/x` — rota de servidor citada em prosa.
 
-    Existem à parte porque `referenced_files` as descarta de propósito — e
-    descartar sem registrar faria uma tentativa de fuga parecer "sem
-    referências". Para validação isso é informação, não ruído.
+    Rota tem segmentos sem extensão e começa com barra. Caminho de arquivo
+    absoluto que importa para segurança é `C:\...` ou UNC, tratados à parte.
     """
-    vistos, saida = set(), []
-    for alvo in _referencias_brutas(text):
-        if not (alvo.startswith("..") or _ESCAPE_RE.match(alvo)):
-            continue
-        if alvo not in vistos:
-            vistos.add(alvo)
-            saida.append(alvo)
-    return saida
-
-
-#: Qualquer trecho em crase que pareça caminho, COM OU SEM extensão conhecida.
-#: Necessário para pegar `C:/Windows/win.ini` e `C:/x.md`, que `_CODE_PATH_RE`
-#: não vê porque não termina em extensão da lista. Fuga de fronteira precisa
-#: ser detectada independentemente de a extensão ser "de conteúdo".
-# Prefixo de drive opcional ANTES da classe que exclui `:` — senão
-# `C:/x.md` nunca casaria, porque o `:` de `C:` cairia na exclusão.
-_CODE_PathAmplo_RE = re.compile(r"`((?:[A-Za-z]:)?[^`\s:]*[\\/][^`\s]*)`")
+    if not alvo.startswith(("/", "\\")):
+        return False
+    if _UNC_RE.match(alvo):
+        return False                       # UNC é caminho de rede, não rota
+    ultimo = alvo.rstrip("/").rsplit("/", 1)[-1]
+    return "." not in ultimo or ultimo.startswith(".")
 
 
 def _referencias_brutas(text: str) -> list[str]:
-    """Toda referência plausível, antes de qualquer filtro de segurança."""
+    """Toda referência plausível, antes de qualquer classificação."""
     achados: list[str] = []
-    for padrao in (_MD_LINK_RE, _CODE_PATH_RE, _CODE_PathAmplo_RE):
+    for padrao in (_MD_LINK_RE, _CODE_PATH_RE, _CODE_PATH_AMPLO_RE):
         for bruto in padrao.findall(text):
             alvo = bruto.strip()
-            if not alvo or alvo.startswith(("#", "http://", "https://", "mailto:", "<")):
+            if not alvo or alvo.startswith(("#", "<")):
+                continue
+            if alvo.lower().startswith(_URL_PREFIXOS):
                 continue
             alvo = alvo.split("#", 1)[0].rstrip(".,;:")
             if alvo:
@@ -220,70 +204,119 @@ def _referencias_brutas(text: str) -> list[str]:
     return achados
 
 
-def _normaliza_referencia(caminho: str) -> str:
-    """Forma canônica para comparar referência com arquivo presente."""
-    return caminho.replace("\\", "/").lstrip("./").rstrip("/").lower()
+def _dedup(itens: list[str]) -> list[str]:
+    vistos, saida = set(), []
+    for a in itens:
+        if a not in vistos:
+            vistos.add(a)
+            saida.append(a)
+    return saida
+
+
+def referenced_files(text: str) -> list[str]:
+    """Caminhos relativos citados no corpo que podem ser conferidos no payload.
+
+    Exclui URL, âncora, rota de servidor (`/json/list`), caminho absoluto e
+    fuga (`..`). O que fica são candidatos a arquivo DESTE recurso.
+    """
+    return _dedup([
+        a for a in _referencias_brutas(text)
+        if not a.startswith("..")
+        and not _parece_url_ou_rota(a)
+        and not re.match(r"^[A-Za-z]:[\\/]", a)
+    ])
+
+
+def escaping_references(text: str) -> list[str]:
+    """Caminhos que apontam para FORA do payload (`..` além da raiz, drive, UNC).
+
+    ESTE é o sinal de segurança. Não inclui rota HTTP: `/json/list` é endpoint,
+    não tentativa de escape.
+    """
+    saida = []
+    for a in _referencias_brutas(text):
+        if a.startswith("..") or _UNC_RE.match(a) or re.match(r"^[A-Za-z]:[\\/]", a):
+            saida.append(a)
+    return _dedup(saida)
+
+
+def cross_skill_reference(alvo: str) -> str | None:
+    """Extrai o nome da Skill citada, se o alvo apontar para outra Skill.
+
+    Reconhece a convenção real do acervo: `.agents/skills/<nome>/SKILL.md`
+    (e variações com 1–3 segmentos antes de `skills/`). É o caso dominante —
+    uma Skill citando outra do mesmo monorepo. Não é "arquivo ausente".
+    """
+    partes = alvo.replace("\\", "/").split("/")
+    for i, parte in enumerate(partes[:-1]):
+        if parte.lower() == "skills" and i + 1 < len(partes):
+            return partes[i + 1]
+    # Forma curta: `<nome>/SKILL.md`
+    if len(partes) == 2 and partes[-1].lower() == "skill.md":
+        return partes[0]
+    return None
 
 
 def check_references(text: str, available: set[str] | frozenset[str],
                      *, folder_name: str | None = None) -> list[Issue]:
-    """Confere que cada arquivo citado existe no recurso.
+    """Lint de referências do corpo. NUNCA recusa um recurso.
 
-    Este é o ÚNICO verificador de referências do projeto. Quem gera catálogo,
-    quem valida e quem importa chamam esta função — duas implementações
-    paralelas divergiriam, e foi exatamente o que aconteceu antes: o relatório
-    de catálogo dizia "2 avisos" enquanto a verificação real encontrava 29
-    Skills com referências ausentes.
+    Decisão de projeto, tomada depois de medir: esta função roda sobre os 48
+    `SKILL.md` reais do acervo, e tratá-la como gate de segurança bloqueou 16
+    de 53 Skills (33%) que importavam corretamente — entre elas Skills de
+    operação que citam `/json/list` (endpoint CDP) e Skills de monorepo que
+    citam `../../../docs/...` de propósito.
 
-    Distingue três situações, porque tratá-las igual esconde problemas:
+    Referência é TEXTO: descreve intenção do autor, não é caminho que o Hub
+    vá abrir. A segurança real de caminho acontece onde arquivos são lidos e
+    escritos (`domain/paths.py`, `adapters/safe_extract.py`), e continua
+    intacta. Por isso aqui tudo é AVISO ou INFO — o pior veredito possível é
+    "vale conferir", jamais "não pode importar".
 
-    * `REFERENCE_MISSING` — o caminho não existe no recurso. Aviso.
-    * `REFERENCE_CROSS_SKILL` — o caminho aponta para a pasta de OUTRA Skill
-      (primeiro segmento é uma pasta de Skill conhecida, diferente desta).
-      Não é erro: o autor citou deliberadamente algo externo. É aviso de
-      portabilidade, porque quem importar só este recurso não terá o alvo.
-    * `REFERENCE_INVALID` — o caminho escaparia do recurso (`..`, absoluto,
-      drive). Não é "ausente": é tentativa de sair da fronteira. Erro.
-
-    Referência quebrada NUNCA é `ERROR` (exceto fuga de fronteira): o autor
-    pode ter citado arquivo que o host gera. Bloquear por isso recusaria
-    Skills legítimas — e o produto promete não inventar reparos.
+    Códigos:
+      * `REFERENCE_CROSS_SKILL` (info) — cita outra Skill. Normal em monorepo.
+      * `REFERENCE_ESCAPE` (warning) — `..`/drive/UNC: portabilidade, não ataque.
+      * `REFERENCE_MISSING` (warning) — citado e não encontrado no payload.
+      * `REFERENCE_EXTERNAL` (info) — rota/endpoint, não é arquivo.
     """
     issues: list[Issue] = []
-    normalizados = {_normaliza_referencia(a) for a in available}
+    normalizados = {a.replace("\\", "/").lstrip("./").rstrip("/").lower()
+                    for a in available}
+    raiz = (folder_name or "").lower()
 
-    # Pastas que são uma outra SKILL — não basta ter subpasta. `docs/guia.md`
-    # é conteúdo DESTA skill; `outra-skill/SKILL.md` é outra skill. O critério
-    # é a pasta conter um SKILL.md próprio e não ser a raiz deste recurso.
-    pastas_de_skill = {a.split("/")[0].lower() for a in available
-                       if a.lower().endswith("/skill.md")}
-
-    # Fugas de fronteira: reportadas, não silenciadas.
     for alvo in escaping_references(text):
         issues.append(Issue(
-            Severity.ERROR, "REFERENCE_INVALID",
-            f"O corpo cita `{alvo}`, que aponta para FORA do recurso. "
-            f"Referências só podem apontar para dentro do próprio recurso.", alvo))
+            Severity.WARNING, "REFERENCE_ESCAPE",
+            f"O corpo cita `{alvo}`, que aponta para fora do payload. Se o "
+            f"recurso for importado sozinho, esse alvo não virá junto. "
+            f"Documente a dependência ou traga o arquivo para o payload.", alvo))
 
     for alvo in referenced_files(text):
-        chave = _normaliza_referencia(alvo)
+        chave = alvo.replace("\\", "/").lstrip("./").rstrip("/").lower()
         if chave in normalizados:
             continue
-
-        primeira = chave.split("/")[0]
-        if primeira in pastas_de_skill and (folder_name is None
-                                            or primeira != folder_name.lower()):
+        outra = cross_skill_reference(alvo)
+        if outra and outra.lower() != raiz:
             issues.append(Issue(
-                Severity.WARNING, "REFERENCE_CROSS_SKILL",
-                f"O corpo cita `{alvo}`, que fica em outra Skill. Funciona para "
-                f"quem tem as duas; quem importar só esta não terá o arquivo.", alvo))
+                Severity.INFO, "REFERENCE_CROSS_SKILL",
+                f"O corpo cita `{alvo}`, da Skill `{outra}`. Funciona para quem "
+                f"tem ambas; quem importar só esta não terá o arquivo.", alvo))
             continue
-
+        if folder_name and chave.split("/")[0] == raiz:
+            # `minha-skill/x.md` dentro do payload de `minha-skill`
+            chave = "/".join(chave.split("/")[1:])
+            if chave in normalizados:
+                continue
         issues.append(Issue(
             Severity.WARNING, "REFERENCE_MISSING",
-            f"O corpo cita `{alvo}`, que não está no recurso. Se for um arquivo "
-            f"de apoio, ele precisa ser importado junto.", alvo))
+            f"O corpo cita `{alvo}`, que não está no recurso. Se for arquivo "
+            f"de apoio, importe-o junto ou ajuste o texto.", alvo))
     return issues
+
+
+def rotas_citadas(text: str) -> list[str]:
+    """Rotas/endpoints citados em prosa (`/json/list`). Informação, não issue."""
+    return _dedup([a for a in _referencias_brutas(text) if _parece_url_ou_rota(a)])
 
 
 def has_blocking(issues: list[Issue]) -> bool:
@@ -297,41 +330,42 @@ def summarize(issues: list[Issue]) -> dict[str, int]:
     return out
 
 
-def folder_name_do_recurso(upstream: str | None, files: list[str] | set[str]) -> str | None:
+def folder_name_do_recurso(upstream: str | None,
+                           files: list[str] | set[str] | None = None) -> str | None:
     """Nome da pasta do recurso, para a checagem `name` vs pasta.
 
     Semântica (antes implícita e errada):
 
-    * O nome da pasta é o do DIRETÓRIO que o usuário apontou na importação —
-      `.../minha-skill` → `minha-skill`. É o que um humano vê no explorador.
-    * NÃO é o primeiro segmento de um caminho interno do payload. Para um
-      recurso `flat` (SKILL.md na raiz, mais `docs/guia.md`), o "primeiro
-      segmento" é `docs` — uma subpasta de conteúdo, não a pasta do recurso.
-      Era assim que `folder_name` virava `scripts` ou `docs` e a checagem
-      de coerência passava a comparar nome com coisa errada.
-    * Recurso que não veio de uma pasta (arquivo solto, ZIP) devolve `None`:
-      não existe pasta para comparar, e inventar uma seria mentir.
+    * A pasta é a do DIRETÓRIO que o usuário apontou na importação
+      (`.../minha-skill` → `minha-skill`). É o que ele vê no explorador.
+    * NÃO é o primeiro segmento de um caminho interno do payload. Antes, um
+      recurso flat com `docs/guia.md` era comparado contra a pasta `docs` —
+      e recurso sem subpasta virava `None`, então a checagem nunca rodava.
+    * `None` quando não existe pasta declarada: ZIP, `.lia-capability`,
+      arquivo solto, ou um `upstream` que é RÓTULO e não caminho
+      (`probe`, `BloomRX/Lia-Studio@abc:...`). Inventar seria mentir.
 
-    `upstream` é a origem registrada na importação. Quando ela é um diretório,
-    a pasta é o próprio diretório. Quando é um arquivo, a pasta é o diretório
-    que o contém — é o contexto que o usuário escolheu.
+    `upstream` é a origem registrada na importação. `files` é aceito por
+    compatibilidade de assinatura e não é mais usado para derivar a pasta.
     """
     if not upstream:
         return None
     from pathlib import PurePosixPath, PureWindowsPath
 
-    # `upstream` pode ser POSIX ou Windows; escolhe o parser pela forma.
-    p = PureWindowsPath(upstream) if ("\\" in upstream or ":" in upstream) \
-        else PurePosixPath(upstream)
+    bruto = str(upstream).strip()
+    if not bruto:
+        return None
+    # `repo@commit:caminho` é uma REFERÊNCIA, não um caminho local. Pegar o
+    # último segmento de `BloomRX/Lia-Studio@abc:.agents/skills/x` daria `x`,
+    # que é plausível mas não é a pasta que o usuário apontou.
+    if "@" in bruto and ":" in bruto.split("@", 1)[1]:
+        bruto = bruto.split(":", 1)[1] if ":" in bruto else bruto
+    tem_separador = ("/" in bruto) or ("\\" in bruto)
+    if not tem_separador:
+        return None                     # rótulo, não caminho
+    p = PureWindowsPath(bruto) if "\\" in bruto or ":" in bruto else PurePosixPath(bruto)
     if not p.name:
-        return None                      # terminou em separador: sem pasta
+        return None
     if p.suffix.lower() in (".zip", ".lia-capability"):
-        return None                      # arquivo compactado não tem pasta
-    # Diretório apontado: o último segmento É a pasta do recurso.
-    # Arquivo solto: tratamos o último segmento como nome do arquivo e
-    # devolvemos None — não há pasta declarada a comparar.
-    if any(f.lower().endswith("skill.md") for f in files) and \
-            not any("/" in f for f in files):
-        # Recurso flat: só faz sentido comparar se o upstream é a pasta.
-        return p.name if p.suffix == "" else None
+        return None
     return p.name if p.suffix == "" else None

@@ -47,6 +47,14 @@ SCHEMA = {
                     "type": {"type": "string"},
                     "trust": {"enum": ["unreviewed", "user-provided",
                                        "reviewed-external", "first-party"]},
+                    # R-8.2: emitidas mas ausentes do schema publicado.
+                    # Um consumidor que validasse o índice contra o próprio
+                    # schema rejeitaria um índice válido.
+                    "description": {"type": "string"},
+                    "domain": {"type": "string"},
+                    "tags": {"type": "array", "items": {"type": "string"}},
+                    "author": {"type": ["string", "null"]},
+                    "redistributable": {"type": "boolean"},
                     "lifecycle": {"enum": ["active", "superseded",
                                            "archived", "quarantined"],
                                   "description": "Estado do registro. Presente para que "
