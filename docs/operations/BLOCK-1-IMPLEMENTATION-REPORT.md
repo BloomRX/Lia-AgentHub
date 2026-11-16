@@ -16,17 +16,45 @@ do que está **bloqueado**.
 | C1 | Tolerância de `Source` | ✅ **PASS** |
 | C2 | Preservação de `notice_required` | ✅ **PASS** |
 | C3 | Bloqueio de `.lia/` no payload | ✅ **PASS** |
-| C4 | `check_references` unificado | ✅ **PASS** |
+| C4 | `check_references` unificado | ⚠️ **APROVADO COM DEFEITO — CORRIGIDO DEPOIS** |
 | C5 | `folder_name` nos dois pontos | ✅ **PASS** |
-| C6 | Implementação de P-E1 | ⛔ **BLOCKED** |
-| C7 | Implementação de P-E2 | ⛔ **BLOCKED** |
+| C6 | Implementação de P-E1 | ⛔ **BLOCKED NA ÉPOCA — IMPLEMENTADO DEPOIS** |
+| C7 | Implementação de P-E2 | ⛔ **BLOCKED NA ÉPOCA — IMPLEMENTADO DEPOIS** |
 | C8 | Schema do índice | ✅ **PASS** |
 
-**6 de 8 completas.** C6 e C7 dependem de `P-E1`/`P-E2`, que só existem no
-relatório de revisão — e esse arquivo **não existe em nenhuma branch deste
-repositório** (§2). Não inventei o escopo.
+> ## ⚠️ CORREÇÃO DESTE RELATÓRIO (registro honesto do erro)
+>
+> Este relatório, como escrito originalmente, continha **duas afirmações
+> falsas** e **uma autoavaliação errada**. Elas ficam registradas aqui em vez
+> de apagadas, porque o erro em si é informação útil.
+>
+> **Falso: "P-E1/P-E2 não existem em nenhuma branch deste repositório".**
+> Eles existiam em `docs/research/SKILL-CATALOG-IMPORT-REPORT.md` §4.3 da
+> branch `arena/db625478-lia-agenthub`. Meu comando de busca consultava
+> `refs/heads/arena/...` de branches que eu **nunca havia fetchado**; o git
+> respondia `fatal: ambiguous argument` e eu li a saída vazia como "não
+> existe". A regra que tirei disso: antes de concluir qualquer ausência,
+> `git fetch origin 'refs/heads/*:refs/remotes/origin/*'` e verificar que o
+> comando **não falhou** — grep só conta se o exit code for 0 ou 1, nunca se
+> houver `fatal` no stderr.
+>
+> **Errado: C4 marcada como PASS.** A revisão independente reprovou C4 com
+> evidência medida. Minha promoção de `REFERENCE_INVALID` a `ERROR` recusou
+> **16 de 53 Skills reais (30%)** na importação. Detalhes em
+> `docs/review/BLOCK-1-INDEPENDENT-REVIEW.md` (R-4.1). Corrigido em
+> `e6bd051`; o corpus real voltou a 53/53 e há teste de regressão em
+> `tests/integration/test_review_fixes.py`.
+>
+> **Autoavaliação errada: "6 de 8 completas".** Com C4 reprovada, o número
+> correto era 5 de 8 mais uma correção defeituosa. Números de teste
+> (285 → 361, `validate.sh` 4/4, `verify-consistency` 44/44) foram
+> **confirmados verdadeiros** pela revisão em cópias limpas — a divergência
+> era sobre cobertura, não sobre os verdes.
+>
+> **Estado atual (com esta rodada):** C1–C8 resolvidos, P-E1/P-E2
+> implementados e testados, suíte em **412 testes**. Ver
+> `docs/operations/FINAL-IMPLEMENTATION-REPORT.md`.
 
-**Suíte:** 285 → **361 testes**, todos passando.
 **`main`:** `34a27f4`, intacta, local e remoto.
 
 ---
@@ -80,12 +108,21 @@ Os três commits trazidos:
 
 ---
 
-## 2. BLOCKED — a fonte obrigatória não existe
+## 2. BUSCA FALHA (registro do erro) — a fonte EXISTE
 
 O prompt determina: *"Leia integralmente `docs/review/ARCHITECTURE-SECURITY-CROSS-REVIEW.md`"*,
 e sobre ele dependem C6 e C7 (P-E1, P-E2).
 
-**O arquivo não existe.** Verificado, não presumido:
+> **CORREÇÃO:** esta seção registra uma conclusão ERRADA. Os arquivos e as
+> propostas existiam na branch `arena/1a7ed773-lia-agenthub` (revisão,
+> `bd4bfbb`) e em `arena/db625478-lia-agenthub` (pesquisa, P-E1…P-E8). A
+> tabela abaixo registra honestamente o que eu verifiquei e por que a
+> verificação falhou: consultei refs de branches que nunca havia fetchado,
+> o git respondeu `fatal`, e tratei a saída vazia como ausência. A leitura
+> correta está no topo deste relatório. Mantenho a tabela como registro do
+> defeito de método.
+
+**Resultado da verificação (falha de método, não ausência real):**
 
 | Verificação | Resultado |
 |---|---|
@@ -315,20 +352,43 @@ Os **dois** pontos foram verificados por espião em teste, não por leitura:
 
 ---
 
-### C6 — P-E1 → **BLOCKED**
+### C6 — P-E1 → **IMPLEMENTADO** (era BLOCKED por engano)
 
-`P-E1` não existe em nenhuma ref deste repositório (§2). Implementar exigiria
-inventar o escopo. **Não implementado por decisão, não por falta de tempo.**
-Nenhum arquivo tocado em nome de C6.
+**O bloqueio estava errado.** `P-E1` existe em
+`docs/research/SKILL-CATALOG-IMPORT-REPORT.md` §4.3, branch
+`arena/db625478-lia-agenthub`. Texto literal:
 
-**Para destravar:** trazer o texto de P-E1. Estimativa: pequeno, se P-E1 for
-uma proposta pontual como as outras do bloco.
+> "`description`: usar frontmatter como fallback quando não houver manifesto
+> — aditiva (só preenche o que hoje é vazio) — impacto se não for feita:
+> catálogo com 48 descrições vazias".
+
+**Implementado** em `e6bd051`, exatamente nesse escopo: manifesto primeiro,
+frontmatter como fallback, aditivo. Medido sobre o corpus real: **0
+descrições vazias** (antes, todas). 3 testes em `test_review_fixes.py`.
 
 ---
 
-### C7 — P-E2 → **BLOCKED**
+### C7 — P-E2 → **IMPLEMENTADO** (era BLOCKED por engano)
 
-Mesma situação de C6. **Nenhum arquivo tocado em nome de C7.**
+Mesmo erro de busca. Texto literal de §4.3:
+
+> "Ler o campo `license` do frontmatter **como declaração** (nunca como
+> permissão) e registrar `license.status: declared` com
+> `redistribution_basis` apontando o arquivo/texto — aditiva; preserva o
+> princípio 'presença ≠ permissão' — impacto: 47 recursos 'sem licença' que
+> **têm** licença declarada no texto".
+
+**Implementado** em `e6bd051`. Escopo respeitado: declaração, nunca
+permissão — `redistributable` continua `False` e há teste que falha se
+mudar. Arquivo de licença vence frontmatter (evidência física > afirmação);
+divergência entre os dois é registrada.
+
+**Ressalva honesta sobre o impacto previsto.** A proposta falava em 47
+recursos com licença declarada. No corpus que medi (53 `SKILL.md` dos quatro
+repositórios Lia), apenas **2** têm `license:` no frontmatter; 4 têm arquivo
+no payload; as outras 47 não têm nem um nem outro. O mecanismo está correto
+e testado; o número da proposta não se confirma neste corpus. Registro o
+medido, não o esperado.
 
 ---
 
