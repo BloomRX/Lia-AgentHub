@@ -339,3 +339,70 @@ class TestFronteirasQueNaoPodemCeder:
             "lia_agenthub.domain.model", fromlist=["Trust"]).Trust]
         hub.set_trust(r.capability_id, "reviewed-external", decided_by="humano")
         assert hub.detail(r.capability_id)["trust"] == "reviewed-external"
+
+
+# ==========================================================================
+# Auditoria adversarial — o que um atacante tentaria
+# ==========================================================================
+class TestAdversarial:
+    """Vetores testados contra o Hub. Cada teste documenta um ataque real."""
+
+    def test_zip_bomb_e_recusado(self, hub, tmp_path):
+        """50 MB comprimido em 50 KB. Taxa de compressão é o sinal."""
+        import io
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+            z.writestr("SKILL.md", "---\nname: b\ndescription: d\n---\n")
+            z.writestr("bomb.txt", "A" * (50 * 1024 * 1024))
+        p = tmp_path / "bomb.zip"
+        p.write_bytes(buf.getvalue())
+        r = hub.import_path(str(p))
+        assert not r.ok
+        assert "compressão" in (r.blocked_reason or "").lower()
+
+    def test_nome_de_arquivo_com_bidi_e_sinalizado(self, hub, tmp_path):
+        """`a\\u202egnp.exe` — o bidi inverte o que o usuário VÊ.
+
+        Antes disto, só o CORPO de .md/.txt/.json era varrido. O nome do
+        arquivo passava limpo, então um script podia exibir um nome e ter
+        outro.
+        """
+        src = _skill(tmp_path / "bidi", "bidi")
+        (src / "a\u202egnp.exe").write_bytes(b"x")
+        r = hub.import_path(str(src))
+        codigos = [i["code"] for i in r.issues]
+        assert "UNICODE_FILENAME" in codigos
+        assert r.requires_review is True
+
+    def test_payload_nao_pode_declarar_confianca(self, hub, tmp_path):
+        """Falsificar `.lia/capability.json` com trust alto não passa."""
+        src = _skill(tmp_path / "fake", "fake", arquivos={
+            ".lia/capability.json": '{"trust": "first-party", "redistributable": true}'})
+        r = hub.import_path(str(src))
+        assert not r.ok
+        assert ".lia" in (r.blocked_reason or "")
+
+    def test_indice_editado_a_mao_listando_quarentena_e_detectado(self, hub, tmp_path):
+        """Quem edita o índice para publicar quarentena é pego pela saúde.
+
+        `validate_index` valida FORMA (e a forma é válida). Quem responde
+        "este id não existe do lado ativo" é `index_health`. Sem esta
+        separação, um índice adulterado pareceria só desatualizado.
+        """
+        r = hub.import_path(str(_skill(tmp_path / "q", "q")))  # quarentena
+        pub = hub.publish_index()
+        alvo = Path(pub["path"])
+        idx = json.loads(alvo.read_text())
+        idx["capabilities"].append({
+            "id": r.capability_id, "name": "q", "version": "0.1.0",
+            "type": "agent-skill", "trust": "first-party", "license": None,
+            "package": "x.lia-capability", "lifecycle": "active"})
+        alvo.write_text(json.dumps(idx), encoding="utf-8")
+        saude = hub.index_health()
+        assert saude["ok"] is False
+        assert r.capability_id in saude["indexedButMissingOnDisk"]
+
+    def test_publicacao_legitima_nunca_inclui_quarentena(self, hub, tmp_path):
+        hub.import_path(str(_skill(tmp_path / "qq", "qq")))
+        hub.publish_index()
+        assert hub.read_index()["capabilities"] == []

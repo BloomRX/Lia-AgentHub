@@ -198,6 +198,26 @@ class Importer:
 
         # ---- 2. Unicode por região, sem apagar nada ----------------------
         unicode_block = False
+        # O NOME do arquivo também é conteúdo não confiável. Antes só o corpo
+        # de .md/.txt/.json era varrido; `a\u202egnp.exe` passava limpo mesmo
+        # sendo o caso clássico de spoof de extensão (o bidi inverte o que o
+        # usuário vê). Um script com nome forjado não precisa de extensão de
+        # texto para enganar quem lê a lista de arquivos.
+        for rel in files:
+            res_nome = scan(rel, context=Context.IDENTIFIER)
+            if res_nome.findings:
+                report.unicode_findings.extend(
+                    {**f.as_dict(), "file": rel, "where": "nome do arquivo"}
+                    for f in res_nome.findings
+                )
+                report.issues.append({
+                    "severity": "warning", "code": "UNICODE_FILENAME",
+                    "message": "O NOME do arquivo contém caractere invisível ou "
+                               "direcional. O nome exibido pode não ser o nome real.",
+                    "where": rel,
+                })
+                report.requires_review = True
+
         for rel, data in files.items():
             if not rel.lower().endswith((".md", ".txt", ".json")):
                 continue
