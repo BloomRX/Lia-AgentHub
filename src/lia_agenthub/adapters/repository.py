@@ -49,7 +49,28 @@ class Repository:
 
     # ---- leitura ---------------------------------------------------------
     def exists(self, cap_id: str) -> bool:
+        """O id existe na BIBLIOTECA? (promovido, portanto)"""
         return (self.locations.library / cap_id / ".lia" / "capability.json").is_file()
+
+    def exists_anywhere(self, cap_id: str) -> bool:
+        """O id existe na biblioteca OU na quarentena?
+
+        `exists()` responde só sobre a biblioteca, e essa distinção importa:
+        é ela que testa "a importação não promove por conta própria". Mas a
+        importação GRAVA em quarentena, e o id vem do hash do conteúdo —
+        então reimportar o mesmo conteúdo sobrepunha o registro sem que
+        ninguém pudesse saber. Esta é a pergunta que o importador precisa
+        fazer, sem sobrecarregar o significado de `exists()`.
+        """
+        return self._registro_em(cap_id) is not None
+
+    def _registro_em(self, cap_id: str) -> Path | None:
+        """Onde o registro deste id está, se estiver em algum lugar."""
+        for base in (self.locations.quarantine, self.locations.library):
+            alvo = base / cap_id / ".lia" / "capability.json"
+            if alvo.is_file():
+                return base
+        return None
 
     def load(self, cap_id: str) -> StoredCapability:
         root = self.locations.library / cap_id

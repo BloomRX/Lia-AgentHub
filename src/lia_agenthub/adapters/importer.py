@@ -233,7 +233,13 @@ class Importer:
         rtype = _detect_type(files)
         report.resource_type = rtype.value
 
-        skill_text = files.get("SKILL.md") or files.get("skill.md")
+        # Armadilha do `or`: um SKILL.md VAZIO é `b""`, que é FALSO em Python.
+        # A expressão `files.get("SKILL.md") or ...` pulava a validação
+        # inteira, e um recurso sem uma única linha de frontmatter era
+        # estagiado com zero issues. Tem que testar presença da CHAVE.
+        skill_text = files.get("SKILL.md")
+        if skill_text is None:
+            skill_text = files.get("skill.md")
         skill_name = ""
         declared_license: str | None = None
         declared_description = ""
@@ -351,7 +357,7 @@ class Importer:
         # Conteúdo idêntico já na biblioteca: o id é derivado do conteúdo,
         # então isto é IDENTIDADE, não conflito. Reportar como tal é mais
         # honesto do que fingir que é uma importação nova.
-        if self.repo.exists(cap_id):
+        if self.repo.exists_anywhere(cap_id):
             report.ok = True
             report.already_present = True
             report.blocked_reason = ""
@@ -419,6 +425,32 @@ class Importer:
                     "method": "local", "files": report.files,
                     "hashes": report.hashes,
                     "note": "Hashes provam integridade, não autoria."}
+
+        # `alreadyPresent` era declarado, serializado e NUNCA atribuído:
+        # sempre saía False. Quem reimportava o mesmo conteúdo não tinha como
+        # saber que o registro já existia — e a quarentena era sobrescrita em
+        # silêncio, inclusive quando o `upstream` era outro (aí a procedência
+        # gravada passava a ser a nova, sem aviso).
+        #
+        # O id é derivado do CONTEÚDO, então conteúdo idêntico é identidade e
+        # não conflito: dizer `alreadyPresent=True` é a informação correta. O
+        # registro antigo é preservado em backup pelo `stage` (escrita
+        # atômica com versão anterior guardada), e o aviso abaixo diz o que
+        # foi reescrito quando a procedência muda.
+        anterior = None
+        if self.repo.exists_anywhere(cap_id):
+            try:
+                anterior = self.repo._load_any(cap_id).capability
+            except Exception:
+                anterior = None
+        report.already_present = anterior is not None
+        if anterior is not None:
+            up_antigo = anterior.source.upstream
+            if up_antigo and upstream and up_antigo != upstream:
+                report.warnings.append(
+                    f"Registro existente tinha procedência `{up_antigo}`; "
+                    f"esta importação grava `{upstream}`. O conteúdo é "
+                    f"idêntico (o id vem do hash), mas a procedência mudou.")
 
         self.repo.stage(cap_id, files, cap.as_dict(), provider,
                         {"action": "import", "at": now, "upstream": upstream})
