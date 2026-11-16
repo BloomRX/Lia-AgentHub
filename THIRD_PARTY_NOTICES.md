@@ -7,6 +7,12 @@
 
 ## 1. Situação atual: nenhum código de terceiros incorporado
 
+> **Atualização de 2026-11-15 (integração do Google Stitch).** O repositório deixou de ser
+> só documental: `src/lia_agenthub/` está versionado. O quadro abaixo foi escrito para a
+> Fase 0.1 e a linha de comando de verificação **não reflete mais o repositório** — ela
+> devolve 68 arquivos, não dois. O que continua verdadeiro é a afirmação central: nenhum
+> código de terceiros foi copiado para cá, e o Stitch não mudou isso (§1.1).
+
 A Fase 0 e a Fase 0.1 foram **exclusivamente documentais**. A auditoria destas duas sessões
 verificou:
 
@@ -19,16 +25,49 @@ verificou:
 | Conteúdo binário versionado | **Apenas** `docs/KIT-PROJETO-NOVO.zip`, que é material **do próprio projeto Lia**, não de terceiro |
 | Trechos de código de outros projetos reproduzidos em prosa | **Nenhum** — as auditorias descrevem e citam caminhos, não copiam implementação |
 
-**Verificação reproduzível:**
+**Verificação reproduzível (histórica, Fase 0.1):**
 
 ```bash
 git ls-files | grep -vE '\.md$|\.zip$'
-# saída esperada: .gitignore e THIRD_PARTY_NOTICES.md — nenhum arquivo de código
+# na Fase 0.1: .gitignore e THIRD_PARTY_NOTICES.md
+# hoje: 68 arquivos, incluindo src/, tests/, scripts/ e packaging/
 ```
+
+O comando acima **não é mais um teste válido** e fica registrado como histórico. A verificação
+que vale hoje é a que distingue código próprio de código de terceiro: o projeto é stdlib-only
+(sem dependência de runtime), e o único material de terceiro citado por nome é o Stitch, tratado
+em §1.1.
 
 A única citação extensa de terceiros está em `docs/research/INTEGRATION-CANDIDATES.md`, que é
 **análise**, não incorporação. Nomes de projeto, URLs e números de versão são fatos, não obras
 derivadas.
+
+### 1.1 Google Stitch (`google-labs-code/stitch-skills`)
+
+O Stitch foi integrado **por referência, não por cópia**. Verificação:
+
+| Pergunta | Resposta | Como foi verificado |
+|---|---|---|
+| Algum `SKILL.md` do upstream está neste repositório? | **Não** | `docs/stitch/tools/build-stitch-catalog.py` lê o clone em diretório temporário e grava só o **registro**; o payload nunca é versionado |
+| Algum arquivo de script do upstream foi copiado? | **Não** | Os testes em `tests/integration/test_stitch_integration.py` (`TestCatalogoStitch::test_catalogo_nao_carrega_payload_de_terceiros`) falham se `files`/`payload` aparecerem num registro |
+| Existe texto derivado de perto do upstream? | **Não** | As descrições no catálogo são as do frontmatter, lidas em execução; não são reescritas nem parafraseadas para o repositório |
+| Algum trecho do documento oficial do MCP foi reproduzido? | **Não** | `docs/stitch/MCP-SETUP.md` descreve endpoint, transporte e fluxo de autenticação como **fatos**, e cita a URL da fonte |
+
+**Licença do upstream:** Apache-2.0 no arquivo `LICENSE` da raiz do
+`google-labs-code/stitch-skills`, no commit `0337446dadde`. **Nenhuma das 16 `SKILL.md`
+declara licença no próprio frontmatter** — o registro grava `kind: repository-root-LICENSE`
+em vez de presumir licença por arquivo. `redistributable` permanece `false` em todos os
+registros: licença declarada não é permissão de redistribuição, e só o usuário decide isso.
+
+**Consequência prática:** como não há incorporação, **nada do Apache-2.0 do Stitch precisa ser
+reproduzido aqui** — nem o `LICENSE`, nem um `NOTICE`. A obrigação de atribuição existe no
+repositório de origem e é satisfeita lá. Se algum dia um `SKILL.md` for copiado para cá, esta
+seção precisa mudar **no mesmo commit**, com o `NOTICE` do Apache preservado.
+
+**Estado desconhecido, registrado como desconhecido:** o serviço `stitch.googleapis.com/mcp`
+é regido pelos *Google APIs Terms of Service*. Não há licença de conteúdo associada ao
+serviço, e este repositório não afirma o contrário — o que o Hub distribui é a
+**configuração**, não o serviço.
 
 ---
 

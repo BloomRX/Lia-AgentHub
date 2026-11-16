@@ -92,6 +92,15 @@ Três que merecem destaque porque a pesquisa mostrou que são fáceis de perder:
 - [Plataforma e stack](docs/product/PLATFORM-AND-TECHNOLOGY-DECISION.md)
 - [MVP e roadmap](docs/product/MVP-AND-ROADMAP.md)
 
+### Google Stitch
+- [Relatório de integração](docs/operations/STITCH-INTEGRATION-REPORT.md) — o que foi importado, catalogado e o que depende de host autenticado
+- [Catálogo do Stitch](docs/stitch/CATALOG.md) — 16 Skills e 1 servidor MCP, com dependências reais
+- [Configuração do MCP](docs/stitch/MCP-SETUP.md) — endpoint, autenticação e limites; o Hub não conecta
+- [Codex e outros hosts](docs/stitch/CODEX-AND-OTHER-HOSTS.md) — catalogado, instalado, configurado e disponível não são a mesma coisa
+- [Workflow de UI/UX](docs/stitch/workflow/lia-uiux-workflow.md) — 7 etapas, do discovery ao feedback de implementação
+- [Padrão de handoff](docs/stitch/handoff/README.md) — `docs/design/` e a regra de precedência
+- [Design brief do Hub](docs/stitch/design-brief-hub/README.md) — identidade, telas, estados e prompts
+
 ### Governança
 - [Relatório final da Fase 0](docs/PHASE-0-FINAL-REPORT.md)
 - [Registro de decisões](docs/DECISION-REGISTER.md)

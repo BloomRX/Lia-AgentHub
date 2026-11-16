@@ -1,6 +1,6 @@
 {
   "failures": [],
-  "generatedAt": "2026-11-16T09:03:51+00:00",
+  "generatedAt": "2026-11-16T09:07:42+00:00",
   "generator": "docs/stitch/tools/build-stitch-catalog.py (Hub real)",
   "recordCount": 17,
   "records": [
@@ -34,7 +34,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:50+00:00",
+          "imported_at": "2026-11-16T09:07:41+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/code-to-design"
@@ -93,7 +93,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:51+00:00",
+          "imported_at": "2026-11-16T09:07:42+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-utilities/skills/design-md"
@@ -152,7 +152,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:51+00:00",
+          "imported_at": "2026-11-16T09:07:42+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-utilities/skills/enhance-prompt"
@@ -212,7 +212,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:51+00:00",
+          "imported_at": "2026-11-16T09:07:42+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/extract-design-md"
@@ -272,7 +272,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:51+00:00",
+          "imported_at": "2026-11-16T09:07:42+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/extract-static-html"
@@ -332,7 +332,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:51+00:00",
+          "imported_at": "2026-11-16T09:07:42+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/generate-design"
@@ -366,7 +366,7 @@
       "capability": {
         "author": null,
         "containsScripts": false,
-        "contentHash": "",
+        "contentHash": "ea96ba7cc3850df5083869e08747369fa23be0be579ed4dd3111def8a7e2c906",
         "declaredPermissions": [],
         "description": "Servidor MCP remoto do Google Stitch: gera e edita telas, gerencia design systems e projetos de UI/UX. O Hub registra endpoint e fluxo de autenticação; a conexão é do host.",
         "domain": "",
@@ -463,10 +463,10 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:50+00:00",
+          "imported_at": "2026-11-16T09:07:41+00:00",
           "method": "local",
           "original_name": null,
-          "upstream": "/tmp/tmp97qmlkg6/mcp-pacote"
+          "upstream": "/tmp/tmpvnhf7_ui/mcp-pacote"
         },
         "tags": [],
         "treeHash": "f47739674b300eb39ae8818f299706ffe8b44dfb27dee30971882a07a7777e33",
@@ -479,7 +479,7 @@
         "connectivityVerified": false,
         "documentedFrom": "https://stitch.google.com/docs/mcp/setup",
         "hashes": {
-          "contentHash": "",
+          "contentHash": "ea96ba7cc3850df5083869e08747369fa23be0be579ed4dd3111def8a7e2c906",
           "treeHash": "f47739674b300eb39ae8818f299706ffe8b44dfb27dee30971882a07a7777e33"
         },
         "licenseNote": "O serviço é regido pelos Google APIs Terms of Service. Não há licença de redistribuição de conteúdo associada: o que o Hub distribui é a CONFIGURAÇÃO, não o serviço.",
@@ -519,7 +519,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:51+00:00",
+          "imported_at": "2026-11-16T09:07:42+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/manage-design-system"
@@ -579,7 +579,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:50+00:00",
+          "imported_at": "2026-11-16T09:07:41+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-build/skills/react-components"
@@ -639,7 +639,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:50+00:00",
+          "imported_at": "2026-11-16T09:07:41+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-build/skills/react-native"
@@ -698,7 +698,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:50+00:00",
+          "imported_at": "2026-11-16T09:07:41+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-build/skills/react-vite-dashboard"
@@ -757,7 +757,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:50+00:00",
+          "imported_at": "2026-11-16T09:07:41+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-build/skills/remotion"
@@ -816,7 +816,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:50+00:00",
+          "imported_at": "2026-11-16T09:07:41+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-build/skills/shadcn-ui"
@@ -875,7 +875,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:51+00:00",
+          "imported_at": "2026-11-16T09:07:42+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-utilities/skills/site-md"
@@ -934,7 +934,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:51+00:00",
+          "imported_at": "2026-11-16T09:07:42+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-utilities/skills/stitch-loop"
@@ -993,7 +993,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:51+00:00",
+          "imported_at": "2026-11-16T09:07:42+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-utilities/skills/taste-design"
@@ -1053,7 +1053,7 @@
         },
         "source": {
           "commit": null,
-          "imported_at": "2026-11-16T09:03:51+00:00",
+          "imported_at": "2026-11-16T09:07:42+00:00",
           "method": "local",
           "original_name": null,
           "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/upload-to-stitch"

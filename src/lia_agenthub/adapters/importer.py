@@ -459,7 +459,17 @@ class Importer:
         th = tree_hash(per_file)
         primario = files.get("SKILL.md")
         if primario is None:
-            primario = files.get("skill.md") or b""
+            primario = files.get("skill.md")
+        if primario is None:
+            # Nem toda capacidade tem SKILL.md: um `mcp.json` sozinho é um
+            # recurso válido. Antes o contentHash saía VAZIO nesse caso, e o
+            # consumidor que confere integridade recebia nada justamente para
+            # o tipo que mais depende de conferir o descritor. Cai no arquivo
+            # primário de fato; se não houver primário, o treeHash cobre.
+            for candidato in ("mcp.json", "workflow.md", "README.md", "manifest.json"):
+                if candidato in files:
+                    primario = files[candidato]
+                    break
         ch = sha256_bytes(primario) if primario else ""
         report.hashes = {"contentHash": ch, "treeHash": th}
 
@@ -479,8 +489,8 @@ class Importer:
             report.ok = True
             report.warnings.append("Simulação: nada foi gravado no disco.")
             return report
-        primary = files.get("SKILL.md") or files.get("skill.md") or b""
-        report.hashes = {"contentHash": sha256_bytes(primary) if primary else "", "treeHash": th}
+        # `report.hashes` já foi calculado acima, com fallback para recursos
+        # sem SKILL.md. Recalcular aqui com a regra antiga apagava o fallback.
         report.files = [
             {"path": rel, "size": len(data),
              "sha256": per_file[rel],
