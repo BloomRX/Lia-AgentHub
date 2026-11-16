@@ -1,0 +1,1094 @@
+{
+  "failures": [],
+  "generatedAt": "2026-11-16T09:03:51+00:00",
+  "generator": "docs/stitch/tools/build-stitch-catalog.py (Hub real)",
+  "recordCount": 17,
+  "records": [
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "1daafb1d89d6e18574edc33818b992b7af59aaeb2960134dfc818ea0f53b2455",
+        "declaredPermissions": [],
+        "description": "Convert frontend code (Vite, React, Angular, Vue, etc.) to a Stitch Design by chaining static HTML extraction, design system extraction, and file upload. **ALWAYS** use this skill when the user's intent is to move existing web apps or React/Angular/Vue components into Stitch (e.g., requests to \"save\", \"migrate\", or \"upload\"). You must use this skill even for simple \"save\" operations, as it is the only way to ensure the design system is extracted and assets are properly linked.",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "code-to-design-a42a4365",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "code-to-design",
+        "namespace": "stitch",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:50+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/code-to-design"
+        },
+        "tags": [],
+        "treeHash": "cd6a42ac6b7ae24f1605afdd60be9be7d38d06766168fbab6408a501c1ac9c26",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "1daafb1d89d6e18574edc33818b992b7af59aaeb2960134dfc818ea0f53b2455",
+          "treeHash": "cd6a42ac6b7ae24f1605afdd60be9be7d38d06766168fbab6408a501c1ac9c26"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-design",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-design/skills/code-to-design",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "eb15f44646528f3a087ce023329ae699c1b6e803662af68338e1eb1c0406b59b",
+        "declaredPermissions": [],
+        "description": "Analyze Stitch projects and synthesize a semantic design system into DESIGN.md files",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "design-md-57d0c114",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "design-md",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:51+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-utilities/skills/design-md"
+        },
+        "tags": [],
+        "treeHash": "95f325da2d5490ae7a883067e7241a176bedda32d4ba07d69ffb73e103fdef00",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "eb15f44646528f3a087ce023329ae699c1b6e803662af68338e1eb1c0406b59b",
+          "treeHash": "95f325da2d5490ae7a883067e7241a176bedda32d4ba07d69ffb73e103fdef00"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-utilities",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-utilities/skills/design-md",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "ccb200c798072438b642b1fa6a5c515563159e2fab3d56e813d76d8afa9a7ce6",
+        "declaredPermissions": [],
+        "description": "Transforms vague UI ideas into polished, Stitch-optimized prompts. Enhances specificity, adds UI/UX keywords, injects design system context, and structures output for better generation results.",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "enhance-prompt-768b4157",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "enhance-prompt",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:51+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-utilities/skills/enhance-prompt"
+        },
+        "tags": [],
+        "treeHash": "9d317087326f33bf47d99bec12068fc47889dc873fce77bbae54e823644383b5",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "ccb200c798072438b642b1fa6a5c515563159e2fab3d56e813d76d8afa9a7ce6",
+          "treeHash": "9d317087326f33bf47d99bec12068fc47889dc873fce77bbae54e823644383b5"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-utilities",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-utilities/skills/enhance-prompt",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "f9c32b30acd9fea3dba7306bf38e3a859f49c1f27bcf44f9cf16d3a60a730276",
+        "declaredPermissions": [],
+        "description": "Extract a comprehensive design system (DESIGN.md) directly from frontend source code — React, Vue, Svelte, Angular, plain HTML/CSS, or any web framework. Analyzes component files, stylesheets, Tailwind configs, theme definitions, and design tokens to produce a rich, Stitch-compatible design system document. Use this skill whenever the user wants to reverse-engineer a design system from an existing codebase, audit the visual language of a project, extract design tokens from source files, or understand the styling patterns in a frontend repo — even if they just say \"what does this app look like?\" or \"pull out the design from this code.\"",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "extract-design-md-01b71424",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "extract-design-md",
+        "namespace": "stitch",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:51+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/extract-design-md"
+        },
+        "tags": [],
+        "treeHash": "4d4805ff81357261fb73104cb469752e4bb69ee2fa959d4a498437534c29c879",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "f9c32b30acd9fea3dba7306bf38e3a859f49c1f27bcf44f9cf16d3a60a730276",
+          "treeHash": "4d4805ff81357261fb73104cb469752e4bb69ee2fa959d4a498437534c29c879"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-design",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-design/skills/extract-design-md",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": true,
+        "contentHash": "87ebabb29c37f903541bb6c32ee5f2c84e322d140d6b83bb3a0872943ebc1356",
+        "declaredPermissions": [],
+        "description": "Extract self-contained static HTML from a built web application or React components by inlining CSS and images. Use this skill whenever you need to capture a specific UI state, share a static version of a page, or prepare assets for Stitch upload, even if the user just asks to 'save the HTML' or 'mock the view'.",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "extract-static-html-414dcc8c",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "extract-static-html",
+        "namespace": "stitch",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:51+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/extract-static-html"
+        },
+        "tags": [],
+        "treeHash": "2c019cb1e17b367e8a79e7f5d91e5db22b49f1c96c214ec0a33a8625fdfe8d09",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "87ebabb29c37f903541bb6c32ee5f2c84e322d140d6b83bb3a0872943ebc1356",
+          "treeHash": "2c019cb1e17b367e8a79e7f5d91e5db22b49f1c96c214ec0a33a8625fdfe8d09"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-design",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-design/skills/extract-static-html",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "d03d2de3a0cefbde2ca7b8cdc2c96e8164a8b9400fe3a9b97a3aa6ce37ee638d",
+        "declaredPermissions": [],
+        "description": "Generate new screens from text prompts or images, edit existing screens with prompts and design system tokens, and generate design variants using Stitch MCP. Includes prompt enhancement pipeline, design mappings, professional UI/UX terminology, design tokens and theme system capabilities.",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "generate-design-6ce5e7b1",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "generate-design",
+        "namespace": "stitch",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:51+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/generate-design"
+        },
+        "tags": [],
+        "treeHash": "0b9fd1d7e4480014e666965b1f4a938401e01dc98ba06292ba4bd64a04e9d5d1",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "d03d2de3a0cefbde2ca7b8cdc2c96e8164a8b9400fe3a9b97a3aa6ce37ee638d",
+          "treeHash": "0b9fd1d7e4480014e666965b1f4a938401e01dc98ba06292ba4bd64a04e9d5d1"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-design",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-design/skills/generate-design",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "",
+        "declaredPermissions": [],
+        "description": "Servidor MCP remoto do Google Stitch: gera e edita telas, gerencia design systems e projetos de UI/UX. O Hub registra endpoint e fluxo de autenticação; a conexão é do host.",
+        "domain": "",
+        "egress": [
+          "https://stitch.googleapis.com/mcp"
+        ],
+        "history": [],
+        "id": "mcp-pacote-1f4d442f",
+        "license": {
+          "code": null,
+          "content": null,
+          "extra": {},
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "mcp": {
+          "accountRequirements": [
+            "Conta Google com acesso ao Stitch (stitch.google.com)",
+            "Chave de API criada em Stitch Settings > API Keys, OU projeto do Google Cloud com a API do Stitch habilitada e papel roles/serviceusage.serviceUsageConsumer"
+          ],
+          "authentication": "api-key",
+          "category": "UI/UX Design",
+          "connectivityVerified": false,
+          "docs": [
+            "https://stitch.google.com/docs/mcp/setup",
+            "https://stitch.google.com/docs/mcp/reference"
+          ],
+          "endpoint": "https://stitch.googleapis.com/mcp",
+          "headers": [
+            "X-Goog-Api-Key"
+          ],
+          "provider": "Google Stitch",
+          "tools": [
+            {
+              "group": "Project Management",
+              "name": "create_project"
+            },
+            {
+              "group": "Project Management",
+              "name": "get_project"
+            },
+            {
+              "group": "Project Management",
+              "name": "list_projects"
+            },
+            {
+              "group": "Screen Management",
+              "name": "list_screens"
+            },
+            {
+              "group": "Screen Management",
+              "name": "get_screen"
+            },
+            {
+              "group": "AI Generation",
+              "name": "generate_screen_from_text"
+            },
+            {
+              "group": "AI Generation",
+              "name": "edit_screens"
+            },
+            {
+              "group": "AI Generation",
+              "name": "generate_variants"
+            },
+            {
+              "group": "Design Systems",
+              "name": "create_design_system"
+            },
+            {
+              "group": "Design Systems",
+              "name": "update_design_system"
+            },
+            {
+              "group": "Design Systems",
+              "name": "list_design_systems"
+            },
+            {
+              "group": "Design Systems",
+              "name": "apply_design_system"
+            }
+          ],
+          "transport": "http"
+        },
+        "name": "google-stitch-mcp",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:50+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/tmp97qmlkg6/mcp-pacote"
+        },
+        "tags": [],
+        "treeHash": "f47739674b300eb39ae8818f299706ffe8b44dfb27dee30971882a07a7777e33",
+        "trust": "unreviewed",
+        "type": "mcp-server",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "connectivityVerified": false,
+        "documentedFrom": "https://stitch.google.com/docs/mcp/setup",
+        "hashes": {
+          "contentHash": "",
+          "treeHash": "f47739674b300eb39ae8818f299706ffe8b44dfb27dee30971882a07a7777e33"
+        },
+        "licenseNote": "O serviço é regido pelos Google APIs Terms of Service. Não há licença de redistribuição de conteúdo associada: o que o Hub distribui é a CONFIGURAÇÃO, não o serviço.",
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "upstream": "Google Stitch (descritor do Hub)",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "5ce0b8adb5261e8a926fc0942d679cda0421ac29e8159a6ee38e5d940bc9658e",
+        "declaredPermissions": [],
+        "description": "Manage design systems in Stitch using MCP tools. Includes retrieval of assets, creating/updating design systems in Stitch, and applying them to screens.",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "manage-design-system-87cda3ea",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "manage-design-system",
+        "namespace": "stitch",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:51+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/manage-design-system"
+        },
+        "tags": [],
+        "treeHash": "485e5777df84c0f1ae2992a93da0c7db25d04857c556f5d347d11671c28eff90",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "5ce0b8adb5261e8a926fc0942d679cda0421ac29e8159a6ee38e5d940bc9658e",
+          "treeHash": "485e5777df84c0f1ae2992a93da0c7db25d04857c556f5d347d11671c28eff90"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-design",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-design/skills/manage-design-system",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": true,
+        "contentHash": "a978bf8fb135c69f944432dfa4166d6a88903c524ed4be51899a226f7daa223e",
+        "declaredPermissions": [],
+        "description": "Converts Stitch designs into modular Vite and React components, or syncs/updates existing React components to align with the latest Stitch designs, using system-level networking and AST-based validation.",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "react-components-dec71f87",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "react-components",
+        "namespace": "stitch",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:50+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-build/skills/react-components"
+        },
+        "tags": [],
+        "treeHash": "656af87cefb0419b616de40898a41052db5f8ee50ac68e392061303d474f7456",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "a978bf8fb135c69f944432dfa4166d6a88903c524ed4be51899a226f7daa223e",
+          "treeHash": "656af87cefb0419b616de40898a41052db5f8ee50ac68e392061303d474f7456"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-build",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-build/skills/react-components",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": true,
+        "contentHash": "fb83197d834142b89459d883c5029716387e73fb6441d32019f4f8ad3b8b3784",
+        "declaredPermissions": [],
+        "description": "Convert Stitch HTML designs to React Native components, or syncs/updates existing native components to align with the latest Stitch designs, using StyleSheet.",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "react-native-882dab80",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "react-native",
+        "namespace": "stitch",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:50+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-build/skills/react-native"
+        },
+        "tags": [],
+        "treeHash": "b86437e0171f02ab1a3761a53d42a02c74fa85a7f813d3c71d4addb44d12acf3",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "fb83197d834142b89459d883c5029716387e73fb6441d32019f4f8ad3b8b3784",
+          "treeHash": "b86437e0171f02ab1a3761a53d42a02c74fa85a7f813d3c71d4addb44d12acf3"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-build",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-build/skills/react-native",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "87b624265ad4509ce8a3d31e7394749bce088a44f92498bfb65f096afb98701b",
+        "declaredPermissions": [],
+        "description": "Convert Stitch designs into production React + Vite dashboards with TanStack Query, accessible tokens from DESIGN.md, and Web3-ready patterns (ethers/viem).",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "react-vite-dashboard-1131c636",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "react-vite-dashboard",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:50+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-build/skills/react-vite-dashboard"
+        },
+        "tags": [],
+        "treeHash": "00fecad7068c995a5d0b7111404a66845d605d3c1a187a3ec85d7055355b0f1d",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "87b624265ad4509ce8a3d31e7394749bce088a44f92498bfb65f096afb98701b",
+          "treeHash": "00fecad7068c995a5d0b7111404a66845d605d3c1a187a3ec85d7055355b0f1d"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-build",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-build/skills/react-vite-dashboard",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": true,
+        "contentHash": "7147fc5a627081fceb7b6ab6191426643747e738bb857587de1d3c1b6eecd755",
+        "declaredPermissions": [],
+        "description": "Generate walkthrough videos from Stitch projects using Remotion with smooth transitions, zooming, and text overlays",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "remotion-a9972365",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "remotion",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:50+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-build/skills/remotion"
+        },
+        "tags": [],
+        "treeHash": "49c9df4ddb6157152b7da565b6ec6c4372a540e172990845f37dcbbca14ead2c",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "7147fc5a627081fceb7b6ab6191426643747e738bb857587de1d3c1b6eecd755",
+          "treeHash": "49c9df4ddb6157152b7da565b6ec6c4372a540e172990845f37dcbbca14ead2c"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-build",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-build/skills/remotion",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": true,
+        "contentHash": "2ddfe599ac2ba631ca019f7b6e37ee5df9cd34f83fc016f6ea9d4ba5bbfa0304",
+        "declaredPermissions": [],
+        "description": "Expert guidance for integrating and building applications with shadcn/ui components, including component discovery, installation, customization, and best practices.",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "shadcn-ui-769b6884",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "shadcn-ui",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:50+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-build/skills/shadcn-ui"
+        },
+        "tags": [],
+        "treeHash": "9944444a457cec1a5361950057d36cc2626b59b52886d8335e174e23d37090ae",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "2ddfe599ac2ba631ca019f7b6e37ee5df9cd34f83fc016f6ea9d4ba5bbfa0304",
+          "treeHash": "9944444a457cec1a5361950057d36cc2626b59b52886d8335e174e23d37090ae"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-build",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-build/skills/shadcn-ui",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "679a0020ea2fbfdc4c4db84c32936eaea203263ebccb4d217eff1cf418d3de60",
+        "declaredPermissions": [],
+        "description": "Analyze a project description or site requirements and synthesize a project constitution into SITE.md for the Stitch Build Loop",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "site-md-db058289",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "site-md",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:51+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-utilities/skills/site-md"
+        },
+        "tags": [],
+        "treeHash": "91ce2b5c054c81d201c971707ddf927a2cb42d28b1662a7569fc9b02e3a13672",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "679a0020ea2fbfdc4c4db84c32936eaea203263ebccb4d217eff1cf418d3de60",
+          "treeHash": "91ce2b5c054c81d201c971707ddf927a2cb42d28b1662a7569fc9b02e3a13672"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-utilities",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-utilities/skills/site-md",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "05f39ecf81b0664872e6f3d6be01c53cf8c1f8b9ef14c741fe01d1ac424ce634",
+        "declaredPermissions": [],
+        "description": "Teaches agents to iteratively build websites using Stitch with an autonomous baton-passing loop pattern",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "stitch-loop-89ac4994",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "stitch-loop",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:51+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-utilities/skills/stitch-loop"
+        },
+        "tags": [],
+        "treeHash": "66b719bfc164798fc975b0ba310b1fee3c1eecbe6a82831390ebec9dedd9af64",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "05f39ecf81b0664872e6f3d6be01c53cf8c1f8b9ef14c741fe01d1ac424ce634",
+          "treeHash": "66b719bfc164798fc975b0ba310b1fee3c1eecbe6a82831390ebec9dedd9af64"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-utilities",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-utilities/skills/stitch-loop",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": false,
+        "contentHash": "e425fdb7ab250764f6229c48941f97e20bd6a7ba9e25a628f1e0ebeb008e8bff",
+        "declaredPermissions": [],
+        "description": "Semantic Design System Skill for Google Stitch. Generates agent-friendly DESIGN.md files that enforce premium, anti-generic UI standards — strict typography, calibrated color, asymmetric layouts, perpetual micro-motion, and hardware-accelerated performance.",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "taste-design-df714456",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "taste-design",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:51+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-utilities/skills/taste-design"
+        },
+        "tags": [],
+        "treeHash": "97c7eddb7cac4bee13d781b7cf1ea2ebfcd6105ff48ee35892b7135e77033746",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "e425fdb7ab250764f6229c48941f97e20bd6a7ba9e25a628f1e0ebeb008e8bff",
+          "treeHash": "97c7eddb7cac4bee13d781b7cf1ea2ebfcd6105ff48ee35892b7135e77033746"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-utilities",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-utilities/skills/taste-design",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    },
+    {
+      "capability": {
+        "author": null,
+        "containsScripts": true,
+        "contentHash": "e8ddf11677a916e6a4ccf608fafcf0f2a03d548677763c0ca7de6671799c0f99",
+        "declaredPermissions": [],
+        "description": "Upload local assets (images, mockups, extracted HTML, design markdown) to a Stitch project. ALWAYS use this skill when you need to upload visual assets, HTML pages, or design docs to Stitch, particularly when direct MCP tool calls fail or truncate due to base64 token limits.",
+        "domain": "",
+        "egress": [],
+        "history": [],
+        "id": "upload-to-stitch-d0ea316f",
+        "license": {
+          "code": null,
+          "content": null,
+          "notice_required": false,
+          "redistributable": false,
+          "redistribution_basis": null,
+          "status": "unknown",
+          "weights": null
+        },
+        "lifecycle": "quarantined",
+        "name": "upload-to-stitch",
+        "namespace": "stitch",
+        "requirements": null,
+        "schemaVersion": 1,
+        "secrets": {
+          "envVars": []
+        },
+        "source": {
+          "commit": null,
+          "imported_at": "2026-11-16T09:03:51+00:00",
+          "method": "local",
+          "original_name": null,
+          "upstream": "/tmp/stitch/repo/plugins/stitch-design/skills/upload-to-stitch"
+        },
+        "tags": [],
+        "treeHash": "398ddcec45035da0c4f8c205ac42d3c2b2cb8b0cc39b5b79f15ff6eea896b50d",
+        "trust": "unreviewed",
+        "type": "agent-skill",
+        "version": "0.1.0",
+        "versionOf": null
+      },
+      "provenance": {
+        "hashes": {
+          "contentHash": "e8ddf11677a916e6a4ccf608fafcf0f2a03d548677763c0ca7de6671799c0f99",
+          "treeHash": "398ddcec45035da0c4f8c205ac42d3c2b2cb8b0cc39b5b79f15ff6eea896b50d"
+        },
+        "licenseEvidence": {
+          "kind": "repository-root-LICENSE",
+          "note": "As 16 SKILL.md não trazem campo `license`. A licença é declarada no LICENSE da raiz do repositório de origem; registrada como declaração do upstream, não como permissão verificada pelo Hub.",
+          "path": "LICENSE",
+          "spdx": "Apache-2.0"
+        },
+        "origin": "official",
+        "originNote": "Publicado por google-labs-code. Não é conteúdo de projeto Lia; a licença é do repositório de origem.",
+        "plugin": "stitch-design",
+        "upstream": "google-labs-code/stitch-skills@0337446:plugins/stitch-design/skills/upload-to-stitch",
+        "upstreamRepo": "https://github.com/google-labs-code/stitch-skills"
+      }
+    }
+  ],
+  "schemaNote": "Registros produzidos pelo importador de produção do Lia Agent Hub em Hub temporário. Nenhum payload de terceiros é copiado para este repositório.",
+  "source": {
+    "commit": "0337446dadde6f8c94210444e2aa9d546126480f",
+    "mcpDocs": "https://stitch.google.com/docs/mcp/setup",
+    "mcpEndpoint": "https://stitch.googleapis.com/mcp",
+    "repo": "https://github.com/google-labs-code/stitch-skills"
+  }
+}

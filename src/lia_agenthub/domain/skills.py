@@ -63,17 +63,52 @@ def parse_frontmatter(text: str) -> ParsedSkill:
     # Continua sem PyYAML: só o recorte que o formato usa (um nível,
     # `chave: valor`). Aninhamento mais profundo continua fora, e continua
     # virando valor textual em vez de erro.
+    # Valor em bloco YAML (`description: >-` seguido de linhas indentadas).
+    #
+    # Medido no acervo oficial do Google Stitch: 8 das 16 SKILL.md escrevem a
+    # descrição assim. Antes o parser guardava o INDICADOR (`>-`) como valor e
+    # descartava o texto — o catálogo registrava `description: ">-"`, que não
+    # descreve nada. Agora as linhas indentadas são dobradas no valor.
+    #
+    # `>` dobra quebras em espaço, `|` preserva. O modificador `-` remove a
+    # quebra final. É o subconjunto que o formato Agent Skills usa; YAML
+    # completo continua fora, e continua sem dependência.
     pai: str | None = None
+    chave_em_bloco: str | None = None
+    linhas_em_bloco: list[str] = []
+
+    def _fechar_bloco() -> None:
+        nonlocal chave_em_bloco, linhas_em_bloco
+        if chave_em_bloco is None:
+            return
+        separador = "\n" if fm.get("__estilo__" + chave_em_bloco) == "literal" else " "
+        fm[chave_em_bloco] = separador.join(linhas_em_bloco).strip()
+        fm.pop("__estilo__" + chave_em_bloco, None)
+        chave_em_bloco, linhas_em_bloco = None, []
+
     for line in raw.splitlines():
         bruto = line.rstrip()
         if not bruto.strip() or bruto.lstrip().startswith("#"):
             continue
         indentado = bruto.startswith((" ", "\t"))
         linha = bruto.strip()
+        if indentado:
+            if chave_em_bloco is not None:
+                linhas_em_bloco.append(linha)
+                continue
         if ":" not in linha:
             continue
         key, _, value = linha.partition(":")
         key, value = key.strip(), value.strip().strip('"').strip("'")
+        # Abre um bloco? `>` ou `|`, com modificadores opcionais.
+        if not indentado and value[:1] in (">", "|"):
+            _fechar_bloco()
+            chave_em_bloco = key
+            linhas_em_bloco = []
+            fm["__estilo__" + key] = "literal" if value.startswith("|") else "folded"
+            continue
+        if not indentado:
+            _fechar_bloco()
         if indentado:
             if pai is None:
                 continue                      # indentado sem pai: ignora
@@ -85,6 +120,8 @@ def parse_frontmatter(text: str) -> ParsedSkill:
             continue
         fm[key] = value
         pai = key if value == "" else None
+
+    _fechar_bloco()
 
     return ParsedSkill(frontmatter=fm, body=body, raw_frontmatter=raw, ok=True)
 

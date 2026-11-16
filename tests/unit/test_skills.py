@@ -242,3 +242,56 @@ class TestNamespaceNaImportacao:
         det = hub.detail(r.capability_id)
         assert det["namespace"] == "stitch"
         assert "namespace" in det
+
+
+class TestDescricaoEmBlocoYaml:
+    """`description: >-` seguido de linhas indentadas.
+
+    Medido: 8 das 16 SKILL.md oficiais de google-labs-code/stitch-skills usam
+    descrição em bloco. O parser guardava o INDICADOR (`>-`) como valor e
+    descartava o texto — o catálogo registrava `description: ">-"`, que não
+    descreve nada. Nenhum teste olhava isso porque o corpus Lia usa
+    descrição de uma linha só.
+    """
+
+    def test_folded_dobra_linhas_em_espaco(self):
+        fm = parse_frontmatter(
+            "---\nname: s\ndescription: >-\n  linha um\n  linha dois\n---\n").frontmatter
+        assert fm["description"] == "linha um linha dois"
+
+    def test_literal_preserva_quebras(self):
+        fm = parse_frontmatter(
+            "---\nname: s\ndescription: |\n  linha um\n  linha dois\n---\n").frontmatter
+        assert fm["description"] == "linha um\nlinha dois"
+
+    def test_indicador_nunca_vira_o_valor(self):
+        fm = parse_frontmatter(
+            "---\nname: s\ndescription: >-\n  texto real\n---\n").frontmatter
+        assert fm["description"] != ">-"
+        assert "texto real" in fm["description"]
+
+    def test_chave_seguinte_fecha_o_bloco(self):
+        """`allowed-tools:` depois do bloco não pode ser engolido por ele."""
+        fm = parse_frontmatter(
+            "---\nname: s\ndescription: >-\n  texto\nallowed-tools:\n  - Bash\n---\n"
+        ).frontmatter
+        assert fm["description"] == "texto"
+        assert fm["name"] == "s"
+        assert "allowed-tools" in fm
+
+    def test_descricao_de_uma_linha_nao_e_afetada(self):
+        fm = parse_frontmatter(
+            "---\nname: s\ndescription: simples\n---\n").frontmatter
+        assert fm["description"] == "simples"
+
+    def test_skill_real_do_google_stitch(self):
+        """Fixture com a FORMA real (não o texto de terceiros)."""
+        texto = (
+            "---\nname: stitch::code-to-design\ndescription: >-\n"
+            "  Convert frontend code to a Stitch Design by chaining\n"
+            "  static HTML extraction and file upload.\n"
+            "allowed-tools:\n  - \"stitch*:*\"\n---\n\nCorpo.\n")
+        fm = parse_frontmatter(texto).frontmatter
+        assert fm["description"].startswith("Convert frontend code")
+        assert len(fm["description"]) > 40
+        assert "static HTML extraction" in fm["description"]

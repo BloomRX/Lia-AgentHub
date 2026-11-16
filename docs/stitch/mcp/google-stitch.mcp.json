@@ -1,0 +1,30 @@
+{
+  "endpoint": "https://stitch.googleapis.com/mcp",
+  "transport": "http",
+  "authentication": "api-key",
+  "headers": ["X-Goog-Api-Key"],
+  "category": "UI/UX Design",
+  "provider": "Google Stitch",
+  "accountRequirements": [
+    "Conta Google com acesso ao Stitch (stitch.google.com)",
+    "Chave de API criada em Stitch Settings > API Keys, OU projeto do Google Cloud com a API do Stitch habilitada e papel roles/serviceusage.serviceUsageConsumer"
+  ],
+  "docs": [
+    "https://stitch.google.com/docs/mcp/setup",
+    "https://stitch.google.com/docs/mcp/reference"
+  ],
+  "tools": [
+    {"name": "create_project", "group": "Project Management"},
+    {"name": "get_project", "group": "Project Management"},
+    {"name": "list_projects", "group": "Project Management"},
+    {"name": "list_screens", "group": "Screen Management"},
+    {"name": "get_screen", "group": "Screen Management"},
+    {"name": "generate_screen_from_text", "group": "AI Generation"},
+    {"name": "edit_screens", "group": "AI Generation"},
+    {"name": "generate_variants", "group": "AI Generation"},
+    {"name": "create_design_system", "group": "Design Systems"},
+    {"name": "update_design_system", "group": "Design Systems"},
+    {"name": "list_design_systems", "group": "Design Systems"},
+    {"name": "apply_design_system", "group": "Design Systems"}
+  ]
+}
