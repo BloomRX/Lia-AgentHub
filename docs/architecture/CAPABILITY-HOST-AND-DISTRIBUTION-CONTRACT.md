@@ -1,6 +1,6 @@
 # Capability Host & Distribution Contract
 
-**Status:** PROPOSED — research/specification only; not approved for implementation  
+**Status:** PROPOSED (decisão) / **mecanismos IMPLEMENTADOS** (ver §15)  
 **Scope:** Lia Agent Hub architecture and future host integrations  
 **Initial reference consumer:** Lia Go (travel-management application)  
 **Related decisions:** D-03 (formats and metadata), D-04 (dependencies), D-07 (distribution to products), D-08 (SDK/CLI), D-10 (safe updates), D-11 (third-party notices), D-17 (OS support), D-18 (risk policy), D-20 (non-redistributable resources)  
@@ -304,3 +304,97 @@ This document records a proposal received from the Lia Go workstream and expande
 - **NOT IMPLEMENTED:** manifest schema, package format, host SDK, distribution tooling, or Lia Go integration.
 - **NOT VALIDATED:** compatibility with a real Lia Go assistant runtime or mobile package.
 - **HUMAN DECISION REQUIRED:** approval of the architecture, schema, distribution policy, legal review process, and implementation scope.
+
+
+---
+
+## 15. Implementation status (added 2026-11-15)
+
+This document is a **proposal for the decision** about how hosts integrate — that
+decision is still `PROPOSED`, and nothing here approves a global license or a
+product rollout. But the *technical mechanisms* described in §5–§10 are no
+longer hypothetical: they exist, they are tested, and the tests are organized
+by consuming project. This section records exactly what a host can rely on
+today and what remains a decision.
+
+### 15.1 What exists and is verified
+
+Each row is backed by tests in `tests/integration/test_host_contracts.py`,
+one class per host. A row is here only if a test would fail without it.
+
+| Mechanism | Contract section | Verified by |
+|---|---|---|
+| Publishable index with declared scope | §5.2, §7 | `TestContratoLiaGo` |
+| Index never contains quarantine | §7.4 | `TestContratoLiaGo` |
+| Index never claims to be signed | §7.2 | `TestContratoLiaGo` |
+| Self-describing package readable without the Hub | §7.1 | `TestContratoLiaGo` |
+| `dry_run` writes nothing | §7.3 | `TestContratoLiaStudio` |
+| Structural error reported with its code | §7.3 | `TestContratoLiaStudio` |
+| Prose content never blocks an import | §9 | `TestContratoLiaStudio` |
+| Package verifiable by the receiver | §7.2 | `TestContratoLiaProject` |
+| Tampering detected | §7.2 | `TestContratoLiaProject` |
+| Batch export survives one failure | §7.3 | `TestContratoLiaProject` |
+| Internal metadata (`.lia/`) never shipped | §7.1 | `TestContratoLiaProject` |
+| Searchable description, tags, domain | §5.2 | `TestContratoLiaForge` |
+| License and obligations travel with the resource | §8 | `TestContratoLiaForge` |
+| Quarantine invisible to consumers | §7.4 | `TestContratoLiaForge` |
+| Unknown fields survive a read/write roundtrip | §5.3 | `TestContratoModelLab` |
+| Import never executes content | §9 | `TestFronteirasQueNaoPodemCeder` |
+| Import never writes outside the Hub | §9 | `TestFronteirasQueNaoPodemCeder` |
+| No credential *value* ever stored | §9 | `TestFronteirasQueNaoPodemCeder` |
+| Trust starts unreviewed and requires a human | §9 | `TestFronteirasQueNaoPodemCeder` |
+
+### 15.2 The stable surface a host may code against
+
+`AgentHub` is the integration surface. These are the methods a host uses; the
+rest is internal.
+
+| Method | Returns | A host uses it to |
+|---|---|---|
+| `import_path(path, dry_run=)` | `ImportReport` | inspect before accepting |
+| `items(query=)` | `list[dict]` | list **active** capabilities only |
+| `detail(cap_id)` | `dict` | inspect one capability fully |
+| `promote(cap_id)` | `dict` | the human decision to activate |
+| `set_trust(cap_id, trust, decided_by=)` | `dict` | record who reviewed it |
+| `set_license(cap_id, ...)` | `dict` | record the redistribution decision |
+| `export(cap_id, target=, destination=)` | `dict` | produce a package |
+| `verify_package(path)` | `dict` | check a received package |
+| `publish_index()` / `read_index()` | `dict` | publish/consume the index |
+
+Three properties hold on all of them, and tests enforce them:
+
+1. **Nothing is activated implicitly.** Import lands in quarantine; `promote`
+   is a separate, explicit call.
+2. **Nothing is authorized implicitly.** `redistributable` is `False` unless a
+   human sets it; a declared license never authorizes anything.
+3. **Hashes prove integrity, never authorship.** There is no `signed` field
+   that can become `True` in the MVP.
+
+### 15.3 What a host must still decide (not technical)
+
+These stay with the host and are out of scope for the Hub — listed so nobody
+mistakes a working mechanism for a granted permission:
+
+- whether to load a capability of a given trust level;
+- whether to execute anything a capability describes;
+- which credentials to supply and where;
+- redistribution rights for third-party content;
+- approval UX and the operational lifecycle of a running capability.
+
+### 15.4 Known limitations
+
+- **No exchange format for quarantine.** Only active capabilities are
+  publishable. That is deliberate (§7.4), but it means two Hubs cannot mirror
+  each other's unreviewed work.
+- **`requirements` is not extracted from `metadata:`.** Reading declared
+  dependencies from the frontmatter is P-E7, outside the authorized scope of
+  this round. The field exists in the model and returns `None`; the tests
+  assert that "nothing declared" reads as `None`, not as `0`.
+- **Nested frontmatter is one level only.** `metadata:` with `author`,
+  `domain`, `tags` works. Deeper nesting is not interpreted: keys are
+  flattened onto the parent's path, so `metadata.a.b` loses its `a` level
+  (`metadata.b` is kept, and no data is silently dropped — but the structure
+  is). A full YAML parser was rejected as an unnecessary dependency for a
+  format where no real skill in the 53-file corpus nests deeper than one
+  level. Verified: `parse_frontmatter` on `metadata:\n  a:\n    b: c`
+  yields `{"metadata": "", "metadata.a": "", "metadata.b": "c"}`.
