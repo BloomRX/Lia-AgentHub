@@ -1,0 +1,11 @@
+# Baseline da suíte — números citados no relatório de conclusão funcional
+# Medido em 2026-11-15 (UTC), branch arena/a92004be-lia-agenthub
+# Comando: .venv/bin/python -m pytest tests/<suite> -o addopts="" -q
+#
+# ESTE ARQUIVO NÃO É AUTOATUALIZÁVEL. Se a suíte crescer, atualize à mão com
+# a medição real, no mesmo commit. Um baseline que se atualiza sozinho não
+# prova nada — ele sempre concorda consigo mesmo.
+unit=124
+integration=437
+security=94
+total=655
