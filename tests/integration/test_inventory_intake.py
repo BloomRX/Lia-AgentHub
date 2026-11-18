@@ -417,3 +417,19 @@ def test_catalogo_interno_nao_e_confundido_com_envelope_v1():
     leitura = ler(p.read_bytes())
     assert leitura.ok is False
     assert "ENVELOPE_MISSING_VERSION" in [a.code for a in leitura.erros]
+
+
+def test_cli_recusa_com_commit_nao_se_disfarca_de_preview(locations, doc, tmp_path, capsys):
+    """Pedir para gravar e não gravar precisa aparecer como RECUSADO.
+
+    Regressão: a saída dizia "PRÉ-VISUALIZAÇÃO" mesmo com `--commit`, o que
+    esconderia a recusa de quem pediu o recebimento.
+    """
+    doc.pop("revision")
+    codigo = cli_main(["--home", str(locations.home), "inventory", "receive",
+                       str(_salvar(tmp_path, doc)), "--commit"])
+    saida = capsys.readouterr().out
+    assert codigo == 1
+    assert "RECUSADO (nada gravado)" in saida
+    assert "PRÉ-VISUALIZAÇÃO" not in saida
+    assert _sem_dados(locations)

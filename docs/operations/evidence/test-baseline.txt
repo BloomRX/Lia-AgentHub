@@ -6,12 +6,12 @@
 # a medição real, no mesmo commit. Um baseline que se atualiza sozinho não
 # prova nada — ele sempre concorda consigo mesmo.
 #
-# Rodada de 2026-11-15: +151 testes do intake de inventários v1
+# Rodada de 2026-11-15: +152 testes do intake de inventários v1
 # (unit/test_inventory_domain, integration/test_inventory_intake,
 # security/test_inventory_boundary). Nenhum teste existente foi removido
 # ou enfraquecido.
 unit=218
-integration=491
+integration=492
 security=113
-total=822
+total=823
 skipped=2

@@ -236,7 +236,14 @@ def cmd_inventory(args) -> int:
     if args.json:
         _json(plano)
     else:
-        marca = "RECEBIDO" if plano["committed"] else "PRÉ-VISUALIZAÇÃO (nada gravado)"
+        if plano["committed"]:
+            marca = "RECEBIDO"
+        elif args.commit:
+            # Pediu para gravar e não gravou: dizer "pré-visualização" aqui
+            # esconderia que o recebimento foi recusado.
+            marca = "RECUSADO (nada gravado)"
+        else:
+            marca = "PRÉ-VISUALIZAÇÃO (nada gravado)"
         print(f"{marca} — estado: {plano['state']}")
         env = plano.get("envelope")
         if env:

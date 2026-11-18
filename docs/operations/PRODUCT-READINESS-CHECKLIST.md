@@ -82,7 +82,7 @@ Estes itens são negativos de propósito. Cada um tem teste que falha se mudar:
 
 ```bash
 # estado geral
-.venv/bin/python -m pytest -o addopts="" -q                    # 822 passed, 2 skipped
+.venv/bin/python -m pytest -o addopts="" -q                    # 823 passed, 2 skipped
 
 # os guardas de honestidade
 .venv/bin/python -m pytest tests/integration/test_ui_api_contract.py -q

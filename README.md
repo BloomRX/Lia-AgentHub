@@ -3,7 +3,7 @@
 **Plataforma independente para criar, descobrir, validar, organizar, versionar, empacotar e distribuir capacidades para agentes de IA.**
 
 > **Estado atual: funcionalmente concluído, aguardando validação em Windows.**
-> M1–M8 do MVP implementados e cobertos por teste. **822 testes** automatizados
+> M1–M8 do MVP implementados e cobertos por teste. **823 testes** automatizados
 > passando. O intake de inventários de capacidades v1 (P0 do registro central)
 > está implementado e testado. O que falta não é código: é medição de rede em
 > Windows, build do `.exe` em ambiente com PyInstaller, e a decisão de licença
@@ -64,7 +64,7 @@ A auditoria encontrou **oito lacunas** que nenhum dos produtos Lia atende hoje �
       estrita, dry-run, classificação de duplicatas/conflitos e recibos com
       proveniência; não executa, não instala, não conecta e não aprova licença
       ([docs/operations/INVENTORY-INTAKE.md](docs/operations/INVENTORY-INTAKE.md))
-- [x] 822 testes: unit, integração, segurança, persistência, interface e build
+- [x] 823 testes: unit, integração, segurança, persistência, interface e build
 - [x] Build configurado para Windows via PyInstaller
 - [ ] **Executável Windows gerado e testado** — não validado neste ambiente
       (sem Windows nem WebView2); o script de build roda testes e aborta se

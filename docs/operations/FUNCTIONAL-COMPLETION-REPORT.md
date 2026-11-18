@@ -27,14 +27,14 @@ Cada requisito recebe uma das quatro classificações:
 **Regra do kit, respeitada:** suíte verde **não** é homologação de produto. O gate
 é execução em Windows real. Nada aqui declara "funciona no Windows".
 
-**Números desta rodada:** **822 testes**, 0 falhas — 218 unit, 491 integration, 113 security (soma exata: 822). Corpus real do ecossistema: **53/53 importam, 0 bloqueadas**. Stitch: 16/16.
+**Números desta rodada:** **823 testes**, 0 falhas — 218 unit, 492 integration, 113 security (soma exata: 823). Corpus real do ecossistema: **53/53 importam, 0 bloqueadas**. Stitch: 16/16.
 
 A distribuição por suíte precisa ficar na mesma linha porque o verificador de
 consistência (`tests/integration/test_report_consistency.py`) a lê com um
 único regex.
 
-> Atualização de 2026-11-15: o intake de inventários v1 acrescentou 151 testes
-> (218 − 124 unit, 491 − 452 integration, 113 − 95 security). Nenhum teste
+> Atualização de 2026-11-15: o intake de inventários v1 acrescentou 152 testes
+> (218 − 124 unit, 492 − 452 integration, 113 − 95 security). Nenhum teste
 > existente foi removido ou enfraquecido. Ver
 > [INVENTORY-INTAKE.md](INVENTORY-INTAKE.md).
 
