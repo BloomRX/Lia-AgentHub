@@ -101,7 +101,38 @@ def _open_view(url: str, hub: AgentHub, log: logging.Logger) -> bool:
         return False
 
 
+#: Subcomandos da CLI. Se o primeiro argumento for um deles, `main` despacha
+#: para `cli.main` em vez de tentar abrir janela. Sem isso, `lia-agenthub
+#: validate x` seria interpretado como caminho e falharia de forma confusa.
+SUBCOMANDOS = {"diagnostico", "validate", "pack", "export", "index", "verify-package"}
+
+
+def _despachar_cli(argv: list[str]) -> int | None:
+    """Retorna o código de saída se argv é uma chamada de CLI, senão None."""
+    # `--home X validate Y` tem `X` como valor de --home, não como comando.
+    valor_anterior_e_home = False
+    for i, a in enumerate(argv):
+        if valor_anterior_e_home:
+            valor_anterior_e_home = False
+            continue
+        if a == "--home":
+            valor_anterior_e_home = True
+            continue
+        if a in SUBCOMANDOS:
+            from .cli import main as cli_main
+            return cli_main(argv)
+        if a.startswith("-"):
+            continue
+        break
+    return None
+
+
 def main(argv: list[str] | None = None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    codigo_cli = _despachar_cli(argv)
+    if codigo_cli is not None:
+        return codigo_cli
+
     ap = argparse.ArgumentParser(
         prog="lia-agenthub",
         description=f"{APP_NAME} — acervo local de capacidades. Nada é executado.")
@@ -114,7 +145,7 @@ def main(argv: list[str] | None = None) -> int:
                     help="Só subir o servidor e imprimir a URL (para testes)")
     ap.add_argument("--diagnostico", action="store_true", help="Imprimir caminhos e sair")
     ap.add_argument("-v", "--verbose", action="store_true")
-    args = ap.parse_args(argv)
+    args = ap.parse_args(argv or None)
 
     locs = resolve_locations(args.home)
     log = _setup_logging(locs.logs, args.verbose)
@@ -153,7 +184,15 @@ def main(argv: list[str] | None = None) -> int:
             pass
         return 0
 
-    from .adapters.platform_check import detect_webview2, explain_launch
+    from .adapters.platform_check import (
+        aplicar_controle_de_rede, detect_webview2, explain_launch,
+        resumo_controle_de_rede,
+    )
+
+    # ANTES de qualquer janela: os argumentos precisam existir quando o
+    # processo do WebView2 for criado, não depois.
+    controle = aplicar_controle_de_rede()
+    log.info(resumo_controle_de_rede(controle))
 
     wv2 = detect_webview2()
     log.info("WebView2 disponível=%s %s", wv2.available, wv2.version or wv2.reason)

@@ -208,12 +208,6 @@ class AgentHub:
     def history(self, cap_id: str) -> list[dict]:
         return self.repo.history(cap_id)
 
-    def duplicates(self, cap_id: str) -> list[str]:
-        return self.repo.find_duplicates(cap_id)
-
-    def already_present(self, cap_id: str) -> bool:
-        return self.repo.exists(cap_id)
-
     def update_capability(self, old_id: str, source_path: str) -> dict:
         """Atualiza uma capacidade a partir de um caminho, sem perder a anterior.
 
@@ -245,15 +239,49 @@ class AgentHub:
                 "warnings": report.warnings}
 
     def lineage(self, cap_id: str) -> list[dict]:
+        """Cadeia de versões da capacidade, mais recente primeiro.
+
+        A interface usa isto quando precisa da cadeia de um item **sem**
+        carregar o detalhe inteiro (que lê todos os arquivos do payload).
+        """
         return self.repo.versions_of(cap_id)
 
     def diff_versions(self, cap_a: str, cap_b: str) -> dict:
+        """Diferenças entre duas versões — de arquivo E de conteúdo declarado.
+
+        Comparar só nomes de arquivo respondia "o SKILL.md mudou?" e deixava
+        aberta a pergunta que importa: **o que** mudou. Uma Skill que passa de
+        `allowed-tools: []` para `allowed-tools: [Bash]` tem o mesmo nome de
+        arquivo e um contrato completamente diferente.
+        """
         a, b = self.repo.payload_files(cap_a), self.repo.payload_files(cap_b)
         only_a = sorted(set(a) - set(b))
         only_b = sorted(set(b) - set(a))
         changed = sorted(p for p in set(a) & set(b) if a[p] != b[p])
-        return {"onlyInA": only_a, "onlyInB": only_b, "changed": changed,
-                "identical": not only_a and not only_b and not changed}
+        resultado = {"onlyInA": only_a, "onlyInB": only_b, "changed": changed,
+                     "identical": not only_a and not only_b and not changed}
+
+        # Conteúdo semântico: só faz sentido se a Skill tem SKILL.md dos dois
+        # lados. Um recurso `mcp-server` não tem, e inventar um diff vazio
+        # sugeriria "nada mudou" em vez de "não se aplica".
+        skill_a = a.get("SKILL.md")
+        skill_b = b.get("SKILL.md")
+        if skill_a is not None and skill_b is not None:
+            ta = skill_a.decode("utf-8", errors="replace")
+            tb = skill_b.decode("utf-8", errors="replace")
+            from .domain.skills import diff_corpo, diff_frontmatter
+            resultado["frontmatter"] = diff_frontmatter(ta, tb)
+            resultado["corpo"] = diff_corpo(ta, tb)
+            resultado["resumo"] = {
+                "camposAlterados": sorted(resultado["frontmatter"]),
+                "arquivosAdicionados": only_b,
+                "arquivosRemovidos": only_a,
+                "arquivosAlterados": changed,
+            }
+        else:
+            resultado["frontmatter"] = {}
+            resultado["corpo"] = {}
+        return resultado
 
     # ---- C7 exportação ---------------------------------------------------
     def export(self, cap_id: str, target: str = "private",
@@ -284,6 +312,31 @@ class AgentHub:
             "failed": len(resultados) - len(ok),
             "results": resultados,
         }
+
+    def mcp_config(self, cap_id: str, formato: str = "mcp-json") -> dict:
+        """Bloco de configuração do servidor MCP para o usuário copiar.
+
+        O Hub entrega TEXTO. Não escreve no arquivo de outro aplicativo, não
+        inicia processo e não guarda credencial — o placeholder é literal.
+        """
+        from .domain.mcp import MCPServer, config_para_host
+        stored = self.repo._load_any(cap_id)
+        cap = stored.capability
+
+        # O descritor vive em `extra["mcp"]`, gravado pelo importador. Não
+        # existe campo dedicado no `Capability` — e não criamos um agora:
+        # `extra` é o lugar previsto para metadado de tipo específico.
+        dados = (cap.extra or {}).get("mcp")
+        if not dados:
+            raise LiaError(
+                f"`{cap.name}` não é um servidor MCP.",
+                "Só recursos com descritor `mcp.json` têm configuração de host.")
+        servidor = MCPServer.from_dict(dados)
+        bloco = config_para_host(servidor, formato=formato, nome=cap.name)
+        bloco["recurso"] = {"id": cap.id, "name": cap.name,
+                            "endpoint": servidor.endpoint,
+                            "connectivityVerified": False}
+        return bloco
 
     def verify_package(self, path: str) -> dict:
         return verify_package(path)

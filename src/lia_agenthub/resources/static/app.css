@@ -162,3 +162,15 @@ ul.issues li.info { border-left-color: var(--info); }
 .opt > span { display: flex; flex-direction: column; gap: .15rem; }
 .opt em { color: var(--muted); font-style: normal; font-size: .8rem; }
 .opt strong { font-weight: 600; font-size: .9rem; }
+
+/* seleção múltipla na biblioteca */
+.pick { width: 1.05rem; height: 1.05rem; margin: 0 0 .35rem 0; flex: none;
+        accent-color: var(--accent, #6ea8fe); cursor: pointer; }
+#selbar { padding: .55rem .8rem; margin-bottom: .6rem; background: var(--panel);
+          border: 1px solid var(--line); border-radius: 8px; }
+#selbar #selinfo { font-size: .85rem; }
+
+/* bloco de código copiável (configuração de host MCP) */
+pre.code { background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+           padding: .8rem; overflow-x: auto; max-height: 42vh; }
+pre.code code { font-size: .8rem; line-height: 1.5; white-space: pre; color: var(--fg); }

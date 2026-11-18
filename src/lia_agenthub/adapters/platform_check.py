@@ -6,6 +6,7 @@ Por isso: detectar, avisar, e cair para o navegador do sistema.
 """
 from __future__ import annotations
 
+import os
 import platform
 import shutil
 import subprocess
@@ -109,9 +110,19 @@ def system_info() -> dict:
         "frozen": is_frozen(),
         "webview2": wv2.as_dict(),
         "browser_fallback": True,
+        "webview2_network": {
+            "envVar": ENV_BROWSER_ARGS,
+            # Ausente = o controle não foi aplicado NESTE processo. O valor
+            # "não configurado" é diferente de "desligado com sucesso".
+            "active": bool(os.environ.get(ENV_BROWSER_ARGS)),
+            "scope": "runtime do navegador (WebView2), não a rede do app",
+            "notAFirewall": True,
+        },
         "notes": (
             "O Hub não envia dados para fora. Sem conta, sem telemetria, "
-            "sem atualização automática."
+            "sem atualização automática. O controle de rede do WebView2 reduz "
+            "o tráfego do runtime do navegador; não substitui medição em "
+            "Windows nem funciona como firewall."
         ),
     }
 
@@ -137,3 +148,101 @@ def explain_launch(use_browser: bool) -> str:
     if wv2.available:
         return f"Janela integrada (WebView2 {wv2.version})."
     return wv2.how_to_fix
+
+
+# ---------------------------------------------------------------------------
+# Controle de rede do WebView2
+# ---------------------------------------------------------------------------
+#: Recursos do Chromium que o Hub desliga na janela nativa.
+#:
+#: O Hub é uma UI local que serve arquivos de `127.0.0.1`. Nenhum destes
+#: recursos tem função aqui, e todos geram tráfego de saída que o produto não
+#: pediu. A medição em Windows (D-09 do relatório de validação) viu conexões
+#: externas de processos `msedgewebview2.exe` com o Hub aberto; estes são os
+#: candidatos documentados, desligados por nome.
+#:
+#: `msWebOOUI`/`msPdfOOUI` = barras de ferramentas do Edge; `OptimizationHints`
+#: = download de modelo de otimização; `Translate` = tradução; `AutofillServer
+#: Communication` = preenchimento; `InterestFeedContentSuggestions`/`Optimization
+#: GuideOnboarding` = sugestões; `SafeBrowsing*` consulta listas remotas a cada
+#: navegação; `MetricsReporting`/`UMA` = telemetria do Chromium.
+#:
+#: DESLIGAR TEM CUSTO: sem Safe Browsing, a janela não consulta listas de
+#: reputação — o Hub só carrega a própria UI de `127.0.0.1`, então o risco é
+#: baixo, mas é uma decisão que fica registrada aqui.
+_ARGUMENTOS_REDE = (
+    "--disable-features=" + ",".join((
+        "AutofillServerCommunication",
+        "CalculateNativeWinOcclusion",
+        "InterestFeedContentSuggestions",
+        "MetricsReportingEnabled",
+        "OptimizationHints",
+        "OptimizationGuideOnboarding",
+        "msPdfOOUI",
+        "msWebOOUI",
+        "Translate",
+        "SafeBrowsingEnhancedProtection",
+    )),
+    "--disable-background-networking",
+    "--disable-component-update",
+    "--disable-domain-reliability",
+    "--disable-sync",
+    "--no-first-run",
+    "--no-default-browser-check",
+)
+
+#: Nome da variável que o WebView2 lê ao criar o processo de navegador.
+#: Documentado pela Microsoft: os argumentos são ANEXADOS aos que o host
+#: passa via `CoreWebView2EnvironmentOptions` — não os substituem.
+#: É por isso que este caminho funciona com o pywebview, que fixa os seus.
+ENV_BROWSER_ARGS = "WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"
+
+
+def argumentos_windows_rede() -> str:
+    """String única de argumentos, pronta para a variável de ambiente."""
+    return " ".join(_ARGUMENTOS_REDE)
+
+
+def aplicar_controle_de_rede(env: dict | None = None) -> dict:
+    """Define `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` antes da janela abrir.
+
+    Devolve um resumo do que foi feito, para o log. Nunca sobrescreve um valor
+    já presente: se alguém (suporte, depuração) definiu argumentos, misturar
+    os dois poderia quebrar a janela de forma difícil de diagnosticar. Nesse
+    caso, registra e respeita.
+
+    Retorna `{"applied": bool, "reason": str, "arguments": str}`.
+    """
+    import os
+
+    alvo = os.environ if env is None else env
+
+    if sys.platform != "win32":
+        return {"applied": False,
+                "reason": "controle de rede do WebView2 só se aplica no Windows",
+                "arguments": ""}
+
+    existente = alvo.get(ENV_BROWSER_ARGS, "").strip()
+    if existente:
+        return {"applied": False,
+                "reason": (f"{ENV_BROWSER_ARGS} já estava definida; "
+                           "valor preservado em vez de sobrescrito"),
+                "arguments": existente}
+
+    novos = argumentos_windows_rede()
+    alvo[ENV_BROWSER_ARGS] = novos
+    return {"applied": True,
+            "reason": "aplicado antes da criação da janela",
+            "arguments": novos}
+
+
+def resumo_controle_de_rede(controle: dict) -> str:
+    """Texto para o log/Diagnóstico: o que foi desligado e o que fica aberto."""
+    if not controle.get("applied"):
+        return f"Controle de rede do WebView2 não aplicado: {controle.get('reason', '')}"
+    return (
+        "Controle de rede do WebView2 aplicado (recursos desligados por nome). "
+        "Isto reduz o tráfego do RUNTIME do navegador; NÃO é firewall e não "
+        "garante zero egress. A prova de zero egress continua sendo medição "
+        "de rede em Windows — ver D-09 do relatório de validação."
+    )

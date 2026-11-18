@@ -210,6 +210,19 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"index": idx, "health": hub.index_health()})
         if path == "/api/settings":
             return self._json(self.hub.settings())
+        if path == "/api/lineage":
+            cap = (qs.get("id") or [""])[0]
+            if not cap:
+                self._error("Informe `id`.", "", 400)
+                return
+            return self._json({"lineage": hub.lineage(cap)})
+        if path == "/api/mcp-config":
+            cap = (qs.get("id") or [""])[0]
+            formato = (qs.get("format") or ["mcp-json"])[0]
+            if not cap:
+                self._error("Informe `id`.", "", 400)
+                return
+            return self._json(hub.mcp_config(cap, formato))
         if path == "/api/history":
             cap = (qs.get("id") or [""])[0]
             return self._json({"history": hub.history(cap) if cap else []})

@@ -102,14 +102,28 @@ function card(item, kind) {
     !item.licenseKnown && el("span", { class: "chip warn", text: "licença desconhecida" }),
     item.containsScripts && el("span", { class: "chip warn", text: "contém scripts" }),
   );
-  return el("button", {
-    class: "card click", role: "listitem", onclick: () => openDetail(item.id, kind),
-    "aria-label": `Abrir detalhes de ${item.name}`,
-  },
+  const conteudo = [
     el("h3", {}, item.name, el("span", { class: "meta", text: `v${item.version}` })),
     el("p", { class: "meta", text: item.description || "Sem descrição." }),
     chips,
-  );
+  ];
+  if (kind !== "active") {
+    return el("button", {
+      class: "card click", role: "listitem", onclick: () => openDetail(item.id, kind),
+      "aria-label": `Abrir detalhes de ${item.name}`,
+    }, ...conteudo);
+  }
+  // Biblioteca: a seleção é opt-in. Um checkbox dentro do card não pode
+  // disparar o clique que abre o detalhe.
+  const marcar = el("input", {
+    type: "checkbox", class: "pick", "aria-label": `Selecionar ${item.name}`,
+    onclick: (ev) => { ev.stopPropagation(); toggleSelection(item.id, ev.target.checked); },
+  });
+  marcar.dataset.id = item.id;
+  return el("button", {
+    class: "card click", role: "listitem", onclick: () => openDetail(item.id, kind),
+    "aria-label": `Abrir detalhes de ${item.name}`,
+  }, el("div", { class: "row" }, marcar), ...conteudo);
 }
 
 function emptyState(title, body, actionLabel, action) {
@@ -139,9 +153,70 @@ async function loadLibrary() {
       return;
     }
     items.forEach(i => box.append(card(i, "active")));
+    renderSelection(items);
   } catch (e) {
     banner(`Não foi possível carregar a biblioteca: ${e.message}`, true);
   }
+}
+
+/* ---------------- seleção múltipla e exportação em lote ---------------- */
+const selected = new Set();
+let currentItems = [];
+
+function toggleSelection(id, marcado) {
+  if (marcado) selected.add(id); else selected.delete(id);
+  renderSelection(currentItems);
+}
+
+function renderSelection(items) {
+  currentItems = items || [];
+  // Um id selecionado que saiu da lista (filtro mudou) não deve continuar
+  // contando em silêncio: o usuário exportaria algo que não está vendo.
+  const visiveis = new Set(currentItems.map(i => i.id));
+  for (const id of Array.from(selected)) if (!visiveis.has(id)) selected.delete(id);
+
+  const bar = $("#selbar");
+  const n = selected.size;
+  bar.hidden = n === 0;
+  $("#selinfo").textContent = n === 1 ? "1 selecionada" : `${n} selecionadas`;
+  document.querySelectorAll(".pick").forEach(cb => { cb.checked = selected.has(cb.dataset.id); });
+}
+
+$("#selall").addEventListener("click", () => {
+  currentItems.forEach(i => selected.add(i.id));
+  renderSelection(currentItems);
+});
+$("#selnone").addEventListener("click", () => {
+  selected.clear();
+  renderSelection(currentItems);
+});
+$("#selexport").addEventListener("click", () => exportMany());
+$("#selbar").hidden = true;
+
+async function exportMany() {
+  const ids = Array.from(selected);
+  if (!ids.length) { toast("Nenhuma capacidade selecionada.", true); return; }
+  const target = prompt(
+    `Exportar ${ids.length} capacidade(s).\n\n` +
+    "private — só para você\nshared — para compartilhar\npublic — publicação\n\ntarget:",
+    settingsCache?.default_export_target || "private");
+  if (!target) return;
+  try {
+    const r = await api("/api/export-many", { method: "POST",
+      body: JSON.stringify({ ids, target: target.trim() }) });
+    // Contrato de `export_many`: {ok, exported, failed, results[]}.
+    const resultados = r.results || [];
+    const falhas = resultados.filter(x => !x.ok);
+    toast(`Pacotes criados: ${r.exported} de ${resultados.length}.`, falhas.length > 0);
+    if (falhas.length) {
+      // Falha parcial precisa ser visível: exportar 12 e falhar 1 em silêncio
+      // faz o usuário acreditar que tem 12 pacotes.
+      banner(`${falhas.length} não puderam ser exportadas: ` +
+        falhas.map(f => `${f.id} (${f.refusedReason || f.reason || "motivo não informado"})`).join("; "), true);
+    }
+    selected.clear();
+    renderSelection(currentItems);
+  } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
 }
 
 function clearFilters() {
@@ -289,8 +364,14 @@ function renderDetail(d, kind) {
   if (d.history && d.history.length) {
     body.append(el("div", { class: "section" },
       el("h3", { text: "Histórico" }),
-      el("ul", { class: "issues" }, d.history.slice().reverse().map(h =>
-        el("li", { text: `${h.at || ""} · ${h.action}${h.trustAfter ? ` → ${h.trustAfter}` : ""}` })))));
+      el("ul", { class: "issues" }, d.history.slice().reverse().slice(0, 5).map(h =>
+        el("li", { text: `${h.at || ""} · ${h.action}${h.trustAfter ? ` → ${h.trustAfter}` : ""}` }))),
+      d.history.length > 5
+        ? el("button", { class: "ghost", text: `Ver histórico completo (${d.history.length})`,
+                         onclick: () => showFullHistory(d.id, d.name) })
+        : null,
+      el("p", { class: "muted small",
+        text: "O registro completo fica no disco, em history.json. Nada é apagado ao atualizar." })));
   }
 
   const actions = el("div", { class: "actions" });
@@ -302,8 +383,31 @@ function renderDetail(d, kind) {
     actions.append(
       el("button", { class: "ghost", text: "Validar", onclick: () => validate(d.id) }),
       el("button", { class: "ghost", text: "Marcar como revisado", onclick: () => setTrust(d.id, "user-provided") }),
+      el("button", { class: "ghost", text: "Licença…", onclick: () => setLicense(d.id) }),
       el("button", { class: "ghost", text: "Atualizar versão", onclick: () => doUpdate(d) }),
       el("button", { class: "primary", text: "Exportar", onclick: () => doExport(d.id) }));
+    if (d.type === "mcp-server") {
+      actions.append(el("button", {
+        class: "ghost", text: "Configuração para o host…",
+        onclick: () => showMcpConfig(d.id, d.name),
+      }));
+    }
+    // Comparar com a versão anterior: só faz sentido se existe anterior.
+    const anteriores = (d.lineage || []).filter(v => v.id !== d.id);
+    if (anteriores.length) {
+      actions.append(el("button", {
+        class: "ghost", text: "Comparar com anterior",
+        onclick: () => showDiff(anteriores[0].id, d.id, d.name),
+      }));
+    } else {
+      // Cadeia pode ter mudado desde que o detalhe foi lido (outra aba
+      // atualizou a versão). Perguntar à rota é barato e evita oferecer um
+      // botão que falharia.
+      actions.append(el("button", {
+        class: "ghost", text: "Verificar versões",
+        onclick: () => checkLineage(d.id, d.name),
+      }));
+    }
   }
   body.append(el("div", { class: "section" }, el("h3", { text: "Ações" }), actions));
 }
@@ -347,6 +451,177 @@ async function setTrust(id, trust) {
   } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
 }
 
+/* ---------------- cadeia de versões ---------------- */
+async function checkLineage(id, nome) {
+  try {
+    const { lineage } = await api(`/api/lineage?id=${encodeURIComponent(id)}`);
+    const anteriores = (lineage || []).filter(v => v.id !== id);
+    if (!anteriores.length) {
+      toast(`"${nome}" está na primeira versão registrada.`);
+      return;
+    }
+    showDiff(anteriores[0].id, id, nome);
+  } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
+}
+
+/* ---------------- configuração de host para MCP ---------------- */
+async function showMcpConfig(id, nome) {
+  try {
+    const r = await api(`/api/mcp-config?id=${encodeURIComponent(id)}`);
+    const drawer = $("#drawer");
+    drawer.hidden = false;
+    $("#dtitle").textContent = `Configuração — ${nome}`;
+    const body = $("#dbody");
+    body.replaceChildren();
+
+    body.append(el("div", { class: "notice warn" },
+      el("strong", { text: "O Hub não conecta, não instala e não autoriza. " }),
+      "Este é um bloco de texto para você colar no seu cliente. Quem conecta é o host."));
+
+    body.append(el("p", { class: "muted small", text: r.label }));
+    body.append(el("pre", { class: "code" }, el("code", { text: JSON.stringify(r.bloco, null, 2) })));
+    body.append(el("div", { class: "actions" },
+      el("button", { class: "primary", text: "Copiar bloco",
+        onclick: () => copiar(JSON.stringify(r.bloco, null, 2)) })));
+
+    if (r.nota) body.append(el("p", { class: "muted small", text: r.nota }));
+
+    if ((r.pendencias || []).length) {
+      // Pendências ANTES de colar: um bloco colado sem a chave falha e o
+      // usuário culpa o servidor.
+      body.append(el("div", { class: "section" },
+        el("h3", { text: "Você precisa providenciar" }),
+        el("ul", { class: "issues" },
+          r.pendencias.map(p => el("li", { class: "warn", text: p })))));
+    }
+    body.append(el("div", { class: "section" },
+      el("h3", { text: "Limites deste bloco" }),
+      el("ul", { class: "issues" },
+        (r.avisos || []).map(a => el("li", { class: "info", text: a })))));
+  } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
+}
+
+async function copiar(texto) {
+  try {
+    await navigator.clipboard.writeText(texto);
+    toast("Bloco copiado. Cole no seu cliente.");
+  } catch {
+    // Clipboard pode ser negado; selecionar o texto é o fallback honesto.
+    toast("Não foi possível copiar automaticamente. Selecione o bloco e copie.", true);
+  }
+}
+
+/* ---------------- histórico completo ---------------- */
+async function showFullHistory(id, nome) {
+  try {
+    const { history } = await api(`/api/history?id=${encodeURIComponent(id)}`);
+    const drawer = $("#drawer");
+    drawer.hidden = false;
+    $("#dtitle").textContent = `Histórico de ${nome}`;
+    const body = $("#dbody");
+    body.replaceChildren();
+    if (!history || !history.length) {
+      body.append(el("div", { class: "notice info", text: "Nenhum evento registrado." }));
+      return;
+    }
+    // Mais recente primeiro: é a pergunta que o usuário faz.
+    const lista = el("ul", { class: "issues" });
+    history.slice().reverse().forEach(h => {
+      const partes = [`${h.at || "(sem data)"}`, h.action];
+      if (h.trustBefore || h.trustAfter) partes.push(`${h.trustBefore || "—"} → ${h.trustAfter || "—"}`);
+      if (h.decidedBy) partes.push(`por ${h.decidedBy}`);
+      if (h.license) partes.push(`licença ${h.license}`);
+      if (h.target) partes.push(`destino ${h.target}`);
+      lista.append(el("li", { class: h.action === "discard" ? "warn" : "" },
+        el("strong", { text: h.action }),
+        el("div", { class: "small", text: partes.join(" · ") }),
+        h.note ? el("div", { class: "muted small", text: h.note }) : null));
+    });
+    body.append(el("div", { class: "section" }, el("h3", { text: `${history.length} evento(s)` }), lista));
+  } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
+}
+
+/* ---------------- licença (M5) ---------------- */
+async function setLicense(id) {
+  // Licença é decisão registrada, não inferência. O texto do diálogo deixa
+  // claro que declarar NÃO é o mesmo que poder redistribuir.
+  const codigo = prompt(
+    "Código SPDX da licença (ex.: MIT, Apache-2.0).\n\n" +
+    "Deixe em branco para registrar como DESCONHECIDA.", "");
+  if (codigo === null) return;
+  const base = prompt(
+    "Base da decisão de redistribuição (ex.: 'LICENSE do repositório de origem').\n\n" +
+    "Deixe em branco se a redistribuição NÃO está autorizada.", "");
+  if (base === null) return;
+  const redistribuivel = !!base.trim();
+  if (redistribuivel && !confirm(
+    `Marcar como redistribuível com base em:\n"${base}"\n\n` +
+    "Isto autoriza exportação pública. A responsabilidade é sua e fica registrada no histórico.")) return;
+  try {
+    await api("/api/license", { method: "POST", body: JSON.stringify({
+      id, code: codigo.trim(), redistributable: redistribuivel, basis: base.trim(),
+    }) });
+    toast(redistribuivel ? "Licença e base registradas." : "Licença registrada; redistribuição não autorizada.");
+    openDetail(id, "active");
+  } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
+}
+
+/* ---------------- diff entre versões (M6) ---------------- */
+async function showDiff(idA, idB, nome) {
+  try {
+    const d = await api("/api/diff", { method: "POST", body: JSON.stringify({ a: idA, b: idB }) });
+    const body = $("#dbody");
+    const drawer = $("#drawer");
+    drawer.hidden = false;
+    $("#dtitle").textContent = `Mudanças em ${nome}`;
+    body.replaceChildren();
+
+    if (d.identical) {
+      body.append(el("div", { class: "notice info", text: "As duas versões têm conteúdo idêntico." }));
+      return;
+    }
+
+    const resumo = d.resumo || {};
+    const lista = el("ul", { class: "issues" });
+    if ((resumo.arquivosAdicionados || []).length)
+      lista.append(el("li", { class: "info", text: `Adicionados: ${resumo.arquivosAdicionados.join(", ")}` }));
+    if ((resumo.arquivosRemovidos || []).length)
+      lista.append(el("li", { class: "warn", text: `Removidos: ${resumo.arquivosRemovidos.join(", ")}` }));
+    if ((resumo.arquivosAlterados || []).length)
+      lista.append(el("li", { text: `Alterados: ${resumo.arquivosAlterados.join(", ")}` }));
+    body.append(el("div", { class: "section" }, el("h3", { text: "Arquivos" }), lista));
+
+    const fm = d.frontmatter || {};
+    const campos = Object.keys(fm);
+    if (campos.length) {
+      // Mudança de contrato declarado: é o que o usuário precisa ver primeiro.
+      const ul = el("ul", { class: "issues" });
+      campos.forEach(c => {
+        const va = fm[c].a === null ? "(não declarado)" : fm[c].a;
+        const vb = fm[c].b === null ? "(não declarado)" : fm[c].b;
+        ul.append(el("li", { class: "warn" },
+          el("strong", { text: c }),
+          el("div", { class: "small", text: `${va}  →  ${vb}` })));
+      });
+      body.append(el("div", { class: "section" },
+        el("h3", { text: "Contrato declarado mudou" }), ul));
+    }
+
+    const corpo = d.corpo || {};
+    if (corpo.alterado) {
+      let texto = `+${corpo.adicionadas} / -${corpo.removidas} linhas ` +
+        `(antes ${corpo.linhasAntes}, depois ${corpo.linhasDepois})`;
+      if (corpo.primeiraDiferenca) texto += ` · primeira diferença na linha ${corpo.primeiraDiferenca}`;
+      body.append(el("div", { class: "section" },
+        el("h3", { text: "Corpo" }),
+        el("p", { class: "muted small", text: texto }),
+        corpo.detalheOmitido ? el("p", { class: "muted small", text: corpo.detalheOmitido }) : null));
+    }
+    body.append(el("p", { class: "muted small",
+      text: "Este resumo aponta o que mudou. Para linha a linha, use seu editor." }));
+  } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
+}
+
 async function doExport(id) {
   const padrao = settingsCache?.default_export_target || "private";
   const target = prompt(
@@ -359,9 +634,18 @@ async function doExport(id) {
       toast(`${r.refusedReason} ${r.hint || ""}`, true);
       return;
     }
-    const extra = (r.warnings || []).join("\n");
-    toast(`Pacote criado: ${r.path.split(/[\\/]/).pop()}`);
-    if (extra) alert(`Pacote criado.\n\n${extra}`);
+    const arquivo = r.path.split(/[\\/]/).pop();
+    toast(`Pacote criado: ${arquivo}`);
+    // O sufixo do nome carrega informação. Deixar o usuário descobrir sozinho
+    // por que o arquivo se chama "...-NAO-REVISADO" é o mesmo que não avisar.
+    const avisos = (r.warnings || []).slice();
+    if (arquivo.includes("-NAO-REVISADO")) {
+      avisos.unshift(
+        "Esta capacidade não foi revisada por humano. O nome do arquivo leva " +
+        "-NAO-REVISADO e o manifesto marca trust: unreviewed — quem receber " +
+        "o pacote consegue ver isso sem abrir o Hub.");
+    }
+    if (avisos.length) alert(`Pacote criado.\n\n${avisos.join("\n\n")}`);
   } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
 }
 

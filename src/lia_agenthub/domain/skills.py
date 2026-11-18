@@ -266,7 +266,8 @@ def _parece_url_ou_rota(alvo: str) -> bool:
     """`/json/list`, `/`, `/api/v1/x` — rota de servidor citada em prosa.
 
     Rota tem segmentos sem extensão e começa com barra. Caminho de arquivo
-    absoluto que importa para segurança é `C:\...` ou UNC, tratados à parte.
+    absoluto que importa para segurança é `C:` + barra invertida ou UNC,
+    tratados à parte.
     """
     if not alvo.startswith(("/", "\\")):
         return False
@@ -457,3 +458,118 @@ def folder_name_do_recurso(upstream: str | None,
     if p.suffix.lower() in (".zip", ".lia-capability"):
         return None
     return p.name if p.suffix == "" else None
+
+
+# ---------------------------------------------------------------------------
+# Diff semântico entre versões
+# ---------------------------------------------------------------------------
+#: Campos do frontmatter que mudam o COMPORTAMENTO ou o contrato declarado da
+#: Skill, e por isso precisam aparecer num diff de atualização. Mudar
+#: `description` altera o que o host decide carregar; mudar `allowed-tools`
+#: altera o que a Skill pode pedir. Um diff que mostra só "SKILL.md mudou"
+#: esconde exatamente a pergunta que o usuário está fazendo.
+CAMPOS_DIFFAVEIS = (
+    "name",
+    "description",
+    "license",
+    "compatibility",
+    "allowed-tools",
+    "metadata.version",
+)
+
+#: Teto de linhas de corpo comparadas. Acima disso, o diff de corpo vira
+#: contagem e o texto completo fica fora: despejar 5.000 linhas numa UI não
+#: informa, e o diff de arquivo já sinalizou a mudança.
+CORPO_MAX_LINHAS_DIFF = 400
+
+
+def _normalizar(valor: str | None) -> str:
+    if valor is None:
+        return ""
+    return " ".join(str(valor).split())
+
+
+def diff_frontmatter(texto_a: str, texto_b: str) -> dict[str, dict]:
+    """Diferenças de frontmatter entre duas versões de `SKILL.md`.
+
+    Retorna `{campo: {"a": ..., "b": ...}}` só para os campos que mudaram.
+    Campo ausente em um dos lados aparece como `None` — "não declarado" é
+    informação, não ruído, e não pode ser confundido com string vazia.
+    """
+    pa = parse_frontmatter(texto_a)
+    pb = parse_frontmatter(texto_b)
+    if not pa.ok and not pb.ok:
+        return {}
+
+    mudancas: dict[str, dict] = {}
+    for campo in CAMPOS_DIFFAVEIS:
+        va = pa.frontmatter.get(campo)
+        vb = pb.frontmatter.get(campo)
+        if va is None and vb is None:
+            continue
+        if _normalizar(va) != _normalizar(vb):
+            mudancas[campo] = {"a": va, "b": vb}
+
+    # Campos presentes e diferentes que não estão na lista fixa: reportar é
+    # mais honesto que ignorar, senão um `metadata.author` trocado passa
+    # silencioso e o usuário conclui que nada mudou.
+    for campo in sorted(set(pa.frontmatter) | set(pb.frontmatter)):
+        if campo in CAMPOS_DIFFAVEIS or campo in mudancas:
+            continue
+        if campo.startswith("metadata.") and campo == "metadata.version":
+            continue
+        va, vb = pa.frontmatter.get(campo), pb.frontmatter.get(campo)
+        if _normalizar(va) != _normalizar(vb):
+            mudancas[campo] = {"a": va, "b": vb}
+    return mudancas
+
+
+def diff_corpo(texto_a: str, texto_b: str) -> dict:
+    """Resumo legível do que mudou no corpo da Skill.
+
+    Não é diff de patch linha a linha: o produto precisa dizer *quanto* e
+    *onde começa*, não reproduzir 400 linhas num JSON. Para inspeção fina, o
+    usuário tem editor e `git diff`.
+    """
+    ca = parse_frontmatter(texto_a).body.splitlines()
+    cb = parse_frontmatter(texto_b).body.splitlines()
+    if not ca and not cb:
+        return {}
+
+    la = {_normalizar(l) for l in ca if l.strip()}
+    lb = {_normalizar(l) for l in cb if l.strip()}
+    adicionadas = len(lb - la)
+    removidas = len(la - lb)
+
+    resultado: dict = {
+        "linhasAntes": len(ca),
+        "linhasDepois": len(cb),
+        "adicionadas": adicionadas,
+        "removidas": removidas,
+        "alterado": bool(adicionadas or removidas),
+    }
+    if resultado["alterado"] and max(len(ca), len(cb)) <= CORPO_MAX_LINHAS_DIFF:
+        # Primeira linha que diverge: dá ao usuário um ponto de partida sem
+        # fingir ser um diff completo.
+        # O corpo começa logo após o `---` de fechamento, com uma linha vazia
+        # à frente. Numerar a partir dela daria "linha 4" para o que o editor
+        # mostra na 2 — um número que o usuário confere e não acha. A âncora é
+        # a primeira linha NÃO VAZIA do corpo.
+        inicio = 0
+        while inicio < max(len(ca), len(cb)):
+            da = ca[inicio] if inicio < len(ca) else ""
+            db = cb[inicio] if inicio < len(cb) else ""
+            if da.strip() or db.strip():
+                break
+            inicio += 1
+        for i in range(inicio, max(len(ca), len(cb))):
+            da = ca[i] if i < len(ca) else None
+            db = cb[i] if i < len(cb) else None
+            if _normalizar(da) != _normalizar(db):
+                resultado["primeiraDiferenca"] = i - inicio + 1
+                break
+    elif resultado["alterado"]:
+        resultado["detalheOmitido"] = (
+            f"corpo com mais de {CORPO_MAX_LINHAS_DIFF} linhas; "
+            "use o editor para inspeção linha a linha")
+    return resultado

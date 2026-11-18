@@ -186,3 +186,103 @@ def ler_descritor(files: dict[str, bytes]) -> MCPServer | None:
             + ", ".join(sorted(suspeitos))
             + ". O Hub não armazena segredos.")
     return MCPServer.from_dict(dados)
+
+
+# ---------------------------------------------------------------------------
+# Configuração para o host — o que o Hub ENTREGA, sem executar nada
+# ---------------------------------------------------------------------------
+#: Formatos de configuração por cliente. Cada um existe porque um host real o
+#: lê; não inventamos dialeto. Se um cliente novo aparecer, entra aqui com
+#: referência à documentação dele.
+#:
+#: O Hub NUNCA escreve no arquivo de configuração de outro aplicativo. Ele
+#: gera o bloco e o usuário copia — é a diferença entre distribuir
+#: configuração e tomar conta da máquina do usuário.
+FORMATOS_HOST = {
+    "mcp-json": {
+        "label": "mcp.json genérico (Cursor, VS Code, Gemini CLI)",
+        "chave": "mcpServers",
+        "usa_url": True,
+        "nota": ("Cole sob `mcpServers`. No VS Code, o cabeçalho "
+                 "`Accept: application/json` pode ser necessário."),
+    },
+    "antigravity": {
+        "label": "Antigravity / clientes com `serverUrl`",
+        "chave": "mcpServers",
+        "usa_url": False,
+        "nota": ("Estes clientes usam `serverUrl` em vez de `url`. "
+                 "Verifique no seu cliente antes de colar."),
+    },
+    "claude-code": {
+        "label": "Claude Code (`claude mcp add`)",
+        "chave": "mcpServers",
+        "usa_url": True,
+        "nota": ("Prefira `claude mcp add --transport http <nome> <url>`; "
+                 "para editar à mão, cole sob `mcpServers`."),
+    },
+}
+
+#: Marcador que o usuário substitui pela credencial obtida no fluxo de
+#: autenticação. Nunca é um valor: é um lembrete de onde o valor entra.
+PLACEHOLDER_CREDENCIAL = "<SUA_CHAVE>"
+
+
+def config_para_host(servidor: "MCPServer", formato: str = "mcp-json",
+                     nome: str = "") -> dict:
+    """Bloco de configuração para o usuário colar. Não contém segredo.
+
+    Levanta `DescritorInvalido` para formato desconhecido — adivinhar o
+    dialeto de um cliente que não conhecemos produziria um bloco que não
+    funciona e um usuário que não sabe por quê.
+    """
+    fmt = FORMATOS_HOST.get(formato)
+    if fmt is None:
+        raise DescritorInvalido(
+            f"Formato de host desconhecido: {formato!r}. "
+            f"Conhecidos: {', '.join(sorted(FORMATOS_HOST))}.")
+
+    identificador = (nome or servidor.provider or "servidor-mcp")
+    identificador = "".join(
+        c if (c.isalnum() or c in "-_") else "-" for c in identificador.lower()
+    ).strip("-") or "servidor-mcp"
+
+    entrada: dict[str, Any] = {}
+    if servidor.transport == "http":
+        entrada["url" if fmt["usa_url"] else "serverUrl"] = servidor.endpoint
+        entrada["type"] = "http" if fmt["usa_url"] else servidor.transport
+    else:
+        # stdio exigiria comando e args, que o descritor deste Hub não modela
+        # para serviço remoto. Dizer isso é melhor que emitir bloco vazio.
+        raise DescritorInvalido(
+            f"Exportação de configuração cobre `http`; transporte "
+            f"{servidor.transport!r} exigiria comando/args, que não estão "
+            "no descritor.")
+
+    # Cabeçalhos entram com o NOME; o valor é o placeholder. Um bloco que
+    # promete funcionar sem credencial seria pior que um bloco que pede.
+    if servidor.headers:
+        entrada["headers"] = {h: PLACEHOLDER_CREDENCIAL for h in servidor.headers}
+
+    return {
+        "format": formato,
+        "label": fmt["label"],
+        "nota": fmt["nota"],
+        "identificadorSugerido": identificador,
+        "bloco": {fmt["chave"]: {identificador: entrada}},
+        # Campos que o usuário precisa providenciar ANTES de colar.
+        "pendencias": (
+            ([] if not servidor.headers else
+             [f"Substituir {PLACEHOLDER_CREDENCIAL} pelo valor real de "
+              f"{', '.join(servidor.headers)} — obtido no fluxo de "
+              f"autenticação do host, não neste aplicativo."]) +
+            ([f"Atender: {r}" for r in servidor.account_requirements]
+             if servidor.account_requirements else [])
+        ),
+        "avisos": [
+            "Este bloco descreve um serviço que o Hub NÃO verificou. "
+            "`connectivityVerified` é sempre falso.",
+            "Colar o bloco não instala, não inicia e não autoriza nada: "
+            "quem conecta é o host.",
+        ],
+        "executadoPeloHub": False,
+    }
