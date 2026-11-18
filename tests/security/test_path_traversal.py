@@ -148,6 +148,28 @@ def test_symlink_em_diretorio_e_recusado(tmp_path, hub):
         "link" in str(w).lower() or "symlink" in str(w).lower() for w in report.warnings)
 
 
+@pytest.mark.windows_only
+@pytest.mark.skipif(os.name != "nt", reason="junction exige NTFS no Windows")
+@pytest.mark.parametrize("selecionar_junction", [False, True])
+def test_importacao_recusa_junction_real(tmp_path, hub, selecionar_junction):
+    from _winapi import CreateJunction
+
+    origem = tmp_path / "origem"
+    origem.mkdir()
+    (origem / "local.md").write_text("local", encoding="utf-8")
+    outra = tmp_path / "outra"
+    outra.mkdir()
+    (outra / "amostra.md").write_text("amostra", encoding="utf-8")
+    atalho = origem / "atalho"
+    CreateJunction(str(outra), str(atalho))
+
+    relatorio = hub.import_path(str(atalho if selecionar_junction else origem))
+
+    assert not relatorio.ok
+    assert "reparse point" in relatorio.blocked_reason
+    assert not list(hub.locations.quarantine.iterdir())
+
+
 def test_destino_de_exportacao_fora_da_area_e_permitido_apenas_por_escolha(hub, imported, tmp_path):
     """Exportar é a única escrita fora da área — e só para onde o humano aponta."""
     destino = tmp_path / "meus-exportados"

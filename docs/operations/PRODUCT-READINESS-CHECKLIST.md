@@ -29,19 +29,18 @@ Estes itens foram executados e verificados **neste ambiente** (Linux):
 
 ## 2. Pronto para entregar a outra pessoa (distribuição)
 
-- [ ] **Executável Windows gerado e testado** — o `.spec` é válido e testado
-      estaticamente; o build **não foi executado** aqui (falta `libpython`
-      compartilhada). Exige máquina com PyInstaller e Windows
-- [ ] **Execução em máquina sem Python** — não executada nesta sessão
-- [ ] **Zero egress verificado na janela nativa** — o controle de rede do
-      WebView2 está implementado; a **medição** continua pendente (`D-09`)
+- [x] **Executável Windows gerado e testado no host de homologação**. A cópia
+      externa abriu em WebView2 e passou pelos fluxos de diagnóstico, importação,
+      exportação, persistência e encerramento.
+- [ ] **Execução em máquina sem Python** — bloqueada por falta de Windows limpo.
+- [ ] **Zero egress na janela nativa (D-09)** — o controle chegou ao runtime.
+      O NetLog ainda registrou DNS sobre HTTPS externo.
 - [ ] **`D-16` — licença do projeto** — sem `LICENSE`, o direito de reutilização
       não está concedido por padrão
 - [ ] **Assinatura de código** — sem ela, o SmartScreen mostra aviso
 
-**Veredito:** pronto para uso do próprio autor; **não** pronto para distribuição
-pública. Os cinco itens dependem de ambiente Windows ou de decisão humana —
-nenhum depende de código novo.
+**Veredito:** build utilizável no host testado, distribuição pública bloqueada.
+A matriz e as medições estão no [relatório Windows](WINDOWS-VALIDATION-REPORT.md).
 
 ---
 
@@ -101,10 +100,7 @@ python -S docs/examples/independent-reader/read_index.py <index.json> --check
 
 ---
 
-## 6. O que este checklist não afirma
+## 6. Escopo da evidência
 
-Não afirma que o produto funciona no Windows — não foi executado lá.
-Não afirma zero egress — não foi medido.
-Não afirma estar pronto para o público — depende de `D-16` e de assinatura.
-
-Afirma o que foi executado, com o comando ao lado.
+A seção de distribuição usa os resultados do Windows de 18 de novembro de
+2026. As demais seções refletem a execução funcional do Arena em Linux.

@@ -256,3 +256,21 @@ def test_locations_persistem_entre_instancias(locations, skill_dir):
     assert len(itens) == 1
     assert itens[0]["id"] == rep.capability_id
     assert itens[0]["trust"] == "reviewed-external"
+
+
+def test_escrita_atomica_propaga_acesso_negado_sem_repetir(tmp_path, monkeypatch):
+    from lia_agenthub.adapters import atomic
+
+    tentativas = []
+
+    def negar_criacao(path, flags, mode):
+        tentativas.append(path)
+        raise PermissionError("ACL negou a criação")
+
+    with monkeypatch.context() as patch:
+        patch.setattr(atomic.os, "open", negar_criacao)
+        with pytest.raises(PermissionError, match="ACL negou"):
+            atomic.atomic_write_bytes(tmp_path / "saida", b"amostra")
+
+    assert len(tentativas) == 1
+    assert not list(tmp_path.iterdir())

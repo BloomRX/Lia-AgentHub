@@ -176,3 +176,96 @@ exatamente o que se quer ao medir a linha de base sem controle. Para medir
 
 **D-09 permanece BLOCKED até esse passo ser executado.** O critério de aceite
 não foi alterado.
+
+---
+
+## Homologação Windows de 18 de novembro de 2026
+
+O checkout limpo foi atualizado por fast-forward de `b4eb85f` para o HEAD
+publicado do Arena, `b7df471abad3a939906a9c571e0f873f99e685bf`, na branch
+`arena/a92004be-lia-agenthub`. Consultei o relatório de conclusão funcional, o
+checklist e o adendo de rede acima. A execução usou Windows 11 Home x64 26200,
+Python 3.12.10, PyInstaller 6.22.3, pywebview 6.2.1 e WebView2 157.0.4341.60.
+
+| Critério | Estado | Evidência |
+| --- | --- | --- |
+| Suíte Windows | PASS | 673 aprovados e 1 skip. Novos testes cobrem dois casos de junction e falha imediata na criação de temporário. |
+| Segurança e especificação de build | PASS | 108 aprovados e 1 skip. Consistência documental 44/44. |
+| D-09 — argumentos no runtime | PASS | Linha de comando do WebView2 confirmou os argumentos. O build final também os aplicou automaticamente. |
+| D-09 — zero egress | PARTIAL | O critério de zero tráfego externo falhou. As duas execuções registraram DNS sobre HTTPS externo. |
+| M4 — junction NTFS | PASS | Recusada dentro da pasta e como entrada selecionada. A junction exercitou um reparse point real. |
+| M4 — symlink NTFS | BLOCKED | A sessão não tinha privilégio de criação de symlink. O teste pulou. |
+| M4 — demais tipos de reparse point | PARTIAL | A checagem usa o atributo de reparse point. A execução real cobriu junction. |
+| M4 — caminhos em arquivo importado | PASS | Traversal, ZIP Slip, entradas absolutas e UNC, nomes reservados e colisões por case passaram nos testes. |
+| M4 — diretórios protegidos | PASS | ACL NTFS negou leitura e escrita. O Hub retornou recusa explícita. Quarentena e destino foram conferidos após a operação. |
+| Build e fluxos empacotados | PASS | Onefile x64, executado fora do checkout. Janela nativa, diagnóstico, importação, validação, quarentena, promoção, exportação, reimportação, persistência e encerramento. |
+| Inspeção de pacote e logs | PASS | Zero correspondências nos padrões de credenciais do plano. |
+| Windows limpo sem Python instalado | BLOCKED | Nenhum Windows limpo disponível. A cópia externa rodou com PATH restrito ao Windows. |
+| Distribuição pública | BLOCKED | Egress residual, validação em Windows limpo e decisões humanas de distribuição. |
+
+### D-09 — TCP e DNS antes e depois
+
+O mesmo executável de `b7df471` rodou com perfis WebView2 novos e separados
+por 25 segundos por condição. Em ambos os casos, defini
+`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` no processo. A linha de base recebeu
+`--log-net-log=<arquivo>`. A execução controlada recebeu a string integral de
+`argumentos_windows_rede()` e o mesmo flag de captura, com outro arquivo.
+`Get-CimInstance Win32_Process` encontrou a árvore e registrou os argumentos.
+`netstat -ano` amostrou TCP com PID. O NetLog registrou eventos DNS, TCP e
+origens HTTP do runtime. O canal operacional DNS do Windows estava desativado.
+Os timestamps abaixo usam UTC−03.
+
+| Condição | PID navegador / NetworkService | Primeiro TCP observado | Destino | Resultado |
+| --- | --- | --- | --- | --- |
+| Base | 23636 / 20148 | 18:50:55.154 | `150.171.22.17:443` | ESTABLISHED. NetLog associou ao host `config.edge.skype.com`. |
+| Base | 23636 / 20148 | 18:51:03.104 | `8.8.4.4:443` | ESTABLISHED. `dns.google/dns-query`. |
+| Base | 23636 / 20148 | 18:51:14.543 | `8.8.8.8:443` | ESTABLISHED. `dns.google/dns-query`. |
+| Controle | 18308 / 14028 | 18:51:25.967 | `8.8.4.4:443` | ESTABLISHED. `dns.google/dns-query`. |
+| Controle | 18308 / 14028 | 18:51:27.764 | `8.8.8.8:443` | ESTABLISHED. `dns.google/dns-query`. |
+
+O NetLog capturou 8 eventos de resposta DNS na linha de base e 6 com controle.
+A origem `config.edge.skype.com` apareceu somente na primeira amostra. A
+rota `/dns-query` e os IPs do Google Public DNS identificam as conexões
+restantes como DoH. As duas árvores encerraram com código 0, sem processos
+remanescentes. [Flags do WebView2](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/webview-features-flags)
+e [transporte DoH do Google Public DNS](https://developers.google.com/speed/public-dns/docs/secure-transports).
+
+### M4 e artefato empacotado
+
+- A junction apontava para outro diretório temporário com dados sintéticos.
+  Antes da correção, as duas formas de seleção importavam o arquivo do destino.
+  A inspeção passou a consultar os atributos com `lstat` antes de descer ou abrir.
+- A exportação com ACL negando escrita excedeu 15 segundos antes da correção.
+  No Windows, `mkstemp` repetia a criação do temporário sob acesso negado.
+  A criação agora é exclusiva e falha prontamente. Importação e exportação
+  retornam o motivo da recusa. `icacls` aplicou e removeu as ACLs de teste.
+  A rechecagem confirmou destino vazio, quarentena estável e pacote anterior íntegro.
+- A regressão completa usou `python -m pytest -o addopts= --strict-markers -q -r s`.
+  A execução dirigida usou a mesma base com `tests/security tests/integration/test_build_spec.py`.
+  `python docs/research/verify-consistency.py` registrou 44/44.
+- `powershell -ExecutionPolicy Bypass -File scripts\build_windows.ps1` rodou
+  novamente a suíte, empacotou e confirmou código 0 para `--version`.
+  `python -m PyInstaller.utils.cliutils.archive_viewer dist\LiaAgentHub.exe -r -b`
+  confirmou CLI, descritor MCP, plataforma, Bottle, EdgeChromium e HTML/CSS/JS.
+- `Start-Process` abriu a janela nativa no diretório externo com perfil de
+  teste. O cliente chamou a API local do executável e confirmou HTTP 403 sem
+  token, diagnóstico autenticado, fluxo de importação e exportação, verificação
+  de hash e persistência após reabrir. As duas janelas fecharam com código 0,
+  portas liberadas e processos WebView2 encerrados. A pasta do executável
+  continha somente o binário. Os dados ficaram sob `%USERPROFILE%\Lia` no perfil
+  temporário, com logs em `%LOCALAPPDATA%\Lia\AgentHub\logs`.
+- `dist\LiaAgentHub.exe` tem 11 651 049 bytes.
+  SHA-256 `72218E10412698DCA5C74D4BB544650EDAB815F95232D02C1BD7CCE964136DAF`.
+  Authenticode `NotSigned`. A varredura por padrões de credencial no arquivo
+  bruto, nas 101 entradas CArchive e 320 entradas PYZ descomprimidas e nos logs
+  retornou zero correspondências. Os tokens efêmeros capturados nos cabeçalhos
+  pelo NetLog foram suprimidos das evidências após o fechamento.
+- Evidências locais em `%TEMP%\LiaHub-Homolog-b7df471`. Os diretórios
+  `baseline` e `controlled` contêm NetLog, argumentos, processos e TCP por PID.
+  `measure.ps1` e `netlog-summary.py` reproduzem a coleta e o resumo.
+  Consulte também `m4-before.log`, `regression-final.log`, `build-release.log`,
+  `smoke-release.log`, `contents.txt` e `scan-package.log`.
+
+A distribuição continua bloqueada. O egress residual exige avaliar uma política
+para o runtime, e falta executar o binário em Windows limpo. As decisões
+D-01, D-05, D-16 e D-18 seguem com os estados e restrições registrados.

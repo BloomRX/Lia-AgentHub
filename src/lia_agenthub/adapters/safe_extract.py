@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import io
+import stat
 import zlib
 import zipfile
 from dataclasses import dataclass, field
@@ -196,32 +197,49 @@ def inspect_zip(data: bytes) -> Extraction:
     return result
 
 
+def stat_import_path(path: Path, *, label: str | None = None):
+    """Lê os atributos da entrada sem seguir links nem junctions."""
+    metadata = path.lstat()
+    reparse = getattr(metadata, "st_file_attributes", 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT
+    if stat.S_ISLNK(metadata.st_mode) or reparse:
+        raise SecurityError(
+            f"O caminho contém link simbólico ou reparse point: `{label or path.name}`.",
+            "Selecione a pasta ou o arquivo original, sem links.",
+            code="DIR_SYMLINK")
+    return metadata
+
+
+def _directory_entries(root: Path):
+    # rglob pode descer em junctions no Windows. Examine cada entrada
+    # sem seguir links antes de decidir se ela é um diretório.
+    for path in sorted(root.iterdir()):
+        metadata = stat_import_path(path, label=path.name)
+        yield path, metadata
+        if stat.S_ISDIR(metadata.st_mode):
+            yield from _directory_entries(path)
+
+
 def inspect_directory(root: Path) -> Extraction:
     """Lê um diretório local. Não segue symlink — recusa e reporta."""
-    root = Path(root).resolve()
+    root = Path(root)
+    stat_import_path(root)
     result = Extraction()
     total = 0
 
-    for path in sorted(root.rglob("*")):
+    for path, metadata in _directory_entries(root):
         rel = path.relative_to(root).as_posix()
 
-        if path.is_symlink():
-            raise SecurityError(
-                f"O diretório contém link simbólico: `{rel}`.",
-                "Links podem apontar para fora da pasta e vazar arquivos do sistema.",
-                code="DIR_SYMLINK")
-
-        if path.is_dir():
+        if stat.S_ISDIR(metadata.st_mode):
             canon = rel.lower()
             if canon.split("/")[-1] in ("node_modules", ".git"):
                 result.warnings.append(f"`{rel}/` ignorado (pasta de controle).")
             continue
 
-        if not path.is_file():
+        if not stat.S_ISREG(metadata.st_mode):
             continue
 
         safe = validate_relative(rel)
-        size = path.stat().st_size
+        size = metadata.st_size
         if size > MAX_SINGLE:
             raise SecurityError(
                 f"Arquivo grande demais: `{rel}`.", "Reduza o recurso.", code="DIR_FILE_BIG")

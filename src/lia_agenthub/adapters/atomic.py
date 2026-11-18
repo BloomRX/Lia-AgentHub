@@ -8,7 +8,7 @@ from __future__ import annotations
 import json
 import os
 import sys
-import tempfile
+import secrets
 import time
 from contextlib import contextmanager
 from pathlib import Path
@@ -40,7 +40,11 @@ def _replace(src: str, dst: Path) -> None:
 def atomic_write_bytes(path: Path, data: bytes) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=".lia-tmp-", suffix=".part")
+    # No Windows, mkstemp repete em PermissionError quando os.access
+    # indica escrita, mesmo se a ACL negar a criação no diretório.
+    tmp = path.parent / f".lia-tmp-{secrets.token_hex(8)}.part"
+    flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY | getattr(os, "O_BINARY", 0)
+    fd = os.open(tmp, flags, 0o600)
     try:
         with os.fdopen(fd, "wb") as fh:
             fh.write(data)

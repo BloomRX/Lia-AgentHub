@@ -287,16 +287,20 @@ def export(cap_id: str, repo: Repository, destination: Path, *,
 
     suffix = "-NAO-REVISADO" if cap.trust.value == "unreviewed" else ""
     dest_dir = Path(destination)
-    dest_dir.mkdir(parents=True, exist_ok=True)
-    filename = f"{cap.id}-{cap.version}{suffix}.lia-capability"
-    out = dest_dir / filename
+    try:
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        filename = f"{cap.id}-{cap.version}{suffix}.lia-capability"
+        out = dest_dir / filename
 
-    counter = 1
-    while out.exists():
-        out = dest_dir / f"{cap.id}-{cap.version}{suffix}-{counter}.lia-capability"
-        counter += 1
+        counter = 1
+        while out.exists():
+            out = dest_dir / f"{cap.id}-{cap.version}{suffix}-{counter}.lia-capability"
+            counter += 1
 
-    atomic_write_bytes(out, data)
+        atomic_write_bytes(out, data)
+    except PermissionError:
+        return ExportResult(False, refused_reason=f"Acesso negado: {dest_dir}",
+                            hint="Selecione um destino em que você possa gravar.")
     return ExportResult(True, path=str(out), package_hash=package_hash,
                         warnings=warnings)
 

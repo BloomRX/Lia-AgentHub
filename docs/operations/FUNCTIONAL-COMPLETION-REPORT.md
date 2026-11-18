@@ -1,5 +1,10 @@
 # Relatório de conclusão funcional — Lia Agent Hub
 
+A execução posterior no Windows e os resultados de distribuição constam do
+[relatório de validação Windows](WINDOWS-VALIDATION-REPORT.md). Os totais e
+estados abaixo registram a rodada original do Arena.
+
+
 **Data:** 2026-11-15 (UTC)
 **Branch:** `arena/a92004be-lia-agenthub`
 **Base do HEAD na abertura:** `90b6e5c`

@@ -8,6 +8,7 @@ from __future__ import annotations
 import datetime as _dt
 import hashlib
 import json
+import stat
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -25,7 +26,9 @@ from ..domain.skills import (
 )
 from ..domain.unicode_policy import Context, has_bom, scan, strip_bom
 from .repository import Repository
-from .safe_extract import Extraction, inspect_directory, inspect_package, inspect_zip
+from .safe_extract import (
+    Extraction, inspect_directory, inspect_package, inspect_zip, stat_import_path,
+)
 
 MANIFEST_NAME = "manifest.json"
 
@@ -169,12 +172,9 @@ class Importer:
                   dry_run: bool = False,
                   version_of: str | None = None) -> ImportReport:
         path = Path(raw_path)
-        if not path.exists():
-            return ImportReport(False, blocked_reason=f"Caminho não existe: {path}",
-                                hint="Verifique o caminho e tente novamente.")
-
         try:
-            if path.is_dir():
+            metadata = stat_import_path(path)
+            if stat.S_ISDIR(metadata.st_mode):
                 extraction = inspect_directory(path)
             elif path.name.endswith(".lia-capability"):
                 # Pacote do Hub: o conteúdo vive sob payload/. Desembrulhar antes
@@ -190,6 +190,12 @@ class Importer:
                 extraction = Extraction(files=[
                     ExtractedFile(path=path.name, data=data,
                                   is_executable=looks_like_script((path.name,)))])
+        except FileNotFoundError:
+            return ImportReport(False, blocked_reason=f"Caminho não existe: {path}",
+                                hint="Verifique o caminho e tente novamente.")
+        except PermissionError:
+            return ImportReport(False, blocked_reason=f"Acesso negado: {path}",
+                                hint="Selecione uma origem que você possa ler.")
         except SecurityError as e:
             return ImportReport(False, blocked_reason=e.message, hint=e.hint)
 
