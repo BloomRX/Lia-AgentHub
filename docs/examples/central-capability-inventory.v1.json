@@ -1,0 +1,61 @@
+{
+  "inventoryVersion": 1,
+  "inventoryId": "forge-exemplo",
+  "revision": "snapshot-001",
+  "generatedAt": "2026-11-18T00:00:00Z",
+  "issuer": {
+    "project": "lia-forge",
+    "repository": "https://example.invalid/forge-demo",
+    "maintainer": "Mantenedor de exemplo"
+  },
+  "complete": false,
+  "records": [
+    {
+      "id": "urn:lia:cap:a0423bcc-c569-4bbb-8f73-c4aaed0a1528",
+      "revisionId": "rev-001",
+      "version": null,
+      "kind": "workflow",
+      "name": "Revisão de asset",
+      "description": "Exemplo sintético de workflow declarado para arquivo de inventário.",
+      "origins": [
+        {
+          "project": "lia-forge",
+          "repository": "https://example.invalid/forge-demo",
+          "path": "workflows/revisao.json",
+          "branch": null,
+          "commit": null,
+          "author": null,
+          "maintainer": "Mantenedor de exemplo",
+          "evidenceIds": []
+        }
+      ],
+      "aliases": [],
+      "license": {
+        "declared": null,
+        "components": [],
+        "redistribution": {
+          "status": "unknown",
+          "authorizationIds": []
+        }
+      },
+      "integrity": [],
+      "dependencies": [],
+      "environment": null,
+      "offers": [],
+      "compatibility": [
+        {
+          "host": "lia-forge",
+          "profile": "asset-pipeline",
+          "hostVersion": null,
+          "requirements": [],
+          "evidenceIds": [],
+          "result": "declared"
+        }
+      ],
+      "details": null,
+      "observations": [],
+      "history": []
+    }
+  ],
+  "evidence": []
+}

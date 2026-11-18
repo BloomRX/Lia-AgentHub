@@ -140,3 +140,12 @@ A Fase 1 depende de quatro decisões humanas (`D-13` escopo do MVP, `D-14` stack
 A implementação só começa após revisão humana e aprovação explícita da especificação resultante.
 
 Consulte também [AGENTS.md](AGENTS.md) para as regras deste repositório, inclusive a distinção obrigatória entre `IMPLEMENTED`, `EXECUTED`, `VALIDATED`, `PROPOSED`, `PLANNED`, `RESEARCH` e `UNKNOWN`.
+
+## Inventário e governança central
+
+A [proposta de governança central](docs/architecture/CENTRAL-CAPABILITY-GOVERNANCE.md)
+define a entrada por projeto e o compartilhamento de capacidades. O
+[contrato de inventário](docs/architecture/CAPABILITY-INVENTORY-CONTRACT.md)
+especifica registros, evidências e compatibilidade com o formato v1.
+A [matriz e o plano](docs/operations/CAPABILITY-REGISTRY-READINESS.md)
+registram lacunas e testes executados.
