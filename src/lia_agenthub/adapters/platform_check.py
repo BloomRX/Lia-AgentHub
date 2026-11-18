@@ -112,9 +112,11 @@ def system_info() -> dict:
         "browser_fallback": True,
         "webview2_network": {
             "envVar": ENV_BROWSER_ARGS,
-            # Ausente = o controle não foi aplicado NESTE processo. O valor
-            # "não configurado" é diferente de "desligado com sucesso".
-            "active": bool(os.environ.get(ENV_BROWSER_ARGS)),
+            # `controle_ativo()` verifica se os NOSSOS argumentos estão na
+            # variável. Um `bool(os.environ.get(...))` responderia "ativo"
+            # para qualquer valor — inclusive um `--remote-debugging-port`
+            # deixado por depuração, que é o oposto de controle.
+            "active": controle_ativo(),
             "scope": "runtime do navegador (WebView2), não a rede do app",
             "notAFirewall": True,
         },
@@ -234,6 +236,22 @@ def aplicar_controle_de_rede(env: dict | None = None) -> dict:
     return {"applied": True,
             "reason": "aplicado antes da criação da janela",
             "arguments": novos}
+
+
+def controle_ativo(env: dict | None = None) -> bool:
+    """Os argumentos de controle do Hub estão presentes no ambiente?
+
+    Distingue três situações que um `bool()` não distingue:
+      - variável ausente          -> False (não configurado)
+      - variável nossa            -> True  (controle aplicado)
+      - variável de outra origem  -> False (controle NÃO aplicado; alguém
+                                     definiu outra coisa e o Hub preservou)
+    """
+    alvo = os.environ if env is None else env
+    valor = alvo.get(ENV_BROWSER_ARGS, "")
+    # A marca inconfundível é o disable-features com o primeiro recurso da
+    # nossa lista; comparar a string inteira quebraria se um cliente anexasse.
+    return "AutofillServerCommunication" in valor
 
 
 def resumo_controle_de_rede(controle: dict) -> str:

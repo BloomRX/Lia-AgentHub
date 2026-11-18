@@ -22,8 +22,8 @@ Cada requisito recebe uma das quatro classificações:
 **Regra do kit, respeitada:** suíte verde **não** é homologação de produto. O gate
 é execução em Windows real. Nada aqui declara "funciona no Windows".
 
-**Números desta rodada:** **670 testes**, 0 falhas — 124 unit, 452 integration,
-94 security (soma exata: 670). Corpus real do ecossistema: **53/53 importam, 0
+**Números desta rodada:** **671 testes**, 0 falhas — 124 unit, 452 integration,
+95 security (soma exata: 671). Corpus real do ecossistema: **53/53 importam, 0
 bloqueadas**. Stitch: 16/16.
 
 ---

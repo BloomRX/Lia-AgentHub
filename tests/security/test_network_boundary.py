@@ -141,6 +141,13 @@ class TestControleDeRedeWebView2:
         assert env[pc.ENV_BROWSER_ARGS] == "--remote-debugging-port=9222"
         assert "preservado" in r["reason"]
 
+    def test_controle_ativo_distingue_tres_situacoes(self):
+        """Um `bool(os.environ.get(...))` diria "ativo" para um valor de
+        depuração — exatamente o oposto de controle."""
+        assert pc.controle_ativo({}) is False
+        assert pc.controle_ativo({pc.ENV_BROWSER_ARGS: pc.argumentos_windows_rede()}) is True
+        assert pc.controle_ativo({pc.ENV_BROWSER_ARGS: "--remote-debugging-port=9222"}) is False
+
     def test_resumo_nao_promete_zero_egress(self):
         """A frase que impede a regressão de critério."""
         texto = pc.resumo_controle_de_rede({"applied": True, "reason": "", "arguments": "x"})

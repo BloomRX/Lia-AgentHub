@@ -3,7 +3,7 @@
 **Plataforma independente para criar, descobrir, validar, organizar, versionar, empacotar e distribuir capacidades para agentes de IA.**
 
 > **Estado atual: funcionalmente concluído, aguardando validação em Windows.**
-> M1–M8 do MVP implementados e cobertos por teste. **670 testes** automatizados
+> M1–M8 do MVP implementados e cobertos por teste. **671 testes** automatizados
 > passando. O que falta não é código: é medição de rede em Windows, build do
 > `.exe` em ambiente com PyInstaller, e a decisão de licença (`D-16`).
 >
@@ -58,7 +58,7 @@ A auditoria encontrou **oito lacunas** que nenhum dos produtos Lia atende hoje �
 - [x] **Configuração de host para servidor MCP** para colar no cliente —
       cabeçalho entra como nome, nunca valor
 - [x] **Controle de rede do WebView2** por argumentos documentados
-- [x] 670 testes: unit, integração, segurança, persistência, interface e build
+- [x] 671 testes: unit, integração, segurança, persistência, interface e build
 - [x] Build configurado para Windows via PyInstaller
 - [ ] **Executável Windows gerado e testado** — não validado neste ambiente
       (sem Windows nem WebView2); o script de build roda testes e aborta se
