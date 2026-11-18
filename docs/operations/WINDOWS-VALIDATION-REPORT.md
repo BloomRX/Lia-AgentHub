@@ -2,6 +2,15 @@
 
 **15 de novembro de 2026 · Windows 11 Home x64, build 26200**
 
+> **Adendo de 2026-11-15 — investigação de D-09.** Este relatório é a medição
+> original e não foi alterado no conteúdo. A investigação posterior separou o
+> que a medição já sustentava do que continuava indeterminado, e implementou o
+> controle que faltava. **D-09 continua aberto**: o controle está implementado,
+> a medição com o controle aplicado não foi feita. Ver
+> `FUNCTIONAL-COMPLETION-REPORT.md` §4 para a análise completa e
+> `tests/security/test_network_boundary.py` para a prova de que o **aplicativo**
+> não abre conexão.
+
 **MVP não validado no Windows pelos critérios da seção 6 do plano.** A aplicação e o executável abriram em WebView2, importaram uma Skill real de teste e encerraram corretamente. A validação de distribuição em uma máquina sem Python ficou bloqueada. Na execução local do executável houve conexões externas em processos filhos do WebView2.
 
 ## Git, ambiente e alterações
@@ -90,3 +99,80 @@
 **Tamanho final:** 11608725 bytes
 
 **SHA-256 final:** `AA0B302AC1D8B68F6DB8F68577A8B6F4C4DB149F0BFA1AA08C6AE1CAD3E91785`
+
+---
+
+## Adendo — o que foi apurado sobre as conexões externas (2026-11-15)
+
+O corpo deste relatório registra, corretamente, que a finalidade do tráfego
+ficou indeterminada. A investigação posterior não mudou esse fato; separou o
+que era atribuível a quê.
+
+| Pergunta | Resposta | Como se sabe |
+|---|---|---|
+| As conexões eram do aplicativo? | **Não** | `tests/security/test_network_boundary.py` proíbe `socket.connect`, `connect_ex`, `create_connection` e `getaddrinfo` durante importação, promoção, validação, exportação, publicação de índice e diagnóstico. Tudo passa. O Hub não tem cliente HTTP |
+| Eram do runtime do navegador? | **Sim** | A medição original atribuiu cada conexão a um PID, e os PIDs eram `msedgewebview2.exe` |
+| Qual componente iniciava? | O Chromium embutido | A UI é estática, servida de `127.0.0.1`, com CSP `connect-src 'self'` |
+| Dava para controlar? | **Parcialmente** | `aplicar_controle_de_rede()` define `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` antes de a janela abrir |
+| O destino foi identificado? | **Não** | Nenhuma captura de pacote ou de SNI foi feita |
+
+### Por que a variável de ambiente, e não a API do pywebview
+
+O pywebview 6.2.1 **fixa** `AdditionalBrowserArguments = '--disable-features=ElasticOverscroll'`
+em `webview/platforms/edgechromium.py` e não expõe parâmetro para acrescentar
+argumentos em `create_window` nem em `start`. A documentação da Microsoft
+(`CreateCoreWebView2EnvironmentWithOptions`) diz que a variável
+`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` é **anexada** aos argumentos do host.
+É o único caminho que não exige fork do pywebview.
+
+### O que fica desligado, e o custo
+
+Background networking, component update, domain reliability, sync, telemetria
+(`MetricsReportingEnabled`), Safe Browsing, Translate, OptimizationHints e as
+barras do Edge (`msWebOOUI`/`msPdfOOUI`).
+
+**Custo declarado:** sem Safe Browsing, a janela não consulta listas de
+reputação. O Hub só carrega a própria UI de `127.0.0.1` e não navega para fora —
+logo o risco é baixo, mas é uma escolha registrada, não um efeito colateral
+escondido.
+
+### O que continua faltando para fechar D-09
+
+Procedimento reproduzível, em ordem:
+
+**Passo 1 — medir com o controle aplicado.**
+
+```powershell
+# com o Hub aberto (o controle é aplicado no boot, antes da janela)
+$raiz = (Get-Process LiaAgentHub).Id
+Get-NetTCPConnection -State Established |
+  Where-Object { $_.RemoteAddress -notin @('127.0.0.1','::1','0.0.0.0','::') } |
+  Select-Object LocalPort, RemoteAddress, RemotePort,
+    @{n='Pid';e={$_.OwningProcess}},
+    @{n='Nome';e={(Get-Process -Id $_.OwningProcess).ProcessName}}
+```
+
+**Passo 2 — comparar com a linha de base deste relatório:** 3 destinos
+externos na primeira amostra, 2 na versão final, todos em `msedgewebview2.exe`.
+
+**Passo 3 — se sobrar tráfego, identificar o destino em vez de supor.**
+`--log-net-log` **é** um browser flag suportado do WebView2 (documentado em
+*WebView2 browser flags*). O caminho sem alterar código é o mesmo mecanismo
+que o Hub já usa:
+
+```powershell
+$env:WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS = "--log-net-log=$env:USERPROFILE\Desktop
+etlog.json --net-log-capture-mode=Everything"
+# abrir o Hub, aguardar a janela, fechar
+# netlog.json permite ver a URL/SNI de cada requisição
+```
+
+**Atenção:** o Hub **preserva** um valor já definido em
+`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` em vez de sobrescrevê-lo (decisão
+registrada em `platform_check.aplicar_controle_de_rede`). Definir a variável
+manualmente **desativa o controle embutido** naquela execução — o que é
+exatamente o que se quer ao medir a linha de base sem controle. Para medir
+**com** controle, remova a variável e confie no que o Hub define.
+
+**D-09 permanece BLOCKED até esse passo ser executado.** O critério de aceite
+não foi alterado.
