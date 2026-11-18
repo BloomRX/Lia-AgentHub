@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .adapters.importer import ImportReport, Importer
+from .adapters.inventory_intake import InventoryIntake, IntakeError
 from .adapters.index_builder import check_consistency, publish, read_index, validate_index
 from .adapters.packager import Target, export, verify_package
 from .adapters.paths_resolver import Locations, resolve_locations
@@ -340,6 +341,50 @@ class AgentHub:
 
     def verify_package(self, path: str) -> dict:
         return verify_package(path)
+
+    # ---- intake de inventários (metadados apenas) -----------------------
+    def intake(self) -> InventoryIntake:
+        # Instanciado sob demanda: quem só usa a biblioteca não paga o custo
+        # de resolver os caminhos do inventário.
+        return InventoryIntake(self.locations)
+
+    def inventory_preview(self, path: str) -> dict:
+        """Dry-run do recebimento. Não grava nada, nem recibo."""
+        return self.intake().previsualizar(path).as_dict()
+
+    def inventory_receive(self, path: str) -> dict:
+        """Efetiva o recebimento. Teto de estado: `inventoried`."""
+        return self.intake().receber(path).as_dict()
+
+    def inventory_receipts(self, limit: int = 100) -> list[dict]:
+        return self.intake().store.listar_recibos(limit)
+
+    def inventory_receipt(self, receipt_id: str) -> dict:
+        return self.intake().store.ler_recibo(receipt_id)
+
+    def inventory_state(self) -> dict:
+        """Identidades conhecidas. `inventoried` é o teto, não há promoção."""
+        store = self.intake().store
+        try:
+            estado = store.estado()
+        except IntakeError as e:
+            return {"ok": False, "error": str(e), "records": [], "count": 0}
+        registros = []
+        for reg_id, info in sorted((estado or {}).items()):
+            if not isinstance(info, dict):
+                continue
+            revisoes = info.get("revisions") or {}
+            registros.append({
+                "id": reg_id,
+                "name": info.get("name", ""),
+                "kind": info.get("kind"),
+                "issuerProject": info.get("issuerProject"),
+                "lastRevision": info.get("lastRevision", ""),
+                "revisions": sorted(revisoes),
+                "state": "inventoried",
+            })
+        return {"ok": True, "count": len(registros), "records": registros,
+                "maxState": "inventoried"}
 
     # ---- C8 índice -------------------------------------------------------
     def publish_index(self) -> dict:

@@ -65,7 +65,7 @@ function banner(msg, bad = false) {
 }
 
 /* ---------------- navegação ---------------- */
-const VIEWS = ["library", "quarantine", "import", "shared", "settings", "diagnostics"];
+const VIEWS = ["library", "quarantine", "inventory", "import", "shared", "settings", "diagnostics"];
 function show(view) {
   VIEWS.forEach(v => {
     const s = $(`#view-${v}`);
@@ -76,6 +76,7 @@ function show(view) {
   $("#main").focus({ preventScroll: true });
   if (view === "library") loadLibrary();
   if (view === "quarantine") loadQuarantine();
+  if (view === "inventory") loadInventory();
   if (view === "shared") loadIndex();
   if (view === "settings") loadSettings();
   if (view === "diagnostics") loadDiagnostics();
@@ -680,6 +681,183 @@ async function doUpdate(d) {
     openDetail(r.id, "active");
     loadLibrary();
   } catch (e) { toast(`${e.message} ${e.hint || ""}`, true); }
+}
+
+/* ---------------- inventário ---------------- */
+const INV_STATE_LABEL = {
+  recebido: "recebido — metadados admitidos, estado inventoried",
+  quarentena: "em quarentena — retido até decisão humana",
+  rejeitado: "rejeitado — nada foi gravado",
+};
+
+const INV_CLASS_LABEL = {
+  "new": "novo",
+  "exact-duplicate": "duplicata exata",
+  "identity-conflict": "conflito de identidade",
+  "update": "atualização",
+  "downgrade": "downgrade",
+  "same-content": "mesmo conteúdo, outro id",
+  "overlap": "sobreposição de nome",
+  "pending-type": "tipo pendente",
+};
+
+$("#invpreview").addEventListener("click", () => runInventory(false));
+$("#invreceive").addEventListener("click", () => runInventory(true));
+
+async function runInventory(commit) {
+  const path = $("#invpath").value.trim();
+  const out = $("#invreport");
+  if (!path) { toast("Informe o caminho do inventário.", true); return; }
+  out.replaceChildren(el("p", { class: "muted", text: commit ? "Recebendo…" : "Simulando…" }));
+  try {
+    const r = await api(commit ? "/api/inventory/receive" : "/api/inventory/preview",
+      { method: "POST", body: JSON.stringify({ path }) });
+    out.replaceChildren();
+    renderInventoryReport(out, r, commit);
+    if (commit && r.ok) loadInventoryReceipts();
+  } catch (e) {
+    out.replaceChildren(el("div", { class: "notice bad", text: String(e.message || e) }));
+  }
+}
+
+function renderInventoryReport(out, r, commit) {
+  const titulo = !r.ok ? "Recebimento recusado"
+    : commit ? "Recebido" : "Simulação (nada gravado)";
+  out.append(el("div", { class: `notice ${r.ok ? "ok" : "bad"}` }, el("strong", { text: titulo })));
+  out.append(el("div", { class: "notice info",
+    text: INV_STATE_LABEL[r.state] || r.state }));
+
+  if (r.envelope) {
+    const e = r.envelope;
+    out.append(kv([
+      ["Projeto de origem", e.issuer?.project || "—"],
+      ["Inventário", el("code", { text: e.inventoryId })],
+      ["Revisão", el("code", { text: e.revision })],
+      ["Gerado em", e.generatedAt],
+      ["Completo", e.complete ? "sim" : "não — omissão não apaga registro"],
+      ["Arquivo", el("code", { text: e.fileDigest })],
+      ["Registros", String(e.recordCount)],
+    ]));
+  }
+
+  if (r.findings?.length) {
+    out.append(el("div", { class: "section" }, el("h3", { text: "Achados" }),
+      issuesList(r.findings.map(f => ({ severity: f.severity, code: f.code,
+        message: f.hint ? `${f.message} — ${f.hint}` : f.message, where: f.where })))));
+  }
+
+  if (r.records?.length) {
+    const ul = el("ul", { class: "issues" });
+    for (const rec of r.records) {
+      ul.append(el("li", { class: rec.admitted ? "info" : "review" },
+        el("strong", { text: `${INV_CLASS_LABEL[rec.classification] || rec.classification} · ${rec.name}` }),
+        el("div", { text: rec.reason || "" }),
+        el("div", { class: "muted small" },
+          el("code", { text: rec.id }), ` · ${rec.kind || "tipo pendente"}`,
+          ` · revisão ${rec.revisionId}`,
+          rec.admitted ? " · admitido como metadado" : " · retido, não admitido")));
+    }
+    out.append(el("div", { class: "section" }, el("h3", { text: "Registros" }), ul));
+  }
+
+  if (r.feedProblem) {
+    out.append(el("div", { class: "notice bad" }, el("strong", { text: "Conflito de feed: " }), r.feedProblem));
+  }
+  if (r.receiptPath) {
+    out.append(kv([["Recibo", el("code", { text: r.receiptId })],
+      ["Arquivo do recibo", el("code", { text: r.receiptPath })]]));
+  }
+  if (r.quarantinePath) {
+    out.append(el("div", { class: "notice bad",
+      text: `Retido em quarentena: ${r.quarantinePath}` }));
+  }
+  out.append(el("p", { class: "muted small",
+    text: "Nada foi executado, instalado ou conectado. O teto de estado é inventoried: "
+        + "confiança, licença e operação continuam pendentes de decisão humana." }));
+}
+
+async function loadInventory() {
+  await loadInventorySummary();
+  await loadInventoryReceipts();
+}
+
+async function loadInventorySummary() {
+  const box = $("#invsummary");
+  if (!box) return;
+  try {
+    const r = await api("/api/inventory");
+    if (!r.ok) {
+      box.replaceChildren(el("div", { class: "notice bad", text: r.error || "índice ilegível" }));
+      return;
+    }
+    const porProjeto = {};
+    for (const reg of r.records || []) {
+      const p = reg.issuerProject || "—";
+      porProjeto[p] = (porProjeto[p] || 0) + 1;
+    }
+    box.replaceChildren(kv([
+      ["Identidades conhecidas", String(r.count)],
+      ["Por projeto", Object.entries(porProjeto).map(([k, v]) => `${k}: ${v}`).join(" · ") || "—"],
+      ["Teto de estado", r.maxState || "inventoried"],
+    ]));
+  } catch (e) {
+    box.replaceChildren(el("div", { class: "notice bad", text: String(e.message || e) }));
+  }
+}
+
+async function openInventoryReceipt(receiptId) {
+  const box = $("#invreceipt");
+  box.replaceChildren(el("p", { class: "muted small", text: "Carregando recibo…" }));
+  try {
+    const r = await api(`/api/inventory/receipt?id=${encodeURIComponent(receiptId)}`);
+    box.replaceChildren();
+    box.append(kv([
+      ["Recibo", el("code", { text: r.receiptId })],
+      ["Estado", INV_STATE_LABEL[r.state] || r.state],
+      ["Projeto", r.issuerProject || "—"],
+      ["Inventário", el("code", { text: r.inventoryId })],
+      ["Revisão", el("code", { text: r.revision })],
+      ["Recebido em", r.receivedAt],
+      ["Arquivo", el("code", { text: `${r.fileName} · ${r.fileDigest}` })],
+      ["Registros", `${r.recordCount} (admitidos ${r.admitted}, em quarentena ${r.quarantined})`],
+    ]));
+    if (r.findings?.length) {
+      box.append(el("div", { class: "section" }, el("h3", { text: "Achados registrados" }),
+        issuesList(r.findings.map(f => ({ severity: f.severity, code: f.code,
+          message: f.message, where: f.where })))));
+    }
+    if (r.note) box.append(el("p", { class: "muted small", text: r.note }));
+  } catch (e) {
+    box.replaceChildren(el("div", { class: "notice bad", text: String(e.message || e) }));
+  }
+}
+
+async function loadInventoryReceipts() {
+  const box = $("#invreceipts");
+  box.replaceChildren(el("p", { class: "muted small", text: "Carregando…" }));
+  try {
+    const r = await api("/api/inventory/receipts");
+    const lista = r.receipts || [];
+    if (!lista.length) {
+      box.replaceChildren(el("p", { class: "muted small", text: "Nenhum inventário recebido ainda." }));
+      return;
+    }
+    const ul = el("ul", { class: "issues" });
+    for (const rec of lista) {
+      const botao = el("button", { class: "ghost", text: "Ver recibo" });
+      botao.addEventListener("click", () => openInventoryReceipt(rec.receiptId));
+      ul.append(el("li", { class: rec.state === "recebido" ? "info" : rec.state === "quarentena" ? "review" : "error" },
+        el("strong", { text: `${rec.issuerProject || "—"} · revisão ${rec.revision}` }),
+        el("div", { class: "muted small",
+          text: `${rec.recordCount} registro(s) · ${rec.admitted} admitido(s) · `
+              + `${rec.quarantined} em quarentena · ${rec.receivedAt}` }),
+        el("div", { class: "muted small", text: rec.note || "" }),
+        botao));
+    }
+    box.replaceChildren(ul);
+  } catch (e) {
+    box.replaceChildren(el("div", { class: "notice bad", text: String(e.message || e) }));
+  }
 }
 
 /* ---------------- importar ---------------- */

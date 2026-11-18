@@ -82,7 +82,7 @@ Estes itens são negativos de propósito. Cada um tem teste que falha se mudar:
 
 ```bash
 # estado geral
-.venv/bin/python -m pytest -o addopts="" -q                    # 671 passed
+.venv/bin/python -m pytest -o addopts="" -q                    # 822 passed, 2 skipped
 
 # os guardas de honestidade
 .venv/bin/python -m pytest tests/integration/test_ui_api_contract.py -q
@@ -93,6 +93,12 @@ Estes itens são negativos de propósito. Cada um tem teste que falha se mudar:
 
 # contrato consumível sem o Hub
 python -S docs/examples/independent-reader/read_index.py <index.json> --check
+
+# intake de inventários v1 (P0 do registro central)
+.venv/bin/python -m pytest tests/unit/test_inventory_domain.py -q
+.venv/bin/python -m pytest tests/integration/test_inventory_intake.py -q
+.venv/bin/python -m pytest tests/security/test_inventory_boundary.py -q
+PYTHONPATH=src python -m lia_agenthub.cli inventory preview docs/examples/intake/demo-lia-studio.valid.json --json
 
 # corpus real (53 skills do ecossistema)
 .venv/bin/python docs/operations/evidence/corpus_probe.py

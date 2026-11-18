@@ -21,6 +21,7 @@
   <nav aria-label="Navegação principal">
     <button class="tab" data-view="library" aria-current="page">Biblioteca</button>
     <button class="tab" data-view="quarantine">Quarentena <span id="qcount" class="pill"></span></button>
+    <button class="tab" data-view="inventory">Inventário</button>
     <button class="tab" data-view="import">Importar</button>
     <button class="tab" data-view="shared">Índice e pacotes</button>
     <button class="tab" data-view="settings">Configurações</button>
@@ -86,6 +87,29 @@
   </section>
 
   <!-- ============ IMPORTAR ============ -->
+  <section id="view-inventory" class="view" hidden>
+    <h2>Inventário de capacidades</h2>
+    <p class="muted">Recebe o inventário v1 de um projeto Lia. O Hub lê
+      <strong>metadados e referências</strong>: nada é executado, instalado ou
+      conectado, e nenhuma licença ou confiança é aprovada aqui.</p>
+    <div class="row">
+      <label class="sr" for="invpath">Caminho do inventário</label>
+      <input id="invpath" type="text" class="grow" placeholder="C:\Users\voce\inventario.json">
+      <button id="invpreview" class="ghost">Simular</button>
+      <button id="invreceive" class="primary">Receber</button>
+    </div>
+    <p class="muted small">A simulação não grava nada. O recebimento grava um
+      recibo com a origem e o momento, e mantém o estado em
+      <code>inventoried</code> — o teto do intake.</p>
+    <div id="invsummary" class="section"></div>
+    <div id="invreport"></div>
+    <div class="section">
+      <h3>Já recebidos</h3>
+      <div id="invreceipts"></div>
+      <div id="invreceipt" class="section"></div>
+    </div>
+  </section>
+
   <section id="view-import" class="view" hidden>
     <h2>Importar</h2>
     <p class="muted">Caminho de um arquivo, pasta, <code>.zip</code> ou pacote

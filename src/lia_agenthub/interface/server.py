@@ -223,6 +223,12 @@ class Handler(BaseHTTPRequestHandler):
                 self._error("Informe `id`.", "", 400)
                 return
             return self._json(hub.mcp_config(cap, formato))
+        if path == "/api/inventory":
+            return self._json(hub.inventory_state())
+        if path == "/api/inventory/receipts":
+            return self._json({"ok": True, "receipts": hub.inventory_receipts()})
+        if path == "/api/inventory/receipt":
+            return self._json(hub.inventory_receipt((qs.get("id") or [""])[0]))
         if path == "/api/history":
             cap = (qs.get("id") or [""])[0]
             return self._json({"history": hub.history(cap) if cap else []})
@@ -269,6 +275,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(hub.publish_index())
         if path == "/api/diff":
             return self._json(hub.diff_versions(payload["a"], payload["b"]))
+        if path == "/api/inventory/preview":
+            return self._json(hub.inventory_preview(payload.get("path", "")))
+        if path == "/api/inventory/receive":
+            return self._json(hub.inventory_receive(payload.get("path", "")))
         self._error("Rota desconhecida.", "", 404)
 
 

@@ -5,7 +5,13 @@
 # ESTE ARQUIVO NÃO É AUTOATUALIZÁVEL. Se a suíte crescer, atualize à mão com
 # a medição real, no mesmo commit. Um baseline que se atualiza sozinho não
 # prova nada — ele sempre concorda consigo mesmo.
-unit=124
-integration=452
-security=95
-total=671
+#
+# Rodada de 2026-11-15: +151 testes do intake de inventários v1
+# (unit/test_inventory_domain, integration/test_inventory_intake,
+# security/test_inventory_boundary). Nenhum teste existente foi removido
+# ou enfraquecido.
+unit=218
+integration=491
+security=113
+total=822
+skipped=2

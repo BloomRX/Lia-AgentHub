@@ -1,0 +1,93 @@
+{
+  "inventoryVersion": 1,
+  "inventoryId": "demo-studio-2026-11",
+  "revision": "demo-rev-001",
+  "generatedAt": "2026-11-15T12:00:00Z",
+  "complete": true,
+  "issuer": {
+    "project": "lia-studio",
+    "repository": "https://example.invalid/lia-studio/demo",
+    "maintainer": "equipe-sintetica"
+  },
+  "evidence": [
+    {
+      "id": "ev-demo-commit",
+      "kind": "commit",
+      "locator": "https://example.invalid/lia-studio/demo/commit/0000000",
+      "recordedAt": "2026-11-14T09:00:00Z",
+      "recordedBy": "equipe-sintetica",
+      "subject": "record"
+    }
+  ],
+  "records": [
+    {
+      "id": "urn:lia:cap:5a7c1e10-0000-4000-8000-000000000001",
+      "revisionId": "rev-001",
+      "version": "0.4.0",
+      "kind": "agent-skill",
+      "name": "Previsualização de assets",
+      "description": "Skill fictícia usada apenas na demonstração do intake.",
+      "origins": [
+        {
+          "repository": "https://example.invalid/lia-studio/demo",
+          "path": "skills/previsualizacao/SKILL.md",
+          "commit": "0000000",
+          "evidenceIds": ["ev-demo-commit"]
+        }
+      ],
+      "aliases": [],
+      "license": {
+        "declared": null,
+        "components": [],
+        "redistribution": { "status": "unknown", "authorizationIds": [] }
+      },
+      "integrity": [],
+      "dependencies": [],
+      "environment": [],
+      "offers": [],
+      "compatibility": [
+        {
+          "host": "lia-studio",
+          "profile": "editor",
+          "hostVersion": null,
+          "requirements": [],
+          "evidenceIds": [],
+          "result": "declared"
+        }
+      ],
+      "details": null,
+      "observations": [],
+      "history": []
+    },
+    {
+      "id": "urn:lia:cap:5a7c1e10-0000-4000-8000-000000000002",
+      "revisionId": "rev-001",
+      "version": null,
+      "kind": "workflow",
+      "name": "Revisão de importação",
+      "description": null,
+      "origins": [
+        {
+          "repository": "https://example.invalid/lia-studio/demo",
+          "path": "workflows/revisao-importacao.json",
+          "commit": null,
+          "evidenceIds": []
+        }
+      ],
+      "aliases": [],
+      "license": {
+        "declared": null,
+        "components": [],
+        "redistribution": { "status": "unknown", "authorizationIds": [] }
+      },
+      "integrity": [],
+      "dependencies": [],
+      "environment": [],
+      "offers": [],
+      "compatibility": [],
+      "details": null,
+      "observations": [],
+      "history": []
+    }
+  ]
+}

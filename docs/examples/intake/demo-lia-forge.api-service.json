@@ -1,0 +1,41 @@
+{
+  "inventoryVersion": 1,
+  "inventoryId": "demo-forge-2026-11",
+  "revision": "demo-rev-001",
+  "generatedAt": "2026-11-15T12:00:00Z",
+  "complete": false,
+  "issuer": {
+    "project": "lia-forge",
+    "repository": "https://example.invalid/lia-forge/demo",
+    "maintainer": "equipe-sintetica"
+  },
+  "evidence": [],
+  "records": [
+    {
+      "id": "urn:lia:cap:5a7c1e10-0000-4000-8000-000000000010",
+      "revisionId": "rev-001",
+      "version": null,
+      "kind": "api-service",
+      "name": "Serviço de geração fictício",
+      "description": "Tipo v1 sem correspondência em kind; demonstra a fila de tipo pendente.",
+      "origins": [
+        {
+          "repository": "https://example.invalid/lia-forge/demo",
+          "path": "services/geracao.md",
+          "commit": null,
+          "evidenceIds": []
+        }
+      ],
+      "license": {
+        "declared": null,
+        "components": [],
+        "redistribution": { "status": "unknown", "authorizationIds": [] }
+      },
+      "integrity": [],
+      "compatibility": [],
+      "details": null,
+      "observations": [],
+      "history": []
+    }
+  ]
+}

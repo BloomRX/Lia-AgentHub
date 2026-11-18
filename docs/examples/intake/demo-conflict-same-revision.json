@@ -1,0 +1,41 @@
+{
+  "inventoryVersion": 1,
+  "inventoryId": "demo-studio-2026-11",
+  "revision": "demo-rev-002",
+  "generatedAt": "2026-11-16T08:00:00Z",
+  "complete": false,
+  "issuer": {
+    "project": "lia-studio",
+    "repository": "https://example.invalid/lia-studio/demo",
+    "maintainer": "outra-equipe-sintetica"
+  },
+  "evidence": [],
+  "records": [
+    {
+      "id": "urn:lia:cap:5a7c1e10-0000-4000-8000-000000000001",
+      "revisionId": "rev-001",
+      "version": "0.4.0",
+      "kind": "agent-skill",
+      "name": "Previsualização de assets (relato divergente)",
+      "description": "Mesma revisão do registro anterior, com conteúdo diferente. Deve ir para quarentena.",
+      "origins": [
+        {
+          "repository": "https://example.invalid/outro-espelho/demo",
+          "path": "skills/previsualizacao/SKILL.md",
+          "commit": null,
+          "evidenceIds": []
+        }
+      ],
+      "license": {
+        "declared": null,
+        "components": [],
+        "redistribution": { "status": "unknown", "authorizationIds": [] }
+      },
+      "integrity": [],
+      "compatibility": [],
+      "details": null,
+      "observations": [],
+      "history": []
+    }
+  ]
+}

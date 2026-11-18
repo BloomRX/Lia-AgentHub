@@ -59,8 +59,8 @@ com seus próprios limites e sem revalidação nesta rodada.
 
 | Prioridade | Entrega | Critério para avançar |
 | --- | --- | --- |
-| P0 | Congelar amostras v1 e implementar leitor de inventário em modo somente leitura. Validar envelopes, limites, origem, referências e saneamento local | Fixture v1 permanece legível, erros apontam ao registro e o dry-run não grava, executa ou conecta |
-| P0 | Persistir identidade central, revisões imutáveis, aliases e recibos de inventário | Reimportação idempotente; divergência de hash vira conflito; nenhum ID ou hash v1 é reescrito |
+| P0 ✅ | Congelar amostras v1 e implementar leitor de inventário em modo somente leitura. Validar envelopes, limites, origem, referências e saneamento local | **Entregue** em [INVENTORY-INTAKE.md](INVENTORY-INTAKE.md). Fixture v1 legível sem achado, erros apontam o registro (`records[0]`), dry-run não grava, executa ou conecta — provado por dublê em `tests/security/test_inventory_boundary.py` |
+| P0 ✅ | Persistir identidade central, revisões imutáveis, aliases e recibos de inventário | **Entregue**. Reimportação idempotente (`exact-duplicate`), divergência de hash vira conflito de identidade retido em quarentena, nenhum ID ou hash v1 é reescrito. Recibo imutável e feed append-only |
 | P1 | Implementar tipos, relações, matriz por alvo e evidência de licença | Servidor/tool, workflow, pacote, perfil e modelos conservam tipo e proveniência; revisões bloqueadas não aparecem como autorizadas |
 | P1 | Piloto de metadados com um snapshot voluntário por projeto. Gerar relatório de cobertura, dependências e conflitos | Cada projeto revisa os próprios resultados. Casos de duplicação ficam rastreáveis sem perda de autoria |
 | P2 | Projetar saídas aprovadas para o índice e pacotes v1, complementar com configurações revisáveis e confirmar com os mantenedores | Leitor independente continua aceitando as saídas v1. Quarentena e segredos ficam de fora. O host pode usar os arquivos com Hub fechado |
@@ -85,6 +85,26 @@ Telas e fluxos visuais permanecem sob o Stitch.
 - A suíte completa no Windows retornou **673 aprovados e 1 skip**. O skip
   corresponde à criação de symlink sem privilégio nesta sessão.
 - `python docs/research/verify-consistency.py` retornou **44/44**.
-- A suíte local não mede hosts instalados. O novo contrato é uma especificação
-  com exemplo verificável. Um importador de inventários e consumidores da nova
-  projeção serão entregas posteriores.
+- A suíte local não mede hosts instalados. O contrato já tem leitor e
+  recebimento implementados (P0 acima); os consumidores da nova projeção e o
+  piloto de metadados por projeto continuam como entregas posteriores (P1).
+
+## Intake de inventários — o que passou a existir
+
+O leitor somente-leitura e a persistência de identidade/recibos do P0 estão
+implementados em `src/lia_agenthub/domain/inventory.py` (domínio puro) e
+`src/lia_agenthub/adapters/inventory_intake.py` (arquivo e recibos), expostos
+na CLI (`inventory preview|receive|state|receipts|receipt`), na interface
+(aba **Inventário**) e em cinco rotas HTTP.
+
+O que isso **não** muda:
+
+- `inventoried` continua sendo o teto. Nenhum registro avança de estado.
+- D-05, D-16 e D-18 seguem abertas. O intake não escolhe licença global nem
+  aprova redistribuição.
+- Lia Model Lab continua suspenso: é aceito para preservar histórico e é
+  marcado como inativo no relatório.
+- O Hub **não** fica pronto para distribuição pública por causa desta entrega.
+  Homologação Windows e a decisão de licença continuam sendo os gates reais.
+
+Ver [INVENTORY-INTAKE.md](INVENTORY-INTAKE.md) para a fronteira completa.

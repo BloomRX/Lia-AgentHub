@@ -1,4 +1,5 @@
-"""CLI de desenvolvimento — `validate`, `pack`, `export`, `diagnostico`, `index`.
+"""CLI de desenvolvimento — `validate`, `pack`, `export`, `diagnostico`, `index`,
+`inventory`.
 
 Existe porque nem todo fluxo do produto precisa de janela. O `.exe` abre a
 interface; a CLI serve a quem está automatizando ou depurando. As duas usam o
@@ -169,6 +170,105 @@ def cmd_verify_package(args) -> int:
     return 0 if r.get("ok") else 1
 
 
+def cmd_inventory(args) -> int:
+    """Recebe inventário v1. `--preview` é o padrão; gravar exige `--commit`.
+
+    O padrão ser dry-run não é detalhe de ergonomia: sem `--commit` nada é
+    gravado, então um comando errado não deixa recibo nem índice.
+    """
+    from .adapters.inventory_intake import IntakeError
+
+    acao = args.inventory_cmd
+    hub = _hub(args)
+
+    if acao == "state":
+        estado = hub.inventory_state()
+        if args.json:
+            _json(estado)
+        elif not estado.get("ok"):
+            print(f"erro: {estado.get('error')}", file=sys.stderr)
+        else:
+            print(f"{estado['count']} identidade(s) conhecida(s) — teto: inventoried")
+            for r in estado["records"]:
+                print(f"  {r['id']:46} {r['kind'] or '-':14} "
+                      f"{r['issuerProject'] or '-':16} {r['lastRevision']}")
+        return 0 if estado.get("ok") else 1
+
+    if acao == "receipts":
+        recibos = hub.inventory_receipts()
+        if args.json:
+            _json({"ok": True, "receipts": recibos})
+        else:
+            print(f"{len(recibos)} recibo(s)")
+            for r in recibos:
+                print(f"  {r.get('receiptId','')}  {r.get('state',''):12} "
+                      f"{r.get('issuerProject',''):14} {r.get('revision','')}")
+        return 0
+
+    if acao == "receipt":
+        try:
+            recibo = hub.inventory_receipt(args.recibo_id)
+        except IntakeError as e:
+            return _erro(str(e))
+        if args.json:
+            _json(recibo)
+        else:
+            print(f"Recibo {recibo.get('receiptId')} — estado {recibo.get('state')}")
+            print(f"  emissor   {recibo.get('issuerProject')}")
+            print(f"  inventário {recibo.get('inventoryId')} rev {recibo.get('revision')}")
+            print(f"  arquivo   {recibo.get('fileName')} sha256 {recibo.get('fileDigest')}")
+            print(f"  recebido  {recibo.get('receivedAt')}")
+            print(f"  registros {recibo.get('recordCount')} "
+                  f"(admitidos {recibo.get('admitted')}, "
+                  f"em quarentena {recibo.get('quarantined')})")
+            for a in recibo.get("findings") or []:
+                print(f"    [{a.get('severity')}] {a.get('code')}: {a.get('message')}")
+            print(f"  {recibo.get('note','')}")
+        return 0
+
+    # preview / receive
+    try:
+        plano = (hub.inventory_receive(args.arquivo) if args.commit
+                 else hub.inventory_preview(args.arquivo))
+    except IntakeError as e:
+        return _erro(str(e))
+
+    if args.json:
+        _json(plano)
+    else:
+        marca = "RECEBIDO" if plano["committed"] else "PRÉ-VISUALIZAÇÃO (nada gravado)"
+        print(f"{marca} — estado: {plano['state']}")
+        env = plano.get("envelope")
+        if env:
+            print(f"  emissor   {env['issuer'].get('project')}")
+            print(f"  inventário {env['inventoryId']} rev {env['revision']}")
+            print(f"  gerado em {env['generatedAt']} | completo: {env['complete']}")
+            print(f"  arquivo   sha256 {env['fileDigest']}")
+        if plano.get("classifications"):
+            print("  classificação:")
+            for classe, qtd in sorted(plano["classifications"].items()):
+                print(f"    {classe:20} {qtd}")
+        for a in plano.get("findings") or []:
+            local = f" ({a['where']})" if a.get("where") else ""
+            print(f"  [{a['severity']}] {a['code']}: {a['message']}{local}")
+            if a.get("hint"):
+                print(f"      -> {a['hint']}")
+        if plano.get("feedProblem"):
+            print(f"  conflito de feed: {plano['feedProblem']}")
+        if plano.get("receiptPath"):
+            print(f"  recibo    {plano['receiptPath']}")
+        if plano.get("quarantinePath"):
+            print(f"  retenção  {plano['quarantinePath']}")
+            print("            registros não admitidos ficam retidos para revisão; "
+                  "o estado do documento é o acima")
+        print("  Fronteira: nada foi executado, instalado ou conectado. "
+              "Teto de estado: inventoried.")
+
+    if not plano["ok"]:
+        return 1
+    return 0
+
+
 # --------------------------------------------------------------------------
 def build_parser(prog: str = "lia-agenthub") -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
@@ -200,6 +300,16 @@ def build_parser(prog: str = "lia-agenthub") -> argparse.ArgumentParser:
     p.add_argument("--publish", action="store_true")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_index)
+
+    p = sub.add_parser("inventory", help="recebe inventário de capacidades v1")
+    p.add_argument("inventory_cmd", choices=("preview", "receive", "state",
+                                             "receipts", "receipt"))
+    p.add_argument("arquivo", nargs="?", help="arquivo .json do inventário")
+    p.add_argument("recibo_id", nargs="?", help="id do recibo, para `receipt`")
+    p.add_argument("--commit", action="store_true",
+                   help="grava o recebimento; sem esta flag é só pré-visualização")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_inventory)
 
     p = sub.add_parser("verify-package", help="verifica integridade de um pacote")
     p.add_argument("arquivo")
