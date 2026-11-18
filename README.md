@@ -109,6 +109,7 @@ Três que merecem destaque porque a pesquisa mostrou que são fáceis de perder:
 
 ### Operações
 - [Relatório de conclusão funcional](docs/operations/FUNCTIONAL-COMPLETION-REPORT.md) — M1–M8 com classe, evidência e comandos
+- [Checklist de prontidão](docs/operations/PRODUCT-READINESS-CHECKLIST.md) — o que está pronto, para quê, e o que nunca deve ser verdade
 - [Validação Windows](docs/operations/WINDOWS-VALIDATION-REPORT.md) — execução real, com o que passou e o que ficou bloqueado
 - [Plano de validação e build](docs/operations/WINDOWS-VALIDATION-AND-BUILD-PLAN.md)
 
