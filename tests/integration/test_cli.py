@@ -210,6 +210,50 @@ class TestVerifyPackage:
         assert "ALTERADO" in r.stdout or "inv" in r.stdout.lower()
 
 
+class TestVerifyExplicaOMotivo:
+    """Ler a chave errada fazia a CLI dizer "ALTERADO" sem dizer por quê."""
+
+    def test_pacote_com_arquivo_intruso_mostra_o_problema(self, home, tmp_path):
+        import zipfile
+        sys.path.insert(0, str(RAIZ / "src"))
+        from lia_agenthub.adapters.paths_resolver import resolve_locations
+        from lia_agenthub.app import AgentHub
+        hub = AgentHub(resolve_locations(home))
+        d = _skill(tmp_path, "comintruso")
+        rep = hub.import_path(str(d))
+        hub.promote(rep.capability_id)
+        pac = Path(run("--home", str(home), "pack", rep.capability_id)
+                   .stdout.split("pacote:")[1].splitlines()[0].strip())
+
+        adulterado = tmp_path / "intruso.lia-capability"
+        with zipfile.ZipFile(pac) as zin, zipfile.ZipFile(adulterado, "w") as zout:
+            for item in zin.infolist():
+                zout.writestr(item, zin.read(item.filename))
+            zout.writestr("payload/intruso.txt", "nao declarado")
+
+        r = run("--home", str(home), "verify-package", str(adulterado))
+        assert r.returncode == 1
+        assert "não declarado" in r.stdout.lower() or "nao declarado" in r.stdout.lower()
+        assert "intruso.txt" in r.stdout
+
+    def test_verify_json_traz_problems(self, home, tmp_path):
+        import json as _json
+        import zipfile
+        sys.path.insert(0, str(RAIZ / "src"))
+        from lia_agenthub.adapters.paths_resolver import resolve_locations
+        from lia_agenthub.app import AgentHub
+        hub = AgentHub(resolve_locations(home))
+        d = _skill(tmp_path, "comproblema")
+        rep = hub.import_path(str(d))
+        hub.promote(rep.capability_id)
+        pac = Path(run("--home", str(home), "pack", rep.capability_id)
+                   .stdout.split("pacote:")[1].splitlines()[0].strip())
+        r = run("--home", str(home), "verify-package", str(pac), "--json")
+        dados = _json.loads(r.stdout)
+        assert "problems" in dados
+        assert dados["ok"] is True
+
+
 class TestDespachoNaoQuebraJanela:
     def test_flags_antigas_continuam_funcionando(self, home):
         """`--diagnostico` (flag histórica) não pode virar subcomando."""

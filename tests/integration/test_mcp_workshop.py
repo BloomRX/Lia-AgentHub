@@ -126,7 +126,10 @@ class TestConfigNoHub:
         assert "não é um servidor MCP" in str(e.value)
 
     def test_id_inexistente_nao_estoura_500(self, hub):
-        with pytest.raises(Exception):
+        """`Exception` genérica aceitaria até um TypeError — o teste passaria
+        com o código quebrado. Exige o erro de domínio do Hub."""
+        from lia_agenthub.domain.errors import LiaError as _LiaError
+        with pytest.raises((_LiaError, FileNotFoundError)):
             hub.mcp_config("nao-existe")
 
 

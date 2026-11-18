@@ -151,6 +151,18 @@ def validate_skill(text: str, *, folder_name: str | None = None) -> list[Issue]:
         issues.append(Issue(Severity.ERROR, "MISSING_FIELD",
                             f"Campo obrigatório ausente: `{m}`.", "frontmatter"))
 
+    # Presença da chave não é o mesmo que valor utilizável. `name: ""` passava
+    # como válido enquanto `name` ausente era erro — o host que lê o
+    # frontmatter recebia uma Skill sem nome e nada no relatório dizia isso.
+    # Vazio e só-espaços são tratados igual: nenhum dos dois identifica algo.
+    for campo in sorted(REQUIRED_FIELDS & fm.keys()):
+        if not str(fm.get(campo) or "").strip():
+            issues.append(Issue(
+                Severity.ERROR, "FIELD_EMPTY",
+                f"Campo obrigatório `{campo}` está presente mas vazio. "
+                "A especificação exige um valor não vazio.",
+                "frontmatter"))
+
     # Só chaves de NÍVEL DE CIMA contam para "campo desconhecido". Subchave
     # aninhada (`metadata.author`) é campo do pai, não do frontmatter — sem
     # isto o parser achatado faria todo `metadata:` aninhado do acervo real

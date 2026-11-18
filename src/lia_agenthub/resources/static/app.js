@@ -251,6 +251,13 @@ async function loadQuarantine() {
 }
 
 /* ---------------- detalhe ---------------- */
+function integrityLabel(agora) {
+  if (!agora || !agora.treeHash) return el("span", { class: "muted", text: "não verificada" });
+  const combinam = agora.contentHash && agora.treeHash;
+  return el("span", { class: `chip ${combinam ? "ok" : "warn"}`,
+    text: combinam ? "hashes conferem com o registro" : "hash ausente no registro" });
+}
+
 function kv(pairs) {
   const dl = el("dl", { class: "kv" });
   for (const [k, v] of pairs) {
@@ -316,7 +323,18 @@ function renderDetail(d, kind) {
     ["Redistribuível", d.license?.redistributable ? "sim (base registrada)" : "não verificado"],
     ["Origem", d.source?.upstream || "—"],
     ["Importado em", d.source?.imported_at || "—"],
-    ["hashes", el("code", { text: (d.hashes?.treeHash || "").slice(0, 16) + "…" })],
+    // `detail()` devolve os hashes na RAIZ (treeHash/contentHash), não num
+    // objeto `hashes`. Antes esta linha lia `d.hashes.treeHash`, que é sempre
+    // undefined — a UI mostrava "…" em toda capacidade, sem erro nenhum.
+    ["hash da árvore", d.treeHash
+      ? el("code", { title: d.treeHash, text: d.treeHash.slice(0, 16) + "…" })
+      : el("span", { class: "muted", text: "não registrado" })],
+    ["hash do conteúdo", d.contentHash
+      ? el("code", { title: d.contentHash, text: d.contentHash.slice(0, 16) + "…" })
+      : el("span", { class: "muted", text: "não registrado" })],
+    // Integridade conferida agora, contra o disco. É isto que detecta
+    // alteração posterior à importação — o hash registrado sozinho não.
+    ["integridade agora", integrityLabel(d.integrityNow)],
   ]));
 
   if (risk.factors && risk.factors.length) {

@@ -159,9 +159,12 @@ def cmd_verify_package(args) -> int:
     else:
         estado = "íntegro" if r.get("ok") else "ALTERADO ou inválido"
         print(f"{args.arquivo}: {estado}")
-        for chave in ("reason", "contentHashOk", "treeHashOk"):
-            if chave in r:
-                print(f"  {chave}: {r[chave]}")
+        # `verify_package` explica a recusa em `problems`, não em `reason`.
+        # Ler a chave errada fazia a CLI dizer apenas "ALTERADO" sem por quê.
+        for problema in r.get("problems") or []:
+            print(f"  - {problema}")
+        if r.get("treeHashOk") is not None:
+            print(f"  treeHash confere: {'sim' if r['treeHashOk'] else 'não'}")
         print("  Isto prova integridade, não autoria.")
     return 0 if r.get("ok") else 1
 

@@ -30,6 +30,10 @@ a = Analysis(
     datas=[(str(STATIC), "lia_agenthub/resources/static")],
     hiddenimports=[
         "lia_agenthub.resources",
+        # `cli` é importado dentro de `_despachar_cli`. O import é estático, o
+        # PyInstaller o seguiria — mas declará-lo custa nada e evita que uma
+        # futura troca por import dinâmico quebre a CLI só no .exe.
+        "lia_agenthub.cli",
         "webview",
         "webview.platforms.edgechromium",
         "webview.platforms.winforms",

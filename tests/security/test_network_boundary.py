@@ -62,8 +62,14 @@ class TestAppNaoFazRede:
     def test_promocao_e_validacao_sem_rede(self, hub, tmp_path, sem_rede):
         d = _skill(tmp_path)
         r = hub.import_path(str(d))
+        assert r.ok
         hub.promote(r.capability_id)
-        hub.validate(r.capability_id)
+        # A promoção precisa ter efeito observável, senão "não abriu socket"
+        # também seria verdade se nada tivesse acontecido.
+        assert hub.repo.exists(r.capability_id)
+        rel = hub.validate(r.capability_id)
+        assert "summary" in rel
+        assert rel["summary"]["error"] == 0
 
     def test_exportacao_sem_rede(self, hub, tmp_path, sem_rede):
         d = _skill(tmp_path)
