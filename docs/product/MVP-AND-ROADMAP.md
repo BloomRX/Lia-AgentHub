@@ -4,6 +4,17 @@
 **Sessão:** Agent 0 — Fundação, Pesquisa e Arquitetura
 **Branch:** `arena/a92004be-lia-agenthub`
 **Status:** `PROPOSED` — requer aprovação humana (`D-13`). **Não autoriza implementação.**
+
+> **Atualização de 2026-11-15.** Este documento continua sendo o **contrato do
+> MVP**. O que mudou é o estado de execução: M1–M8 foram implementados e
+> auditados individualmente. O placar real, com classe e evidência por
+> requisito, está em
+> [`docs/operations/FUNCTIONAL-COMPLETION-REPORT.md`](../operations/FUNCTIONAL-COMPLETION-REPORT.md).
+>
+> Resumo do estado: M1–M3, M5–M8 **PASS**; M4 **PASS em Linux** e **PARTIAL**
+> em symlink no Windows; M8 passou a ter o leitor de referência (IDX-3) que
+> este documento exige. Nada aqui foi declarado "funciona no Windows" — o gate
+> continua sendo execução real.
 **Data:** 2026-11-15 (UTC)
 
 ---
@@ -148,7 +159,14 @@ Entregáveis: os nove documentos desta branch. **Sem código.**
 
 **Critério de saída:** revisão humana aprova, ajusta ou rejeita escopo, fronteiras, arquitetura, segurança e MVP.
 
-### Fase 1 — Núcleo e biblioteca (MVP)
+### Fase 1 — Núcleo e biblioteca (MVP)  ✅ implementada
+
+> **Estado (2026-11-15):** entregues domínio puro, validador, contenção,
+> import + quarentena, biblioteca + `index.json`, pacote `.lia-capability`,
+> proveniência/licença/versão/diff, **CLI de desenvolvimento** (`diagnostico`,
+> `validate`, `pack`, `export`, `index`, `verify-package`) e interface local.
+> O `.exe` está configurado e o spec validado estaticamente, mas **não foi
+> empacotado nem executado** neste ambiente.
 
 | Entrega | Notas |
 |---|---|
@@ -165,7 +183,13 @@ Entregáveis: os nove documentos desta branch. **Sem código.**
 
 **Divisão F1a/F1b/F1c** conforme `PLATFORM-AND-TECHNOLOGY-DECISION.md` §5.3.
 
-### Fase 2 — MCP Workshop (somente catálogo)
+### Fase 2 — MCP Workshop (somente catálogo)  ✅ implementada
+
+> **Estado (2026-11-15):** ficha de MCP com fonte, commit, nomes de variável de
+> ambiente, capabilities declaradas e requisitos; análise estática de
+> manifesto; egress declarado; e **exportação de configuração para o host**
+> (`config_para_host`), com cabeçalho como nome e placeholder de credencial.
+> O Hub não conecta, não inicia processo e não testa.
 
 **Só o que é honesto sem executar:**
 

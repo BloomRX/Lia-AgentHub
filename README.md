@@ -2,12 +2,16 @@
 
 **Plataforma independente para criar, descobrir, validar, organizar, versionar, empacotar e distribuir capacidades para agentes de IA.**
 
-> **Estado atual: MVP implementado e testado.** Fase 0 e Fase 0.1 concluídas;
-> Fase 1 (implementação do MVP) executada nesta rodada. 214 testes automatizados
-> passando. Ver [docs/MVP-GUIA.md](docs/MVP-GUIA.md) para instalar e usar e
-> [docs/DESENVOLVIMENTO.md](docs/DESENVOLVIMENTO.md) para desenvolver e
-> [docs/MVP-RELATORIO-FINAL.md](docs/MVP-RELATORIO-FINAL.md) para o relatório
-> honesto do que foi e não foi validado.
+> **Estado atual: funcionalmente concluído, aguardando validação em Windows.**
+> M1–M8 do MVP implementados e cobertos por teste. **670 testes** automatizados
+> passando. O que falta não é código: é medição de rede em Windows, build do
+> `.exe` em ambiente com PyInstaller, e a decisão de licença (`D-16`).
+>
+> Ver [docs/MVP-GUIA.md](docs/MVP-GUIA.md) para instalar e usar,
+> [docs/DESENVOLVIMENTO.md](docs/DESENVOLVIMENTO.md) para desenvolver, e
+> **[docs/operations/FUNCTIONAL-COMPLETION-REPORT.md](docs/operations/FUNCTIONAL-COMPLETION-REPORT.md)**
+> para o relatório de conclusão — o documento que diz, requisito por requisito,
+> o que é PASS, o que é PARTIAL e o que continua BLOCKED.
 
 O Lia Agent Hub é um produto de escopo transversal: deve atender Game Development, programação, arte e design, pesquisa, produtividade, automação, mídia, lazer e outros domínios que utilizem agentes compatíveis.
 
@@ -46,11 +50,22 @@ A auditoria encontrou **oito lacunas** que nenhum dos produtos Lia atende hoje �
 - [x] SHA-256 por arquivo e de árvore; deduplicação por conteúdo
 - [x] Exportação `.lia-capability` com verificação de adulteração
 - [x] `index.json` portátil, validável, sem segredos
-- [x] 258 testes: funcional, segurança, persistência e interface
+- [x] **Leitor de referência independente** (`docs/examples/independent-reader/`)
+      — roda com o Hub desinstalado e prova que o contrato é consumível (IDX-3)
+- [x] **CLI de desenvolvimento**: `diagnostico`, `validate`, `pack`, `export`,
+      `index`, `verify-package`, com códigos de saída estáveis
+- [x] **Diff semântico entre versões**: corpo, `description`, `allowed-tools`
+- [x] **Configuração de host para servidor MCP** para colar no cliente —
+      cabeçalho entra como nome, nunca valor
+- [x] **Controle de rede do WebView2** por argumentos documentados
+- [x] 670 testes: unit, integração, segurança, persistência, interface e build
 - [x] Build configurado para Windows via PyInstaller
 - [ ] **Executável Windows gerado e testado** — não validado neste ambiente
       (sem Windows nem WebView2); o script de build roda testes e aborta se
-      algum falhar
+      algum falhar. O spec do PyInstaller é validado estaticamente por teste,
+      mas **não foi empacotado**: falta `libpython` compartilhada neste ambiente
+- [ ] **Zero egress na janela nativa** — o controle de rede do runtime está
+      implementado; a **medição** em Windows continua pendente (`D-09`)
 - [ ] **Licença do repositório** — D-16 aberta, aguarda decisão humana
 - [ ] **Nenhuma alteração** em Lia Studio, Lia Forge ou Lia Project
 
@@ -91,6 +106,11 @@ Três que merecem destaque porque a pesquisa mostrou que são fáceis de perder:
 ### Product
 - [Plataforma e stack](docs/product/PLATFORM-AND-TECHNOLOGY-DECISION.md)
 - [MVP e roadmap](docs/product/MVP-AND-ROADMAP.md)
+
+### Operações
+- [Relatório de conclusão funcional](docs/operations/FUNCTIONAL-COMPLETION-REPORT.md) — M1–M8 com classe, evidência e comandos
+- [Validação Windows](docs/operations/WINDOWS-VALIDATION-REPORT.md) — execução real, com o que passou e o que ficou bloqueado
+- [Plano de validação e build](docs/operations/WINDOWS-VALIDATION-AND-BUILD-PLAN.md)
 
 ### Google Stitch
 - [Relatório de integração](docs/operations/STITCH-INTEGRATION-REPORT.md) — o que foi importado, catalogado e o que depende de host autenticado

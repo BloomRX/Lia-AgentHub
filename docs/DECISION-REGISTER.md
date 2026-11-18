@@ -2,8 +2,14 @@
 
 **Status inicial:** as questões abaixo estão abertas para pesquisa e proposta.
 **Regra:** Arena pode pesquisar e recomendar; decisões de produto, risco, publicação e autorização de implementação exigem aceite humano.
-**Última atualização:** 2026-11-15 (Agent 0 — Fase 0), branch `arena/a92004be-lia-agenthub`, base `main` @ `34a27f48`.
+**Última atualização:** 2026-11-15 (conclusão funcional), branch `arena/a92004be-lia-agenthub`, base `main` @ `34a27f48`.
 **Natureza desta atualização:** anexar evidência, alternativas e recomendação. **Nenhuma decisão foi aprovada.** Onde há recomendação, o campo diz `RECOMMENDED (Agent 0)`, nunca `APPROVED`.
+
+> **Atualização de 2026-11-15 — estado de implementação.** O MVP foi implementado
+> e concluído tecnicamente onde o ambiente permitiu. Isso **não promove decisão
+> nenhuma**: `ADOPTED para implementação` continua diferente de `APPROVED`, e
+> `D-01`, `D-05`, `D-16` e `D-18` continuam `OPEN`. Ver §"Estado de
+> implementação por decisão" abaixo.
 
 ---
 
@@ -465,6 +471,34 @@ Para cada decisão:
 | **Controles obrigatórios em qualquer opção** | Bind **exclusivo** em `127.0.0.1`; token de sessão; `Origin`/`Host` validados; porta efêmera |
 | **Impacto de adiar** | Bloqueia F1b (interface), **não** bloqueia F1a (domínio + CLI) |
 | **Humano?** | **Sim** |
+
+---
+
+## Estado de implementação por decisão (2026-11-15)
+
+Esta seção responde uma pergunta diferente do registro acima: **o que já está
+construído**. Ela não altera estado de decisão.
+
+| ID | Decisão | Estado | Efeito prático do que foi implementado |
+|---|---|---|---|
+| `D-03` | Formatos canônicos de Skill | `RECOMMENDED` · adotado | Agent Skills implementado e validado contra a spec; namespace `plugin::skill` aceito |
+| `D-05` | Isolamento de execução | **`OPEN`** | **Nada executa.** `TestFronteirasStitch` verifica ativamente que script importado não roda |
+| `D-06` | Armazenamento local | `RECOMMENDED` · adotado | Arquivos + índice derivado; disco é a verdade; reconstrução testada |
+| `D-09` | API local vs. arquivo | `RECOMMENDED` | HTTP local existe **só** para a UI; o contrato de integração é arquivo em disco |
+| `D-13` | Escopo do MVP | `RECOMMENDED` · adotado | M1–M8 implementados; ver relatório de conclusão |
+| `D-14` | Tecnologia | `RECOMMENDED` · adotado | Python stdlib + UI web local + PyInstaller configurado |
+| `D-16` | Licença do projeto | **`OPEN`** | **Não escolhida.** Nenhum `LICENSE` criado. Bloqueia publicação, não o uso local |
+| `D-18` | Risco aceitável | **`OPEN`** | Mesma trava de `D-05`: sem execução, sem Test Lab |
+| `D-27` | pywebview ou navegador | `RECOMMENDED` · adotado | pywebview com fallback para navegador; WebView2 ausente não inutiliza o produto |
+
+**O que a implementação acrescentou ao registro sem mudar decisão:** o controle
+de rede do WebView2 (§4.2 do relatório de conclusão) e a doutrina de quatro
+estados — *catalogado no Hub* ≠ *configurado no host* ≠ *autenticado* ≠
+*disponível na sessão*. Nenhum desses é uma decisão nova; são consequências
+técnicas de decisões já registradas.
+
+**Nenhuma decisão foi promovida nesta rodada.** `ADOPTED para implementação` foi
+usado porque a Fase 1 já autorizava implementar a partir dessas recomendações.
 
 ---
 

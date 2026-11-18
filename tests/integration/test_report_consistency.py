@@ -73,6 +73,23 @@ class TestNumerosDoRelatorio:
         assert "medido em" in texto or "comando" in texto.lower()
 
 
+class TestReadmeBateComOBaseline:
+    """O README é a porta de entrada. Um número errado ali é o primeiro que
+    alguém lê — e o último que alguém confere."""
+
+    def test_readme_declara_o_mesmo_total(self):
+        b = _baseline()
+        texto = (RAIZ / "README.md").read_text(encoding="utf-8")
+        numeros = {int(n) for n in re.findall(r"(\d+) testes", texto)}
+        assert numeros, "o README não declara o número de testes"
+        assert numeros == {b["total"]}, (
+            f"README declara {sorted(numeros)}; baseline tem {b['total']}")
+
+    def test_readme_aponta_para_o_relatorio(self):
+        texto = (RAIZ / "README.md").read_text(encoding="utf-8")
+        assert "FUNCTIONAL-COMPLETION-REPORT.md" in texto
+
+
 class TestClassificacao:
     def test_todo_requisito_m1a_m8_aparece(self):
         texto = RELATORIO.read_text(encoding="utf-8")

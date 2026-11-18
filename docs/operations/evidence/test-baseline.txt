@@ -6,6 +6,6 @@
 # a medição real, no mesmo commit. Um baseline que se atualiza sozinho não
 # prova nada — ele sempre concorda consigo mesmo.
 unit=124
-integration=437
+integration=452
 security=94
-total=655
+total=670
