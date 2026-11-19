@@ -741,3 +741,21 @@ com teto `inventoried`, e `skill list` manteve 17 entradas na oficina.
 As nove referências são históricas e mantêm redistribuição pendente.
 A confirmação da árvore atual e qualquer piloto de consumo dependem
 do acesso à origem.
+
+### Studio · lote local para consumo
+
+Preparei em
+`J:/Lia/migration/agent-hub/studio-consumer-c8396c67631244e49bb7e605fea50bbb/bundle`
+uma cópia local de 35 arquivos: manifesto do lote, 16 manifestos de
+revisão, 16 pacotes, licença e avisos. A base SQLite e os arquivos
+internos da oficina ficaram no lote original. Cada arquivo copiado
+teve seu SHA-256 conferido contra a origem. O inventário de hashes
+está no arquivo `bundle-hashes.json` ao lado.
+
+Em uma raiz de teste com o leitor do Studio, executei
+`scripts/bootstrap_studio_library.ps1 -StudioRoot PASTA -ManifestPath
+bundle/studio-skills.json -HubCli CAMINHO` com a CLI do build
+`458d5f8` e PATH restrito ao Windows. O bootstrap recriou as 16 Skills.
+Os hashes dos arquivos materializados conferiram com a árvore do
+ensaio de corte. Este lote está preparado localmente. A escolha do
+canal para consumidores do Studio continua pendente antes do corte.
