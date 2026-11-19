@@ -172,3 +172,36 @@ editável e conserva as revisões anteriores.
 A cobertura atual da oficina é o texto do SKILL.md. Anexos, forks com
 procedência, integração das revisões ao catálogo central e materialização
 pelos hosts continuam pendentes. Execução de conteúdo permanece com o host.
+
+## Execução · consumo local de revisões
+
+O comando de empacotamento da oficina aceita --profile e retorna um objeto
+lock. O projeto revisa e guarda esse objeto como manifesto. Ele fixa o ID
+da oficina, a revisão, o ID do pacote v1, a versão declarada, o perfil e os
+dois hashes SHA-256. A primeira implementação aceita Skills sem dependências
+resolvidas externamente. A seleção e o armazenamento local do pacote são
+responsabilidade do consumidor.
+
+Passos para reproduzir o ensaio:
+
+1. Usar python -m lia_agenthub skill pack ID REVISAO --profile PERFIL.
+2. Salvar somente o objeto lock do JSON retornado em skill-lock.json.
+3. Executar python -m lia_agenthub skill materialize skill-lock.json PACOTE DESTINO.
+   Destino é um diretório novo. O comando precisa da CLI, do manifesto e do
+   pacote local. A base de dados da oficina pode estar ausente.
+4. Para atualizar ou reverter, materializar a revisão fixada correspondente em
+   diretório novo e alterar a referência do host depois da verificação.
+
+O materializador verifica o pacote, o manifesto, a procedência e cada arquivo,
+valida os caminhos e só expõe a pasta final depois de conferir a árvore.
+O ensaio automatizado comprova bytes idênticos, recusa pacote alterado,
+preservação de destino existente, materialização da segunda revisão e
+reprodução da primeira. Ainda falta validar o carregamento em projetos reais.
+
+A regressão Windows desta etapa registrou 837 testes aprovados e um skip de
+symlink. Na triagem inicial, 22 Skills do Project estavam em .agents e 29
+sob airi; as 16 do Studio e a do Forge 2.0 estavam em .agents. As amostras
+lia-agent-evaluation, lia-game-design-review e lia-brand-check não declaram
+licença no frontmatter. Os três commits contêm LICENSE na raiz. A cobertura
+de cada arquivo e a atribuição de upstream ainda precisam ser confirmadas
+no inventário de migração.

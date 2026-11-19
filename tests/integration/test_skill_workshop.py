@@ -1,5 +1,6 @@
 import json
 import zipfile
+from pathlib import Path
 
 from lia_agenthub.adapters.packager import verify_package
 
@@ -47,3 +48,52 @@ def test_oficina_recusa_publicar_rascunho_invalido(tmp_path, capsys):
     assert main([*command, "publish", skill_id, "1"]) == 1
     assert main([*command, "history", skill_id]) == 0
     assert json.loads(capsys.readouterr().out) == []
+
+
+def test_materializa_revisao_local_sem_banco_da_oficina(tmp_path, capsys):
+    package_home = tmp_path / "hub"
+    source = tmp_path / "SKILL.md"
+    source.write_text(
+        "---\nname: piloto\ndescription: Skill sintetica\n---\n\nConteudo.\n",
+        encoding="utf-8",
+    )
+
+    def run(home, *args, status=0):
+        assert main(["--home", str(home), "skill", *map(str, args)]) == status
+        output = capsys.readouterr()
+        return json.loads(output.out) if status == 0 else output.err
+
+    drafted = run(package_home, "create", source)
+    run(package_home, "publish", drafted["id"], 1)
+    packed = run(package_home, "pack", drafted["id"], 1, "--profile", "lia-studio")
+    lock = tmp_path / "skill-lock.json"
+    lock.write_text(json.dumps(packed["lock"]), encoding="utf-8")
+    host_home = tmp_path / "host-home"
+    destination = tmp_path / "materialized"
+    materialized = run(host_home, "materialize", lock, packed["path"], destination)
+    assert materialized["treeSha256"] == packed["lock"]["treeSha256"]
+    assert (destination / "SKILL.md").read_bytes() == source.read_bytes()
+    assert not host_home.exists()
+    assert "destino já existe" in run(
+        host_home, "materialize", lock, packed["path"], destination, status=1,
+    )
+    invalid_package = tmp_path / "invalid.lia-capability"
+    invalid_package.write_bytes(Path(packed["path"]).read_bytes() + b"changed")
+    rejected_destination = tmp_path / "rejected"
+    assert "SHA-256" in run(
+        host_home, "materialize", lock, invalid_package, rejected_destination, status=1,
+    )
+    assert not rejected_destination.exists()
+
+    source.write_bytes(source.read_bytes().replace(b"Conteudo", b"Atualizado"))
+    run(package_home, "edit", drafted["id"], 1, source)
+    run(package_home, "publish", drafted["id"], 2)
+    updated = run(package_home, "pack", drafted["id"], 2, "--profile", "lia-studio")
+    updated_lock = tmp_path / "updated.json"
+    updated_lock.write_text(json.dumps(updated["lock"]), encoding="utf-8")
+    next_destination = tmp_path / "updated"
+    run(host_home, "materialize", updated_lock, updated["path"], next_destination)
+    assert (next_destination / "SKILL.md").read_bytes() == source.read_bytes()
+    rollback = tmp_path / "rollback"
+    run(host_home, "materialize", lock, packed["path"], rollback)
+    assert (rollback / "SKILL.md").read_bytes() == (destination / "SKILL.md").read_bytes()

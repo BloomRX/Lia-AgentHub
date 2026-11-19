@@ -314,11 +314,38 @@ def cmd_skill(args) -> int:
                 result = hub.export(report.capability_id, destination=str(destination))
                 if not result["ok"]:
                     return _erro(result["refusedReason"], 1)
+                if args.profile:
+                    verified = hub.verify_package(result["path"])
+                    result["lock"] = {
+                        "lockVersion": 1,
+                        "skillId": f"urn:lia:cap:{record['id']}",
+                        "revision": record["revision"],
+                        "capabilityId": report.capability_id,
+                        "version": verified["manifest"]["version"],
+                        "packageSha256": result["packageHash"],
+                        "treeSha256": verified["computedTreeHash"],
+                        "profile": args.profile,
+                        "dependencies": [],
+                    }
             _json(result)
             return 0
         operation = getattr(workshop, args.skill_cmd)
         result = operation(**parameters)
     except (ValueError, SecurityError) as error:
+        return _erro(str(error), 1)
+    _json(result)
+    return 0
+
+
+def cmd_materialize_skill(args) -> int:
+    import zipfile
+
+    from .adapters.skill_consumer import materialize
+    from .domain.errors import SecurityError
+
+    try:
+        result = materialize(Path(args.lock), Path(args.package), Path(args.dest))
+    except (ValueError, KeyError, TypeError, SecurityError, zipfile.BadZipFile) as error:
         return _erro(str(error), 1)
     _json(result)
     return 0
@@ -339,7 +366,14 @@ def _skill_parser(sub) -> None:
             command.add_argument("arquivo", help="arquivo SKILL.md em UTF-8")
         if action == "pack":
             command.add_argument("--dest", help="diretório de destino do backup privado")
+            command.add_argument("--profile", help="perfil do host para gerar manifesto de consumo")
         command.set_defaults(func=cmd_skill)
+
+    materialize = actions.add_parser("materialize", help="materializa uma revisão local fixada")
+    materialize.add_argument("lock", help="manifesto de consumo JSON")
+    materialize.add_argument("package", help="pacote .lia-capability local")
+    materialize.add_argument("dest", help="novo diretório de destino")
+    materialize.set_defaults(func=cmd_materialize_skill)
 
 
 def build_parser(prog: str = "lia-agenthub") -> argparse.ArgumentParser:
