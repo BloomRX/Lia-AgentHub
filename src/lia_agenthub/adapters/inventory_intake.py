@@ -394,6 +394,17 @@ class InventoryIntake:
             # preview e a confirmação.
             conhecidos = self.store.conhecidos()
             plano.classificados = dom.classificar(env.registros, conhecidos)
+            bloquearam = [c for c in plano.classificados
+                          if c.classe in (
+                              dom.Classe.CONFLITO_IDENTIDADE,
+                              dom.Classe.ALIAS_CANDIDATO,
+                              dom.Classe.DOWNGRADE,
+                          )]
+            # A classificação sob trava é a autoridade final. Se outro intake
+            # entrou entre o preview e a confirmação, o estado acompanha o
+            # resultado recalculado, não o snapshot anterior.
+            plano.estado_proposto = (
+                ESTADO_QUARENTENA if bloquearam else ESTADO_RECEBIDO)
 
             admitidos = [c for c in plano.classificados if c.admitido]
             quarentena = [c for c in plano.classificados if not c.admitido]
@@ -457,7 +468,7 @@ class InventoryIntake:
             "receivedAt": recibo.recebido_em,
             "inventoryId": recibo.inventory_id,
             "revision": recibo.revision,
-            "reason": "Conflito de identidade ou downgrade: retido até decisão humana.",
+            "reason": "Conflito de identidade, colisão de alias ou downgrade: retido até decisão humana.",
             "records": [c.as_dict() for c in itens],
             "note": ("Metadados retidos. Nenhum arquivo do emissor foi copiado, "
                      "executado ou instalado."),

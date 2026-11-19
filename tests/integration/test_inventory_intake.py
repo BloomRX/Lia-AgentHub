@@ -550,6 +550,7 @@ def test_alias_compartilhado_vai_para_quarentena_real(
     assert plano.estado_proposto == ESTADO_QUARENTENA
     assert plano.classificados[0].classe.value == "alias-candidate"
     assert plano.classificados[0].admitido is False
+    assert "alias" in plano.classificados[0].motivo
     assert plano.destino_quarentena
     estado = json.loads((Path(locations.common) / "Inventarios" / "estado.json")
                         .read_text(encoding="utf-8"))
