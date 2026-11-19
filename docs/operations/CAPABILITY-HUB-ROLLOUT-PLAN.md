@@ -478,3 +478,20 @@ CRLF/LF. Test_integrated_flow.py reproduziu a mesma falha em uma exportação
 limpa de b099c4a sem a alteração de build. O corte das fontes versionadas
 continua pendente. O perfil de consumo do build já está disponível na
 branch de desenvolvimento.
+
+## Execução · regressão Windows e consumo do Studio empacotado
+
+A correção 38a48d9 na branch do Studio mantém os bytes originais no
+backup e grava o arquivo aplicado com os mesmos bytes UTF-8 usados
+no hash da proposta. O teste integrado agora compara também o hash
+do arquivo aplicado. Verify_alpha.py --part 10 passou no Windows
+depois da correção.
+
+Recompilei o executável com a biblioteca externa de 16 Skills,
+conferi os arquivos empacotados byte a byte e iniciei LiaStudio.exe
+com diretório temporário para os projetos e PATH restrito ao Windows.
+A API local do processo listou 16 Skills e abriu
+lia-game-project-bootstrap como builtin. A captura do identificador
+da janela não foi possível em duas execuções em modo oculto. Encerrei
+os processos de teste. O resultado comprova consumo de Skills pelo
+executável, mas o fechamento pela janela fica sem validação.
