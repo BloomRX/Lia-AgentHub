@@ -104,7 +104,7 @@ def _open_view(url: str, hub: AgentHub, log: logging.Logger) -> bool:
 #: Subcomandos da CLI. Se o primeiro argumento for um deles, `main` despacha
 #: para `cli.main` em vez de tentar abrir janela. Sem isso, `lia-agenthub
 #: validate x` seria interpretado como caminho e falharia de forma confusa.
-SUBCOMANDOS = {"diagnostico", "validate", "pack", "export", "index", "verify-package"}
+SUBCOMANDOS = {"diagnostico", "validate", "pack", "export", "index", "inventory", "skill", "verify-package"}
 
 
 def _despachar_cli(argv: list[str]) -> int | None:

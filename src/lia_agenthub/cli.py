@@ -277,6 +277,71 @@ def cmd_inventory(args) -> int:
 
 
 # --------------------------------------------------------------------------
+def cmd_skill(args) -> int:
+    from .adapters.paths_resolver import resolve_locations
+    from .adapters.safe_extract import MAX_SINGLE, stat_import_path
+    from .adapters.skill_workshop import SkillWorkshop
+    from .domain.errors import SecurityError
+
+    locations = resolve_locations(Path(args.home) if args.home else None)
+    workshop = SkillWorkshop(locations.home / "Oficina" / "skills.sqlite3")
+    parameters = {}
+    for name in ("skill_id", "generation", "revision"):
+        if hasattr(args, name):
+            parameters[name] = getattr(args, name)
+    try:
+        if hasattr(args, "arquivo"):
+            source = Path(args.arquivo)
+            if stat_import_path(source).st_size > MAX_SINGLE:
+                return _erro("SKILL.md excede o limite de tamanho.", 1)
+            # Preserva as quebras originais para o hash da revisão.
+            parameters["text"] = source.read_bytes().decode("utf-8")
+        if args.skill_cmd == "pack":
+            from tempfile import TemporaryDirectory
+            from .adapters.safe_extract import Extraction, ExtractedFile
+
+            record = workshop.read_revision(**parameters)
+            destination = Path(args.dest).resolve() if args.dest else locations.exports
+            with TemporaryDirectory(prefix="lia-skill-") as temporary:
+                hub = AgentHub(resolve_locations(Path(temporary)))
+                data = record["text"].encode("utf-8")
+                archive = Extraction(files=[ExtractedFile("SKILL.md", data, False)])
+                upstream = f"urn:lia:cap:{record['id']}:{record['revision']}"
+                report = hub.importer.from_extraction(archive, upstream=upstream)
+                if not report.ok:
+                    return _erro(report.blocked_reason, 1)
+                hub.promote(report.capability_id)
+                result = hub.export(report.capability_id, destination=str(destination))
+                if not result["ok"]:
+                    return _erro(result["refusedReason"], 1)
+            _json(result)
+            return 0
+        operation = getattr(workshop, args.skill_cmd)
+        result = operation(**parameters)
+    except (ValueError, SecurityError) as error:
+        return _erro(str(error), 1)
+    _json(result)
+    return 0
+
+
+def _skill_parser(sub) -> None:
+    skill = sub.add_parser("skill", help="edita e versiona Skills na oficina local")
+    actions = skill.add_subparsers(dest="skill_cmd", required=True)
+    for action in ("create", "edit", "preview", "publish", "history", "diff", "restore", "read_revision", "pack"):
+        command = actions.add_parser(action)
+        if action != "create":
+            command.add_argument("skill_id")
+        if action in ("edit", "publish", "restore"):
+            command.add_argument("generation", type=int)
+        if action in ("diff", "restore", "read_revision", "pack"):
+            command.add_argument("revision", type=int)
+        if action in ("create", "edit"):
+            command.add_argument("arquivo", help="arquivo SKILL.md em UTF-8")
+        if action == "pack":
+            command.add_argument("--dest", help="diretório de destino do backup privado")
+        command.set_defaults(func=cmd_skill)
+
+
 def build_parser(prog: str = "lia-agenthub") -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
         prog=prog,
@@ -317,6 +382,8 @@ def build_parser(prog: str = "lia-agenthub") -> argparse.ArgumentParser:
                    help="grava o recebimento; sem esta flag é só pré-visualização")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_inventory)
+
+    _skill_parser(sub)
 
     p = sub.add_parser("verify-package", help="verifica integridade de um pacote")
     p.add_argument("arquivo")

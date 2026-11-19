@@ -150,3 +150,25 @@ Os totais valem para as revisões examinadas. Os checkouts antigos de Project
 e Forge apontavam para diretórios Git ausentes. A descoberta de revisões
 alternativas e repositórios adicionais segue na fase 0. Os candidatos desta
 varredura ainda aguardam classificação de migração.
+
+## Execução · oficina de Skills pela CLI
+
+A oficina mantém rascunhos Markdown e revisões publicadas em SQLite sob
+a raiz de dados do Hub. A geração protege contra edições concorrentes.
+Publicar a mesma geração é idempotente. Restaurar cria uma nova geração
+editável e conserva as revisões anteriores.
+
+| CLI  | Uso |
+| --- | --- |
+| python -m lia_agenthub skill create SKILL.md | Criar rascunho |
+| python -m lia_agenthub skill edit ID GERACAO SKILL.md | Substituir o texto com controle de versão |
+| python -m lia_agenthub skill preview ID | Mostrar conteúdo e achados de validação |
+| python -m lia_agenthub skill publish ID GERACAO | Gravar revisão imutável com SHA-256 |
+| python -m lia_agenthub skill history ID | Listar revisões publicadas |
+| python -m lia_agenthub skill diff ID REVISAO | Comparar a revisão com o rascunho |
+| python -m lia_agenthub skill restore ID GERACAO REVISAO | Restaurar o conteúdo em nova geração |
+| python -m lia_agenthub skill pack ID REVISAO --dest PASTA | Gerar backup privado da revisão em .lia-capability |
+
+A cobertura atual da oficina é o texto do SKILL.md. Anexos, forks com
+procedência, integração das revisões ao catálogo central e materialização
+pelos hosts continuam pendentes. Execução de conteúdo permanece com o host.
