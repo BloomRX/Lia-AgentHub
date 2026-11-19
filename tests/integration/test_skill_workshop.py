@@ -135,3 +135,43 @@ def test_anexos_sao_versionados_e_restaurados(tmp_path, capsys):
     (internal / "capability.json").write_text("{}", encoding="utf-8")
     assert "Entrada proibida" in run("edit", skill_id, 3, skill, status=1)
     assert run("preview", skill_id)["generation"] == 3
+
+
+def test_procedencia_git_fica_vinculada_ao_snapshot_e_ao_pacote(tmp_path, capsys):
+    from lia_agenthub.domain.integrity import sha256_file, tree_hash
+
+    source = tmp_path / "SKILL.md"
+    source.write_text(
+        "---\nname: origem\ndescription: Skill de origem sintetica\n---\n\nCorpo.\n",
+        encoding="utf-8",
+    )
+    origin = {
+        "repository": "https://example.invalid/lia/studio",
+        "commit": "a" * 40,
+        "path": ".agents/skills/origem/SKILL.md",
+        "author": None,
+        "maintainer": "Studio",
+        "licensePath": "LICENSE",
+        "licenseSha256": "b" * 64,
+        "treeSha256": "c" * 64,
+    }
+    evidence = tmp_path / "origin.json"
+    command = ["--home", str(tmp_path / "hub"), "skill"]
+
+    def run(*args, status=0):
+        assert main([*command, *map(str, args)]) == status
+        output = capsys.readouterr()
+        return json.loads(output.out) if status == 0 else output.err
+
+    evidence.write_text(json.dumps(origin), encoding="utf-8")
+    assert "hash de origem" in run("create", source, "--origin", evidence, status=1)
+    origin["treeSha256"] = tree_hash({"SKILL.md": sha256_file(source)})
+    evidence.write_text(json.dumps(origin), encoding="utf-8")
+    skill_id = run("create", source, "--origin", evidence)["id"]
+    assert run("publish", skill_id, 1)["origin"] == {"kind": "git-snapshot", **origin}
+    package = run("pack", skill_id, 1)
+    with zipfile.ZipFile(package["path"]) as bundle:
+        provenance = json.loads(bundle.read("provenance.json"))
+        manifest = json.loads(bundle.read("manifest.json"))
+    assert provenance["source"]["workshopOrigin"] == {"kind": "git-snapshot", **origin}
+    assert not manifest["license"]["redistributable"]

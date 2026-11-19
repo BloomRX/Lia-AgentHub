@@ -1,12 +1,16 @@
 """Local Skill drafts and immutable revisions, without loading their content."""
 from __future__ import annotations
 
+import json
+import re
 import sqlite3
 from contextlib import closing, contextmanager
 from pathlib import Path
+from urllib.parse import urlsplit
 from uuid import UUID, uuid4
 
 from ..domain.integrity import sha256_bytes, tree_hash
+from ..domain.paths import validate_relative
 from ..domain.skills import check_references, diff_corpo, diff_frontmatter, has_blocking, validate_skill
 from ..domain.unicode_policy import Context, scan
 
@@ -56,13 +60,52 @@ class SkillWorkshop:
                         PRIMARY KEY (id, revision)
                     )
                 """)
+                connection.execute("""
+                    CREATE TABLE IF NOT EXISTS origins (
+                        id TEXT PRIMARY KEY, evidence TEXT NOT NULL
+                    )
+                """)
                 yield connection
 
-    def create(self, text: str, files: dict[str, bytes] | None = None) -> dict:
+    @classmethod
+    def _validate_origin(cls, origin: dict, text: str, files: dict[str, bytes]) -> dict:
+        fields = {"repository", "commit", "path", "author", "maintainer",
+                  "licensePath", "licenseSha256", "treeSha256"}
+        if not isinstance(origin, dict) or fields != origin.keys():
+            raise WorkshopError("A procedência precisa declarar os campos do snapshot Git.")
+        for field in fields - {"author", "maintainer"}:
+            if not isinstance(origin[field], str) or not origin[field]:
+                raise WorkshopError(f"Procedência inválida: {field}.")
+        for field in ("author", "maintainer"):
+            value = origin[field]
+            if value is not None and (not isinstance(value, str) or not value.strip()
+                                      or len(value) > 300 or any(ord(c) < 32 for c in value)):
+                raise WorkshopError(f"Procedência inválida: {field}.")
+        url = urlsplit(origin["repository"])
+        if (url.scheme != "https" or not url.hostname or url.username is not None
+                or url.query or url.fragment or not re.fullmatch(r"/[\w.-]+/[\w.-]+/?", url.path)):
+            raise WorkshopError("URL de repositório inválida.")
+        if not re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", origin["commit"]):
+            raise WorkshopError("Informe o commit Git completo.")
+        for field in ("path", "licensePath"):
+            if validate_relative(origin[field]).posix != origin[field]:
+                raise WorkshopError(f"Caminho de origem inválido: {field}.")
+        if not re.fullmatch(r"[0-9a-f]{64}", origin["licenseSha256"]):
+            raise WorkshopError("SHA-256 da evidência de licença inválido.")
+        if cls._tree_hash(text, files) != origin["treeSha256"]:
+            raise WorkshopError("A pasta não confere com o hash de origem.")
+        return {"kind": "git-snapshot", **origin}
+
+    def create(self, text: str, files: dict[str, bytes] | None = None,
+               origin: dict | None = None) -> dict:
         skill_id = str(uuid4())
+        evidence = self._validate_origin(origin, text, files or {}) if origin is not None else None
         with self._connect() as connection:
             connection.execute("INSERT INTO drafts VALUES (?, 1, ?)", (skill_id, text))
             self._save_files(connection, skill_id, files or {})
+            if evidence is not None:
+                connection.execute("INSERT INTO origins VALUES (?, ?)",
+                                   (skill_id, json.dumps(evidence, ensure_ascii=False)))
         return {"id": skill_id, "generation": 1}
 
     def _draft(self, connection, skill_id: str) -> dict:
@@ -71,7 +114,14 @@ class SkillWorkshop:
         ).fetchone()
         if row is None:
             raise WorkshopError("Rascunho desconhecido.")
-        return dict(row)
+        return {**dict(row), "origin": self._origin(connection, str(UUID(skill_id)))}
+
+    @staticmethod
+    def _origin(connection, skill_id: str) -> dict | None:
+        row = connection.execute(
+            "SELECT evidence FROM origins WHERE id = ?", (skill_id,)
+        ).fetchone()
+        return json.loads(row["evidence"]) if row else None
 
     def _save_files(self, connection, skill_id: str, files: dict[str, bytes]) -> None:
         connection.execute("DELETE FROM draft_files WHERE id = ?", (skill_id,))
@@ -149,7 +199,7 @@ class SkillWorkshop:
         result = dict(row)
         if sha256_bytes(result["text"].encode("utf-8")) != result["digest"]:
             raise WorkshopError("A integridade da revisão não confere.")
-        return result
+        return {**result, "origin": self._origin(connection, result["id"])}
 
     def publish(self, skill_id: str, generation: int) -> dict:
         skill_id = str(UUID(skill_id))

@@ -204,7 +204,8 @@ class Importer:
 
     def from_extraction(self, extraction: Extraction, *, upstream: str | None = None,
                         dry_run: bool = False,
-                        version_of: str | None = None) -> ImportReport:
+                        version_of: str | None = None,
+                        source_extra: dict | None = None) -> ImportReport:
         files = {f.path: f.data for f in extraction.files}
         report = ImportReport(ok=False, warnings=list(extraction.warnings))
         report.contains_scripts = extraction.contains_scripts
@@ -536,7 +537,8 @@ class Importer:
                 notice_required=notice_obrigatorio(detected),
                 redistribution_basis=base_declarada or None,
             ),
-            source=Source(upstream=upstream, imported_at=now, method="local"),
+            source=Source(upstream=upstream, imported_at=now, method="local",
+                          extra=source_extra or {}),
             trust=Trust.UNREVIEWED,
             extra=_extra_do_registro(namespace_declarado, servidor_mcp),
             # Saída de rede DECLARADA. Para um servidor MCP o endpoint é a

@@ -228,3 +228,35 @@ A verificação direta da licença corrige a triagem anterior: o caminho
 LICENSE na raiz do commit de Project retornou 404. Studio e Forge 2.0
 retornaram textos MIT. A licença do repositório e o escopo de eventual
 material de terceiros devem ser conferidos separadamente por Skill.
+
+## Execução · procedência e ensaio de migração do Studio
+
+A oficina aceita create --origin com um snapshot de procedência composto por
+repositório HTTPS, commit Git completo, caminho, autor, mantenedor, caminho e
+SHA-256 da evidência de licença e SHA-256 da árvore de origem. A oficina
+compara a árvore aos arquivos recebidos, conserva a evidência ao editar e
+inclui os dados em provenance.json do pacote privado. Campos desconhecidos
+são recusados. Autor e mantenedor podem ser nulos. Registrar a procedência
+não concede autorização de redistribuição.
+
+O ensaio local usou lia-game-design-review, de
+BloomRX/Lia-Studio@b099c4ad6b1d26b7e857290fcb333e311b8ae515. A GitHub API
+entregou a Skill e o LICENSE da raiz. git hash-object --no-filters
+conferiu os dois blobs. A Skill não declara autor próprio. O pacote
+conservou a origem e a evidência do LICENSE como metadados. O LICENSE
+original permaneceu junto dos artefatos do ensaio local.
+
+A CLI recriou .agents/skills/lia-game-design-review/SKILL.md num destino
+isolado e conferiu SHA-256 do arquivo comparado ao blob baixado. Hash da
+árvore: 1a4b2cd91999be9183767244d01af9fc47c1150e0a15259368cc57bbb773b652.
+O ensaio não é prova de adoção operacional. Faltam o carregamento pelo host
+real, a validação de dependências e o corte da cópia no Studio.
+
+O leitor real do checkout Studio em 4e103271633cdd12c03019fa2d6d517cbc35de59
+também listou e abriu a Skill materializada como builtin por list_skills e
+get_skill. No ensaio, SKILLS_DIR apontou para a pasta isolada. A revisão
+calculada pelo Studio foi
+82aed1a88f28f85f95c20f4725fe493d62ef2c1767802df9c5f81b6b5592f43a.
+Isso confirma a leitura pelo código existente. O caminho de bootstrap e a
+receita desktop do Studio, que empacota .agents/skills, ainda precisam
+consumir a revisão materializada em um checkout limpo.

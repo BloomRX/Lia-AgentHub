@@ -322,6 +322,12 @@ def cmd_skill(args) -> int:
                 if len(data) > MAX_SINGLE or has_bom(data):
                     return _erro("SKILL.md excede o limite ou começa com BOM.", 1)
                 parameters["text"] = data.decode("utf-8")
+        if getattr(args, "origin", None):
+            origin_path = Path(args.origin)
+            metadata = stat_import_path(origin_path)
+            if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > 65536:
+                return _erro("O manifesto de origem precisa ser um JSON de até 64 KiB.", 1)
+            parameters["origin"] = json.loads(origin_path.read_bytes())
         if args.skill_cmd == "pack":
             from tempfile import TemporaryDirectory
             from .adapters.safe_extract import Extraction, ExtractedFile
@@ -337,7 +343,10 @@ def cmd_skill(args) -> int:
                     for path, data in files.items()
                 ])
                 upstream = f"urn:lia:cap:{record['id']}:{record['revision']}"
-                report = hub.importer.from_extraction(archive, upstream=upstream)
+                origin = record["origin"]
+                source_extra = {"workshopOrigin": origin} if origin is not None else None
+                report = hub.importer.from_extraction(archive, upstream=upstream,
+                                                       source_extra=source_extra)
                 if not report.ok:
                     return _erro(report.blocked_reason, 1)
                 hub.promote(report.capability_id)
@@ -394,6 +403,8 @@ def _skill_parser(sub) -> None:
             command.add_argument("revision", type=int)
         if action in ("create", "edit"):
             command.add_argument("arquivo", help="SKILL.md em UTF-8 ou pasta de Skill com anexos")
+        if action == "create":
+            command.add_argument("--origin", help="manifesto JSON de procedência do snapshot Git")
         if action == "pack":
             command.add_argument("--dest", help="diretório de destino do backup privado")
             command.add_argument("--profile", help="perfil do host para gerar manifesto de consumo")
