@@ -722,3 +722,22 @@ completas. Nenhuma das quatro árvores continha `SKILL.md` versionado.
 O resultado se limita às branches acessíveis e às Skills versionadas.
 O inventário histórico do Research continua sendo a evidência para
 Model Lab até que o checkout atual possa ser identificado e lido.
+
+### Model Lab · entrada histórica por referência
+
+Da árvore Git do Lia-Research em `33074e280cb557ac23537eac9a6883a0b89d0283`,
+li `data/inventory/lia-all-files.tsv.gz` por `git show`. As 54 linhas
+relevantes preservam nove caminhos distintos em seis branches, com os
+SHAs abreviados e tamanhos registrados no snapshot. O inventário
+`J:/Lia/migration/agent-hub/registry/model-lab-research.inventory.json`
+guarda um ID por caminho, as seis origens e o vínculo ao snapshot
+auditável. A tabela não contém hashes ou conteúdo das Skills.
+
+`LiaAgentHubCli.exe inventory preview` aceitou as nove referências.
+`inventory receive --commit` gravou o recibo `rec-ae6d038ead0d7c46`.
+O contrato emitiu `ISSUER_INACTIVE_PROJECT`, conforme previsto para o
+Model Lab suspenso. `inventory state --json` confirmou 78 identidades
+com teto `inventoried`, e `skill list` manteve 17 entradas na oficina.
+As nove referências são históricas e mantêm redistribuição pendente.
+A confirmação da árvore atual e qualquer piloto de consumo dependem
+do acesso à origem.
