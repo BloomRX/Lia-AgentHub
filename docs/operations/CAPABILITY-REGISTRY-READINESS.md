@@ -39,8 +39,8 @@ compatibilidade deve fixar esses campos na revisão validada.
 
 | Lacuna | Evidência atual | Critério de fechamento |
 | --- | --- | --- |
-| Identidade central e inventário por origem | `Capability.id` é ID local derivado do conteúdo; `versionOf` registra linhagem | Feed versionado com IDs persistentes, mapa de aliases e histórico de revisões, sem alterar IDs v1 |
-| Tipos e relações | Skill e servidor MCP têm fluxos próprios. O enum v1 é parcial e tools são itens do descritor do servidor | Importar metadados tipados e guardar relações servidor/tool, dependência e compartilhamento sem criar Skills artificiais |
+| Identidade central e inventário por origem | `Capability.id` é ID local derivado do conteúdo; o índice de inventário agora preserva alegações `sources[]` por feed/revisão e `issuerProjects`, inclusive quando duas origens declaram o mesmo ID, revisão e digest | Ainda falta reconciliação de aliases entre identidades, autoridade de origem canônica e histórico de decisões de identidade, sem alterar IDs v1 |
+| Tipos e relações | O intake preserva por revisão `aliases`, `dependencies`, `offers` e `compatibility` como declarações, sem execução ou promoção | Ainda falta validar semanticamente os alvos e esquemas, normalizar relações tipadas e produzir consultas de grafo; tools continuam subordinadas ao servidor MCP |
 | Procedência de múltiplas origens | `Source` preserva upstream, commit e extensões. Stitch usa proveniência lateral | Preservar origem, escopo e autoria por declaração e revisão. Comparar ou marcar desconhecido quando faltar prova |
 | Licença por componente | Licenças declaradas e base de redistribuição são separadas. `License` v1 contempla código, conteúdo e pesos | Registrar documento, titular, escopo, canal, revisão e obrigações por componente, com decisão humana e revogação |
 | Compatibilidade e dependências | `requirements` pode estar ausente. O índice v1 entrega capacidades ativas e metadados de seleção | Detectar incompatibilidades, restrições de versão e dependências não resolvidas; separar o que foi declarado do que foi verificado |
@@ -108,3 +108,8 @@ O que isso **não** muda:
   Homologação Windows e a decisão de licença continuam sendo os gates reais.
 
 Ver [INVENTORY-INTAKE.md](INVENTORY-INTAKE.md) para a fronteira completa.
+
+
+### Atualização de implementação — proveniência multi-origem
+
+A branch de desenvolvimento acrescentou à projeção do índice de identidade alegações de origem por feed e revisão, preservando recibos, emissores e origens sem escolher uma fonte canônica. Também mantém aliases, dependências, ofertas e compatibilidade por revisão como declarações brutas. Isso fecha a perda de proveniência entre feeds para uma mesma identidade/revisão/digest, mas **não** fecha a reconciliação de aliases nem a resolução semântica de relações. Ver `INVENTORY-INTAKE.md`. A mudança está implementada na branch de desenvolvimento; a execução da suíte após esta alteração ainda precisa ser registrada separadamente.

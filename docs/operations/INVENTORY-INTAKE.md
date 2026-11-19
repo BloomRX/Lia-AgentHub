@@ -186,6 +186,31 @@ de novo é recusado. Recibo é prova; reescrever apagaria o que foi de fato vist
 Um `estado.json` ilegível é **erro explícito**. Tratá-lo como vazio faria o
 próximo inventário "atualizar" tudo e perder o histórico.
 
+## Projeção de proveniência multi-origem
+
+O arquivo `estado.json` é um índice derivado, não substitui os recibos
+imutáveis nem os feeds append-only. Para cada identidade e revisão, a projeção
+mantém `sources[]`: uma alegação por feed/revisão emissora, com o projeto,
+repositório e mantenedor declarados, a revisão do registro, o digest, as
+origens declaradas e os IDs dos recibos que documentam o recebimento.
+
+Quando dois projetos declaram a mesma identidade, revisão e digest, a
+classificação continua idempotente, mas a segunda origem **é acrescentada**;
+não sobrescreve a primeira nem elege uma origem canônica. Reenvios do mesmo
+feed/revisão acrescentam referências de recibo à alegação existente, sem
+duplicar a alegação. `issuerProjects` mantém os projetos emissores distintos;
+`issuerProject` permanece por compatibilidade com leitores antigos.
+
+Por revisão, `aliases`, `dependencies`, `offers` e `compatibility` são
+preservados como declarações recebidas. O Hub ainda não resolve aliases,
+dependências ou ofertas, não constrói um grafo semântico e não infere
+compatibilidade. Licenças e autorizações continuam vinculadas à declaração
+original; nenhuma é herdada de outra origem.
+
+Índices anteriores sem `sources` ou `issuerProjects` continuam legíveis.
+Se os novos campos existirem com estrutura inválida, o intake falha antes de
+gravar recibo ou atualizar o índice.
+
 ## Exemplos
 
 Arquivos sintéticos em [`docs/examples/intake/`](../examples/intake/):

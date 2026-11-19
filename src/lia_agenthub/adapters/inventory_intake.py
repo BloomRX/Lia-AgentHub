@@ -136,6 +136,31 @@ class InventoryStore:
                 f"O índice de identidade em {self.estado_path} está ilegível. "
                 "Não vou tratar inventário novo como se nada existisse — "
                 "isso apagaria o histórico. Verifique o arquivo.")
+        # Campos adicionados pela projeção multi-origem são opcionais para
+        # compatibilidade com índices anteriores, mas, quando presentes,
+        # precisam manter a forma esperada. Falhar antes de gravar recibos
+        # evita uma atualização parcial sobre estado adulterado/corrompido.
+        for reg_id, info in dados.items():
+            if not isinstance(info, dict):
+                raise IntakeError(f"Entrada inválida no índice de identidade: {reg_id}.")
+            revisoes = info.get("revisions", {})
+            if not isinstance(revisoes, dict):
+                raise IntakeError(f"Revisões inválidas no índice de identidade: {reg_id}.")
+            projetos = info.get("issuerProjects")
+            if projetos is not None and (
+                    not isinstance(projetos, list)
+                    or any(not isinstance(p, str) for p in projetos)):
+                raise IntakeError(f"Origens emissoras inválidas no índice: {reg_id}.")
+            for rev_id, revisao in revisoes.items():
+                if not isinstance(revisao, dict):
+                    raise IntakeError(
+                        f"Revisão inválida no índice: {reg_id}/{rev_id}.")
+                fontes = revisao.get("sources")
+                if fontes is not None and (
+                        not isinstance(fontes, list)
+                        or any(not isinstance(f, dict) for f in fontes)):
+                    raise IntakeError(
+                        f"Declarações de origem inválidas: {reg_id}/{rev_id}.")
         return dados
 
     def conhecidos(self) -> list[dom.Conhecido]:
