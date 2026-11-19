@@ -260,3 +260,29 @@ calculada pelo Studio foi
 Isso confirma a leitura pelo código existente. O caminho de bootstrap e a
 receita desktop do Studio, que empacota .agents/skills, ainda precisam
 consumir a revisão materializada em um checkout limpo.
+
+## Execução · ensaio de corte e build do Studio
+
+O comando scripts/bootstrap_studio_skill.ps1 prepara uma Skill fixada no
+caminho padrão do Studio. Ele exige paths locais e perfil lia-studio,
+recusa o manifesto de outra Skill e preserva qualquer destino existente.
+
+Em 4e103271633cdd12c03019fa2d6d517cbc35de59, exportei uma árvore limpa do
+Studio para pasta de ensaio, retirei a pasta de lia-game-design-review
+somente da cópia isolada, materializei a revisão do Hub no caminho padrão e
+rodei python -m unittest discover -s tests -p test_skills_progressive.py.
+Os três testes passaram. O leitor listou a Skill como builtin pela
+configuração padrão. Recoloquei a pasta original e os mesmos três testes
+passaram na reversão. Um segundo snapshot limpo confirmou o script de
+bootstrap, a recusa de manifesto incorreto e a proteção do destino existente.
+
+A exportação Git do Windows continha 23 CRLF. O pacote preservou LF, igual
+ao blob Git c8604014913cf28b3bb4751a92183e5a06bdb23b. Os arquivos ficaram
+idênticos após normalizar essas terminações. O build desktop real via
+desktop/build_windows.ps1 e PyInstaller terminou com LiaStudio.exe e com
+o SHA-256 82aed1a88f28f85f95c20f4725fe493d62ef2c1767802df9c5f81b6b5592f43a
+para a Skill incluída. Janela e runtime do Studio ficaram fora deste ensaio.
+
+O corte no repositório ainda depende de acordar com o mantenedor como o
+projeto obterá o pacote aprovado e persistirá o manifesto, revisar as
+restrições de licença e aplicar o mesmo procedimento ao inventário inteiro.
