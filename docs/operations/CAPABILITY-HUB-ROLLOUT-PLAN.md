@@ -776,3 +776,17 @@ o PATH restrito ao Windows. `git apply --check` aceitou a variante
 no checkout real, que permaneceu limpo. A opção de revogação no
 wrapper é encaminhada ao bootstrap do Hub. O ensaio desta variante
 exercitou o caminho de materialização com a CLI.
+
+Em outra exportação da mesma base, apliquei a variante com `git apply`
+e passei `-Revocations` com uma política de teste para `lia-task-handoff`
+revisão 1. A CLI recusou essa revisão e zero `SKILL.md` foram expostos
+no destino ativo. A preparação parcial ficou no diretório de diagnóstico
+da exportação. Nenhuma revogação foi gravada na oficina.
+
+`git apply --reverse` restaurou as 24 entradas de
+`.agents/skills`, incluindo o README. `git hash-object --path` conferiu
+os 24 blobs com `git ls-tree` da base. A comparação de bytes brutos
+com a exportação original divergiu por causa da conversão de fins
+de linha no Windows. O resultado verifica a restauração dos blobs
+Git da base. Evidência em
+`J:/Lia/migration/agent-hub/studio-cut-policy-11a3c5f5c5034315901c1b142c1a0ddd/evidence.json`.
