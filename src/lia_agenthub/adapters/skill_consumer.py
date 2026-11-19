@@ -12,11 +12,10 @@ from uuid import UUID
 
 from ..domain.integrity import sha256_bytes, tree_hash
 from ..domain.paths import validate_relative
-from .safe_extract import MAX_FILES, MAX_SINGLE, MAX_TOTAL_BYTES, stat_import_path
+from .safe_extract import MAX_FILES, MAX_SINGLE, MAX_TOTAL_BYTES, inspect_directory, stat_import_path
 
 
-def materialize(lock_path: Path, package_path: Path, destination: Path) -> dict:
-    """Verify selected package bytes before preparing a new directory."""
+def read_lock(lock_path: Path) -> dict:
     lock_stat = stat_import_path(lock_path)
     if not stat.S_ISREG(lock_stat.st_mode) or lock_stat.st_size > MAX_SINGLE:
         raise ValueError("Manifesto de consumo excede o limite de tamanho.")
@@ -33,8 +32,77 @@ def materialize(lock_path: Path, package_path: Path, destination: Path) -> dict:
     if not skill_id.startswith("urn:lia:cap:") or type(revision) is not int or revision < 1:
         raise ValueError("Identidade ou revisão da oficina inválida.")
     UUID(skill_id.removeprefix("urn:lia:cap:"))
-    if lock.get("dependencies") != []:
-        raise ValueError("O manifesto precisa declarar que esta Skill não tem dependências.")
+    dependencies = lock.get("dependencies")
+    if not isinstance(dependencies, list) or len(dependencies) > 100:
+        raise ValueError("Lista de dependências inválida.")
+    seen = {skill_id}
+    for requirement in dependencies:
+        if not isinstance(requirement, dict) or set(requirement) != {"skillId", "revision", "treeSha256"}:
+            raise ValueError("Dependência precisa declarar ID, revisão e árvore.")
+        identity = requirement["skillId"]
+        if (not isinstance(identity, str) or not identity.startswith("urn:lia:cap:")
+                or identity in seen or type(requirement["revision"]) is not int
+                or requirement["revision"] < 1
+                or not isinstance(requirement["treeSha256"], str)
+                or not re.fullmatch(r"[a-f0-9]{64}", requirement["treeSha256"])):
+            raise ValueError("Dependência fixa inválida ou duplicada.")
+        UUID(identity.removeprefix("urn:lia:cap:"))
+        seen.add(identity)
+    return lock
+
+
+def dependency_pin(lock: dict) -> dict:
+    return {name: lock[name] for name in ("skillId", "revision", "treeSha256")}
+
+
+def _verify_dependencies(lock: dict, sources: tuple[tuple[Path, Path], ...]) -> None:
+    if len(sources) > 100:
+        raise ValueError("O conjunto local excede 100 dependências.")
+    supplied = {}
+    for pin_path, directory in sources:
+        pin = read_lock(pin_path)
+        identity = pin["skillId"]
+        if identity == lock["skillId"] or identity in supplied or pin["profile"] != lock["profile"]:
+            raise ValueError("Dependência local duplicada ou de outro perfil.")
+        supplied[identity] = (pin, directory)
+    validated = set()
+    visiting = {lock["skillId"]}
+
+    def visit(requirement: dict) -> None:
+        identity = requirement["skillId"]
+        if identity in visiting:
+            raise ValueError(f"Ciclo de dependência: {identity}")
+        local = supplied.get(identity)
+        if local is None:
+            raise ValueError(f"Dependência local ausente: {identity}")
+        pin, directory = local
+        if requirement != dependency_pin(pin):
+            raise ValueError(f"Revisão de dependência divergente: {identity}")
+        if identity in validated:
+            return
+        visiting.add(identity)
+        for child in pin["dependencies"]:
+            visit(child)
+        files = inspect_directory(directory).files
+        if not any(entry.path == "SKILL.md" for entry in files) or tree_hash({
+            entry.path: sha256_bytes(entry.data) for entry in files
+        }) != pin["treeSha256"]:
+            raise ValueError(f"Árvore da dependência local diverge: {identity}")
+        visiting.remove(identity)
+        validated.add(identity)
+
+    for requirement in lock["dependencies"]:
+        visit(requirement)
+    if validated != supplied.keys():
+        raise ValueError("Dependência local fornecida sem referência no manifesto.")
+
+
+def materialize(lock_path: Path, package_path: Path, destination: Path, *,
+                dependencies: tuple[tuple[Path, Path], ...] = ()) -> dict:
+    """Verify the dependency closure and package before preparing a new directory."""
+    lock = read_lock(lock_path)
+    _verify_dependencies(lock, dependencies)
+    skill_id, revision = lock["skillId"], lock["revision"]
     package_stat = stat_import_path(package_path)
     if not stat.S_ISREG(package_stat.st_mode) or package_stat.st_size > MAX_TOTAL_BYTES:
         raise ValueError("Pacote inválido ou grande demais.")

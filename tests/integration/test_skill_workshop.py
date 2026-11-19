@@ -233,3 +233,41 @@ def test_fork_preserva_atribuicao_e_anexos_sem_conceder_redistribuicao(tmp_path,
         assert json.loads(bundle.read("provenance.json"))["source"]["workshopOrigin"] == lineage
         assert not json.loads(bundle.read("manifest.json"))["license"]["redistributable"]
         assert bundle.read("payload/guia.md") == b"Anexo"
+
+
+def test_materializacao_verifica_dependencias_transitivas_locais(tmp_path, capsys):
+    command = ["--home", str(tmp_path / "hub"), "skill"]
+
+    def run(*args, status=0):
+        assert main([*command, *map(str, args)]) == status
+        output = capsys.readouterr()
+        return json.loads(output.out) if status == 0 else output.err
+
+    def pack(name, dependency=None):
+        source = tmp_path / f"{name}.md"
+        source.write_text(f"---\nname: {name}\ndescription: Skill de teste\n---\n\nTexto.\n", encoding="utf-8")
+        skill_id = run("create", source)["id"]
+        run("publish", skill_id, 1)
+        arguments = ("--requires", dependency) if dependency else ()
+        package = run("pack", skill_id, 1, "--profile", "lia-studio", *arguments)
+        lock = tmp_path / f"{name}.json"
+        lock.write_text(json.dumps(package["lock"]), encoding="utf-8")
+        return lock, package["path"], tmp_path / name
+
+    leaf = pack("folha")
+    middle = pack("intermediaria", leaf[0])
+    top = pack("principal", middle[0])
+    run("materialize", *leaf)
+    run("materialize", *middle, "--dependency", leaf[0], leaf[2])
+    assert "ausente" in run("materialize", *top, "--dependency", middle[0], middle[2], status=1)
+    assert not top[2].exists()
+
+    dependency_args = ("--dependency", middle[0], middle[2], "--dependency", leaf[0], leaf[2])
+    guide = leaf[2] / "SKILL.md"
+    original = guide.read_bytes()
+    guide.write_bytes(original + b"Alterado")
+    assert "rvore da depend" in run("materialize", *top, *dependency_args, status=1)
+    assert not top[2].exists()
+    guide.write_bytes(original)
+    run("materialize", *top, *dependency_args)
+    assert (top[2] / "SKILL.md").is_file()

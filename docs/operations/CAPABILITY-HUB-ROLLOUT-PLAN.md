@@ -434,3 +434,25 @@ Skill Alethe e um LICENSE sob airi. A raiz do Project continua sem LICENSE.
 O achado separa os documentos que precisam de revisão. A evidência de
 licença do repositório vendorizado tem escopo a confirmar por componente,
 como mostra LR-LIC-003.
+
+## Execução · dependências fixadas e evidência Alethe
+
+No consumo de Skills, pack --profile PERFIL --requires LOCK vincula
+ID, revisão e hash da árvore de uma dependência. Pode ser repetido.
+Materialize --dependency LOCK DIRETORIO recebe explicitamente os
+manifestos e diretórios locais das dependências e verifica a cadeia
+transitiva, o perfil e os hashes antes de materializar o destino.
+Dependência ausente, alvo divergente, repetição e ciclo são recusados.
+O teste materializou uma cadeia de três Skills, recusou a ausência
+da folha e a alteração do arquivo dessa folha e passou após restaurá-lo.
+A CLI valida o conjunto local. Cada integração de host ainda precisa
+escolher onde prepara suas dependências e em que ordem as materializa.
+
+No Project, o recibo local rec-e5e8eaf29e6f9960 adicionou uma revisão de
+evidência à identidade existente da Alethe. O catálogo continuou com
+68 identidades. O registro distingue MIT declarado para software e
+documentação dos cinco ativos de marca com escopo ainda sem verificação.
+Referências e hashes dos documentos LICENSE e UPSTREAM.md foram
+preservados. O UPSTREAM declara upstream v19 e patches locais. A
+Alethe segue por referência enquanto o pacote completo exigir revisão
+dos componentes. Nenhuma cópia atribuída à Alethe foi admitida na oficina.

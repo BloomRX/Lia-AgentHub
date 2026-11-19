@@ -344,8 +344,20 @@ def cmd_skill(args) -> int:
             from tempfile import TemporaryDirectory
             from .adapters.safe_extract import Extraction, ExtractedFile
             from .domain.paths import looks_like_script
+            from .adapters.skill_consumer import dependency_pin, read_lock
 
+            if len(args.requires) > 100:
+                return _erro("O manifesto aceita no máximo 100 dependências.", 1)
+            if args.requires and not args.profile:
+                return _erro("--requires precisa de --profile para gerar o manifesto.", 1)
+            pins = [read_lock(Path(path)) for path in args.requires]
+            if any(pin["profile"] != args.profile for pin in pins):
+                return _erro("O manifesto de dependência precisa usar o mesmo perfil.", 1)
+            if len({pin["skillId"] for pin in pins}) != len(pins):
+                return _erro("Manifesto de dependência repetido.", 1)
             record = workshop.read_revision(**parameters)
+            if any(pin["skillId"] == f"urn:lia:cap:{record['id']}" for pin in pins):
+                return _erro("A Skill não pode depender dela mesma.", 1)
             destination = Path(args.dest).resolve() if args.dest else locations.exports
             with TemporaryDirectory(prefix="lia-skill-") as temporary:
                 hub = AgentHub(resolve_locations(Path(temporary)))
@@ -376,7 +388,7 @@ def cmd_skill(args) -> int:
                         "packageSha256": result["packageHash"],
                         "treeSha256": verified["computedTreeHash"],
                         "profile": args.profile,
-                        "dependencies": [],
+                        "dependencies": [dependency_pin(pin) for pin in pins],
                     }
             _json(result)
             return 0
@@ -395,7 +407,8 @@ def cmd_materialize_skill(args) -> int:
     from .domain.errors import SecurityError
 
     try:
-        result = materialize(Path(args.lock), Path(args.package), Path(args.dest))
+        sources = tuple((Path(pin), Path(directory)) for pin, directory in args.dependency)
+        result = materialize(Path(args.lock), Path(args.package), Path(args.dest), dependencies=sources)
     except (ValueError, KeyError, TypeError, SecurityError, zipfile.BadZipFile) as error:
         return _erro(str(error), 1)
     _json(result)
@@ -420,6 +433,8 @@ def _skill_parser(sub) -> None:
         if action == "pack":
             command.add_argument("--dest", help="diretório de destino do backup privado")
             command.add_argument("--profile", help="perfil do host para gerar manifesto de consumo")
+            command.add_argument("--requires", action="append", default=[],
+                                 help="fixa uma dependência pelo manifesto de consumo local")
         command.set_defaults(func=cmd_skill)
 
     fork = actions.add_parser("fork", help="deriva um rascunho de uma revisão publicada")
@@ -435,6 +450,8 @@ def _skill_parser(sub) -> None:
     materialize.add_argument("lock", help="manifesto de consumo JSON")
     materialize.add_argument("package", help="pacote .lia-capability local")
     materialize.add_argument("dest", help="novo diretório de destino")
+    materialize.add_argument("--dependency", action="append", nargs=2, default=[],
+                             metavar=("LOCK", "DIRETORIO"), help="dependência local já materializada")
     materialize.set_defaults(func=cmd_materialize_skill)
 
 
