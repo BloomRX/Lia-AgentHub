@@ -161,6 +161,13 @@ class InventoryStore:
                         or any(not isinstance(f, dict) for f in fontes)):
                     raise IntakeError(
                         f"Declarações de origem inválidas: {reg_id}/{rev_id}.")
+                for fonte in fontes or []:
+                    if (not isinstance(fonte.get("issuer"), dict)
+                            or not isinstance(fonte.get("receiptIds"), list)
+                            or any(not isinstance(r, str) for r in fonte["receiptIds"])
+                            or not isinstance(fonte.get("origins"), list)):
+                        raise IntakeError(
+                            f"Declaração de origem incompleta: {reg_id}/{rev_id}.")
         return dados
 
     def conhecidos(self) -> list[dom.Conhecido]:

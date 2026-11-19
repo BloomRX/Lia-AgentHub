@@ -374,11 +374,31 @@ class AgentHub:
             if not isinstance(info, dict):
                 continue
             revisoes = info.get("revisions") or {}
+            source_claims = []
+            declared_relations = {}
+            for revision_id, revision in sorted(revisoes.items()):
+                if not isinstance(revision, dict):
+                    continue
+                for source in revision.get("sources", []) or []:
+                    source_claims.append({
+                        **source,
+                        "recordRevisionId": revision_id,
+                    })
+                declared_relations[revision_id] = {
+                    "aliases": revision.get("aliases", []),
+                    "dependencies": revision.get("dependencies", []),
+                    "offers": revision.get("offers", []),
+                    "compatibility": revision.get("compatibility", []),
+                }
             registros.append({
                 "id": reg_id,
                 "name": info.get("name", ""),
                 "kind": info.get("kind"),
                 "issuerProject": info.get("issuerProject"),
+                "issuerProjects": info.get("issuerProjects", []),
+                "sourceCount": len(source_claims),
+                "sources": source_claims,
+                "declaredRelations": declared_relations,
                 "lastRevision": info.get("lastRevision", ""),
                 "revisions": sorted(revisoes),
                 "state": "inventoried",

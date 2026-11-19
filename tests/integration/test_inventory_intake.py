@@ -502,3 +502,31 @@ def test_estado_preserva_aliases_dependencias_e_ofertas_como_declaracoes(
     assert revisao["dependencies"] == registro["dependencies"]
     assert revisao["offers"] == registro["offers"]
     assert revisao["sources"][0]["origins"] == registro["origins"]
+
+
+def test_api_do_estado_expoe_origens_e_relacoes_sem_promover(
+        doc, tmp_path, locations):
+    from lia_agenthub.app import AgentHub
+
+    doc["records"][0]["aliases"] = [
+        {"scheme": "upstream", "value": "forge:workflow/revisao",
+         "authority": "lia-forge"}
+    ]
+    doc["records"][0]["dependencies"] = [
+        {"targetId": "urn:lia:cap:11111111-2222-3333-4444-555555555555",
+         "optional": True}
+    ]
+    hub = AgentHub(locations)
+    caminho = _salvar(tmp_path, doc)
+    hub.inventory_receive(str(caminho))
+
+    resposta = hub.inventory_state()
+    assert resposta["ok"] is True
+    registro = resposta["records"][0]
+    assert registro["sourceCount"] == 1
+    assert registro["issuerProjects"] == ["lia-forge"]
+    assert registro["sources"][0]["issuer"]["project"] == "lia-forge"
+    assert registro["declaredRelations"]["rev-001"]["aliases"] == doc["records"][0]["aliases"]
+    assert registro["declaredRelations"]["rev-001"]["dependencies"] == doc["records"][0]["dependencies"]
+    assert registro["state"] == "inventoried"
+    assert resposta["maxState"] == "inventoried"
