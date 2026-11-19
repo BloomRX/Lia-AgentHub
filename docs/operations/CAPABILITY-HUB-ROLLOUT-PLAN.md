@@ -456,3 +456,25 @@ Referências e hashes dos documentos LICENSE e UPSTREAM.md foram
 preservados. O UPSTREAM declara upstream v19 e patches locais. A
 Alethe segue por referência enquanto o pacote completo exigir revisão
 dos componentes. Nenhuma cópia atribuída à Alethe foi admitida na oficina.
+
+## Execução · Lia Studio como consumidor do build
+
+Na branch de desenvolvimento do Studio, e570426fecbe42428bd84b6cde844cb089f00bac
+adicionou -SkillsDirectory ao build desktop. O operador agora pode selecionar
+uma biblioteca previamente materializada pelo Hub. O caminho empacotado
+continua .agents/skills. O checkout convencional continua utilizável sem
+o parâmetro.
+
+Ensaiada a receita publicada com PyInstaller a partir de uma árvore isolada
+do Studio em b099c4a, com a pasta versionada .agents/skills retirada dessa
+cópia, e a biblioteca externa das 16 Skills fornecida por -SkillsDirectory.
+O LiaStudio.exe foi gerado. A entrada externa e .agents/skills no pacote
+conferiram byte a byte, incluindo os anexos. O build não recriou a pasta
+de Skills na origem do Studio. A janela do executável ficou fora do ensaio.
+
+Verify_alpha.py --part 10 passou nas verificações de Skills, shell
+desktop simulada e UI. A parte como um todo falhou no backup HTTP por
+CRLF/LF. Test_integrated_flow.py reproduziu a mesma falha em uma exportação
+limpa de b099c4a sem a alteração de build. O corte das fontes versionadas
+continua pendente. O perfil de consumo do build já está disponível na
+branch de desenvolvimento.
