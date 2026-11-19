@@ -153,7 +153,8 @@ intake não arrisca dizer que é downgrade.
 
 Conflito de identidade **não sobrescreve**. O relato que já estava comprovado
 continua com o digest original, e o novo vai para quarentena. Sobrescrever
-perderia um dos dois relatos, e o Hub não decide qual é verdadeiro.
+perderia um dos dois relatos, e o Hub não decide qual é verdadeiro. Colisões
+de alias também ficam retidas, sem declarar que as identidades são iguais.
 
 ## Conflito de feed
 
