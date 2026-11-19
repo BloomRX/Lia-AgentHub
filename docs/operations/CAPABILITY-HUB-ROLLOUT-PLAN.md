@@ -592,3 +592,26 @@ O host precisa receber uma lista atual de uma fonte confiável.
 A verificação offline não consulta rede e não invalida automaticamente
 cópias que o host já materializou. O operador decide quando trocar
 a referência ativa.
+
+### Build Windows com revogação
+
+Em `458d5f8`, `powershell -NoProfile -ExecutionPolicy Bypass -File
+scripts/build_windows.ps1` executou a suíte completa e gerou os dois
+binários. O log local está em
+`J:/Lia/migration/agent-hub/windows-build-458d5f8.log`.
+
+| Artefato | SHA-256 |
+| --- | --- |
+| LiaAgentHub.exe | `1c1d9b1b548cbf1423da36e42d13ece3593738c4ac6d06fe52f06dd8ae376545` |
+| LiaAgentHubCli.exe | `65ad25a297b54d4784b7cdea5316cc6e082b434c443fde74225cc66c6cf40325` |
+
+No diretório isolado
+`J:/Lia/migration/agent-hub/smoke-458d5f8-56b8d84e5f7944fe98199cdca755f105`,
+com o PATH restrito ao Windows, `LiaAgentHub.exe --version` saiu com
+código 0. `LiaAgentHubCli.exe skill materialize` materializou a revisão
+1 de `lia-task-handoff` e retornou o hash de árvore do manifesto. A mesma
+operação com `--revocations revocations.json` retornou código 1 e recusou
+a revisão antes de criar o destino. A cópia de controle permaneceu intacta.
+A lista foi criada só para o teste. Ambos os binários retornaram
+`NotSigned` em `Get-AuthenticodeSignature`. A janela nativa e uma
+instalação Windows sem Python permanecem fora deste ensaio.
