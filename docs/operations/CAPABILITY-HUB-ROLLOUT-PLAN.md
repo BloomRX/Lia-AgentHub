@@ -699,3 +699,26 @@ confirmaram os pontos de integração abaixo.
 confirmar a base de cópia e testar a descoberta no host de desenvolvimento.
 As instruções sobre IPC se aplicam quando Eventa já está presente.
 Esta análise não executou conteúdo de Skills nem alterou Lia-Project.
+
+### Descoberta de repositórios adicionais
+
+`gh repo list BloomRX --limit 100 --json name,isArchived` não retornou
+um repositório acessível do Model Lab. O repositório `localqwen`
+se apresenta como projeto pessoal. Sua descrição não estabelece
+continuidade com o Model Lab.
+
+Também conferi as branches acessíveis de dois repositórios adicionais
+com nome Lia. `gh api repos/BloomRX/REPO/branches` fixou os commits e
+`gh api repos/BloomRX/REPO/git/trees/SHA?recursive=1` retornou as árvores
+completas. Nenhuma das quatro árvores continha `SKILL.md` versionado.
+
+| Repositório | Branch | Commit |
+| --- | --- | --- |
+| LiaVoiceStudio | main | `354fd61677937415282f90cb5c0915130240511f` |
+| LiaVoiceStudio | arena/e6163ffc-liavoicestudio | `01c97330f05aa063f0e4237995327b3d0a8025bc` |
+| AgentToLia | main | `73d06e3231aecb939603e8d3aae73dd4601e9c4c` |
+| AgentToLia | arena/362d85b1-agenttolia | `186d73c799aaf1c3b83fd703758255a931cf2e13` |
+
+O resultado se limita às branches acessíveis e às Skills versionadas.
+O inventário histórico do Research continua sendo a evidência para
+Model Lab até que o checkout atual possa ser identificado e lido.
