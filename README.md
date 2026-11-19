@@ -2,12 +2,13 @@
 
 **Plataforma independente para criar, descobrir, validar, organizar, versionar, empacotar e distribuir capacidades para agentes de IA.**
 
-> **Estado atual: funcionalmente concluído, aguardando validação em Windows.**
-> M1–M8 do MVP implementados e cobertos por teste. **823 testes** automatizados
-> passando. O intake de inventários de capacidades v1 (P0 do registro central)
-> está implementado e testado. O que falta não é código: é medição de rede em
-> Windows, build do `.exe` em ambiente com PyInstaller, e a decisão de licença
-> (`D-16`).
+> **Estado atual: MVP funcional; expansão do registro central em andamento.**
+> M1–M8 do MVP e o intake v1 estão implementados. A última linha de base
+> executada antes da expansão registrou **823 testes aprovados e 2 ignorados**.
+> Esta branch acrescentou 10 testes de regressão para proveniência multi-origem,
+> aliases e relações declaradas; eles ainda aguardam execução em CI/ambiente local.
+> Permanecem pendentes a medição de rede em Windows, o build do `.exe` em
+> ambiente com PyInstaller e a decisão de licença (`D-16`).
 >
 > Ver [docs/MVP-GUIA.md](docs/MVP-GUIA.md) para instalar e usar,
 > [docs/DESENVOLVIMENTO.md](docs/DESENVOLVIMENTO.md) para desenvolver, e
