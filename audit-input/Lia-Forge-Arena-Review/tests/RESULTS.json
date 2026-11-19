@@ -1,0 +1,1048 @@
+[
+  {
+    "test": "node-version",
+    "command": [
+      "node",
+      "--version"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "python-version",
+    "command": [
+      "python",
+      "--version"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/adapters/blender-spritesheet.mjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/adapters/blender-spritesheet.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/adapters/comfyui-concept.mjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/adapters/comfyui-concept.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/adapters/comfyui-remote.mjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/adapters/comfyui-remote.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/adapters/index.mjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/adapters/index.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/blender-adapter.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/blender-adapter.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/blender-workflow-plan.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/blender-workflow-plan.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/external-tools.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/external-tools.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/ipc-guard.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/ipc-guard.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/main.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/main.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/manual-artifacts.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/manual-artifacts.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/navigation-guard.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/navigation-guard.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/paths.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/paths.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/png-validation.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/png-validation.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/preload.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/preload.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/resume-workflow.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/resume-workflow.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/spritesheet-manifest.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/spritesheet-manifest.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/task-manager.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/task-manager.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/workflow-contracts.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/workflow-contracts.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/workflow-run-store.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/workflow-run-store.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/electron/workflow-runner.cjs",
+    "command": [
+      "node",
+      "--check",
+      "electron/workflow-runner.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/local-renderer-test/scripts/check-source-license.cjs",
+    "command": [
+      "node",
+      "--check",
+      "local-renderer-test/scripts/check-source-license.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/local-renderer-test/scripts/run-render.cjs",
+    "command": [
+      "node",
+      "--check",
+      "local-renderer-test/scripts/run-render.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/local-renderer-test/scripts/runner-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "local-renderer-test/scripts/runner-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/local-renderer-test/scripts/verify-output.cjs",
+    "command": [
+      "node",
+      "--check",
+      "local-renderer-test/scripts/verify-output.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/scripts/comfyui-client.mjs",
+    "command": [
+      "node",
+      "--check",
+      "scripts/comfyui-client.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/scripts/spriteforge-mcp.mjs",
+    "command": [
+      "node",
+      "--check",
+      "scripts/spriteforge-mcp.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/scripts/validation/build-project.mjs",
+    "command": [
+      "node",
+      "--check",
+      "scripts/validation/build-project.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/scripts/validation/check-features.mjs",
+    "command": [
+      "node",
+      "--check",
+      "scripts/validation/check-features.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/adapters/sdk.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/adapters/sdk.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/adapters/software.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/adapters/software.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/assets/comparison.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/assets/comparison.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/assets/inspect.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/assets/inspect.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/assets/manager.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/assets/manager.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/assets/reconciliation.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/assets/reconciliation.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/capabilities/registry.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/capabilities/registry.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/destinations/profiles.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/destinations/profiles.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/domain/contracts.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/domain/contracts.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/engine/dag.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/engine/dag.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/engine/execution-manager.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/engine/execution-manager.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/engine/gates.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/engine/gates.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/engine/run-authorization.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/engine/run-authorization.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/engine/run-states.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/engine/run-states.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/fs/path-containment.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/fs/path-containment.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/http/api-policy.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/http/api-policy.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/hub/provider-hub.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/hub/provider-hub.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/imaging/core.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/imaging/core.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/imaging/png-io.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/imaging/png-io.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/integrations/host-defaults.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/integrations/host-defaults.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/integrations/project-structure.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/integrations/project-structure.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/integrations/provider-store.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/integrations/provider-store.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/model3d/glb.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/model3d/glb.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/orchestrator/planner.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/orchestrator/planner.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/qa/png-codec.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/qa/png-codec.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/qa/png.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/qa/png.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/qa/preflight.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/qa/preflight.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/qa/spritesheet.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/qa/spritesheet.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/qa/validators.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/qa/validators.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/rig2d/core.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/rig2d/core.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/services/studio-service.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/services/studio-service.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/ui/journey.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/ui/journey.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/shared/vfx/core.mjs",
+    "command": [
+      "node",
+      "--check",
+      "shared/vfx/core.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/src/asset-progress.js",
+    "command": [
+      "node",
+      "--check",
+      "src/asset-progress.js"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/src/lia-forge-api.js",
+    "command": [
+      "node",
+      "--check",
+      "src/lia-forge-api.js"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/adapter-sdk-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/adapter-sdk-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/asset-catalog-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/asset-catalog-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/asset-comparison-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/asset-comparison-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/asset-manager-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/asset-manager-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/asset-progress-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/asset-progress-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/asset-reconciliation-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/asset-reconciliation-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/blender-adapter-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/blender-adapter-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/blender-workflow-plan-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/blender-workflow-plan-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/capability-registry-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/capability-registry-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/comfyui-client-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/comfyui-client-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/domain-contracts-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/domain-contracts-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/external-tools-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/external-tools-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/glb-fixtures.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/glb-fixtures.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/glb-inspect-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/glb-inspect-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/host-integration-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/host-integration-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/http-api-policy-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/http-api-policy-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/http-bind-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/http-bind-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/imaging-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/imaging-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/ipc-coherence-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/ipc-coherence-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/ipc-guard-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/ipc-guard-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/journey-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/journey-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/lia-paths-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/lia-paths-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/manual-artifacts-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/manual-artifacts-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/mcp-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/mcp-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/navigation-guard-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/navigation-guard-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/orchestrator-engine-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/orchestrator-engine-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/path-containment-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/path-containment-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/png-fixtures.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/png-fixtures.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/preflight-destinations-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/preflight-destinations-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/production-pipeline-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/production-pipeline-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/project-structure-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/project-structure-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/qa-content-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/qa-content-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/rig2d-vfx-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/rig2d-vfx-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/rights-provenance-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/rights-provenance-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/run-authorization-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/run-authorization-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/run-lifecycle-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/run-lifecycle-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/studio-service-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/studio-service-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/studio-ui-render-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/studio-ui-render-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/task-manager-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/task-manager-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/tool-stubs.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/tool-stubs.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/vite-store-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/vite-store-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/workflow-coverage-smoke.mjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/workflow-coverage-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/workflow-run-store-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/workflow-run-store-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/tests/workflow-runner-smoke.cjs",
+    "command": [
+      "node",
+      "--check",
+      "tests/workflow-runner-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "syntax/vite.config.js",
+    "command": [
+      "node",
+      "--check",
+      "vite.config.js"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "imaging",
+    "command": [
+      "node",
+      "tests/imaging-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "qa-content",
+    "command": [
+      "node",
+      "tests/qa-content-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "glb-inspect",
+    "command": [
+      "node",
+      "tests/glb-inspect-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "navigation-guard",
+    "command": [
+      "node",
+      "tests/navigation-guard-smoke.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "lia-paths",
+    "command": [
+      "node",
+      "tests/lia-paths-smoke.cjs"
+    ],
+    "exit_code": 1
+  },
+  {
+    "test": "metadata",
+    "command": [
+      "python",
+      "-c",
+      "import json,pathlib; p=pathlib.Path(\".\"); fs=list(p.rglob(\"*.json\")); [json.loads(f.read_bytes()) for f in fs]; a=json.loads((p/\"package.json\").read_bytes()); l=json.loads((p/\"package-lock.json\").read_bytes())[\"packages\"][\"\"]; assert all(a[k]==l[k] for k in (\"dependencies\",\"devDependencies\")); assert (p/a[\"main\"]).is_file(); print(len(fs),\"JSON; lockfile, dependencias e entrada Electron coerentes\")"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "python-syntax",
+    "command": [
+      "python",
+      "-c",
+      "import pathlib; fs=list(pathlib.Path(\".\").rglob(\"*.py\")); [compile(f.read_bytes(),str(f),\"exec\") for f in fs]; print(len(fs),\"fontes Python compilados sem execucao\")"
+    ],
+    "exit_code": 0
+  }
+]
