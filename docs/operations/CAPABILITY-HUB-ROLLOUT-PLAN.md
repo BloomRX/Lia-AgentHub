@@ -345,3 +345,26 @@ data/inventory/lia-all-files.tsv.gz, registra 9 SKILL.md por branch de
 Model Lab em 6 branches históricas, incluindo main e arena/skills-model-lab.
 Essa contagem é histórica. Não substitui um checkout auditável, e a
 API do repositório continua indisponível nesta sessão.
+
+## Execução · Lia-Project no registro central
+
+O inventário de referência foi gerado da árvore Git
+9778ffb83611eecfd2fecdd8ba8b046b344b2ad3 (arena/7fa837f0-lia-project).
+São 22 caminhos sob .agents e 29 sob airi. Cada registro recebeu um ID
+alocado, a revisão, o caminho/alias de origem, o blob Git e os candidatos
+a anexos. O gerador conserva os IDs de caminhos conhecidos quando recebe
+o inventário anterior. Mudança de caminho precisa de revisão de alias.
+
+A simulação retornou zero achados e não gravou recibo. O recebimento
+efetivo pelo CLI do Hub gravou o recibo rec-3ad852118a31329d e o estado
+ficou com 51 identidades inventoried. A repetição gravou um recibo de
+auditoria adicional sem nova identidade. Regenerar o manifesto com o
+mesmo snapshot e o inventário anterior produziu SHA-256 idêntico.
+A biblioteca e a quarentena de conteúdo ficaram vazias.
+
+Arquivo local: J:/Lia/migration/agent-hub/project-9778ffb.
+O gerador está em docs/operations/evidence/project-reference-inventory.py.
+O recebimento é de metadados. Licenças e autorização por componente
+continuam pendentes. O commit examinado não possui LICENSE na raiz.
+Os caminhos sob airi preservam a classificação de upstream. As 51
+cópias de origem ainda permanecem no Lia-Project.
