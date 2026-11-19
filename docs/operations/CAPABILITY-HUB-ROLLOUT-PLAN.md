@@ -286,3 +286,36 @@ para a Skill incluída. Janela e runtime do Studio ficaram fora deste ensaio.
 O corte no repositório ainda depende de acordar com o mantenedor como o
 projeto obterá o pacote aprovado e persistirá o manifesto, revisar as
 restrições de licença e aplicar o mesmo procedimento ao inventário inteiro.
+
+## Execução · ensaio do inventário completo do Studio
+
+O commit de base 4e103271633cdd12c03019fa2d6d517cbc35de59 contém 16 Skills
+versionadas e 7 anexos sob a Skill de bootstrap. Uma exportação Git com
+core.autocrlf=false forneceu os arquivos. Cada arquivo conferiu com seu
+blob Git antes de entrar na oficina. Os 16 pacotes privados carregam
+procedência com commit, caminho, mantenedor do projeto e hash da
+evidência de licença. A árvore verificada de cada pacote e da cópia
+materializada bateu com a árvore original.
+
+O lote persistente local, separado dos repositórios, está em
+J:/Lia/migration/agent-hub/studio-4e10327. Reúne os 16 pacotes, os manifestos
+individuais e de conjunto, a base SQLite da oficina, LICENSE e
+THIRD_PARTY_NOTICES.md copiados da revisão estudada. A base e os pacotes
+servem ao ensaio privado.
+
+Retirei as 16 pastas versionadas de duas exportações isoladas do Studio.
+A primeira usou os manifestos individuais; a segunda usou
+scripts/bootstrap_studio_library.ps1 e o lote persistente. Em cada uma,
+os 3 testes de test_skills_progressive.py e TestSkillReuse passaram. O
+leitor e o bootstrap leram 16 Skills e os 5 templates, glossário e
+instruções de teste. Na primeira, o build desktop real incluiu a árvore
+de Skills byte a byte, incluindo os anexos. O checkout principal de
+trabalho do Studio permaneceu limpo.
+
+Para repetir no diretório de ensaio, com as pastas das Skills ausentes:
+scripts/bootstrap_studio_library.ps1 -StudioRoot CAMINHO -ManifestPath
+CAMINHO/studio-skills.json -PythonExe PYTHON_COM_HUB. O script prepara a
+biblioteca a partir dos arquivos ao lado do manifesto. Se falhar depois
+de iniciar a materialização, pode restar um subconjunto já verificado.
+O carregamento da aplicação completa, a entrega autorizada do lote ao
+mantenedor e a retirada das cópias do repositório continuam pendentes.
