@@ -530,3 +530,27 @@ def test_api_do_estado_expoe_origens_e_relacoes_sem_promover(
     assert registro["declaredRelations"]["rev-001"]["dependencies"] == doc["records"][0]["dependencies"]
     assert registro["state"] == "inventoried"
     assert resposta["maxState"] == "inventoried"
+
+
+def test_alias_compartilhado_vai_para_quarentena_real(
+        intake, doc, tmp_path, locations):
+    alias = {"scheme": "upstream", "value": "skill:abc",
+             "authority": "lia-forge"}
+    doc["records"][0]["aliases"] = [alias]
+    intake.receber(_salvar(tmp_path, doc, "primeiro.json"))
+
+    segundo = copy.deepcopy(doc)
+    segundo["inventoryId"] = "outro-feed"
+    segundo["revision"] = "snapshot-002"
+    segundo["records"][0]["id"] = "urn:lia:cap:11111111-2222-3333-4444-555555555555"
+    segundo["records"][0]["revisionId"] = "rev-002"
+    segundo["records"][0]["name"] = "Outra capacidade"
+    plano = intake.receber(_salvar(tmp_path, segundo, "segundo.json"))
+
+    assert plano.estado_proposto == ESTADO_QUARENTENA
+    assert plano.classificados[0].classe.value == "alias-candidate"
+    assert plano.classificados[0].admitido is False
+    assert plano.destino_quarentena
+    estado = json.loads((Path(locations.common) / "Inventarios" / "estado.json")
+                        .read_text(encoding="utf-8"))
+    assert segundo["records"][0]["id"] not in estado

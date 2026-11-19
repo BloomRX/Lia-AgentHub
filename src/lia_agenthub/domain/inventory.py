@@ -195,6 +195,9 @@ class Classe(str, Enum):
     DOWNGRADE = "downgrade"
     #: Mesmo conteúdo (hash) em id diferente: candidato a conteúdo idêntico.
     MESMO_CONTEUDO = "same-content"
+    #: Mesmo alias (scheme/value/authority) em identidades diferentes:
+    #: candidato de identidade; não funde e exige revisão humana.
+    ALIAS_CANDIDATO = "alias-candidate"
     #: Mesmo nome, conteúdo diferente: sobreposição — registros separados.
     SOBREPOSICAO = "overlap"
     #: Tipo sem `kind` no contrato: fica na fila, não é normalizado.
@@ -483,6 +486,34 @@ def _validar_registro(bruto: Any, onde: str, ev_ids: set[str],
     if len(origens or []) > MAX_REFERENCIAS_POR_REGISTRO:
         out.append(_erro("RECORD_TOO_MANY_ORIGINS",
                          f"{len(origens)} origens; limite {MAX_REFERENCIAS_POR_REGISTRO}.", onde))
+
+    aliases = bruto.get("aliases", [])
+    if aliases is not None and not isinstance(aliases, list):
+        out.append(_erro("ALIASES_NOT_LIST",
+                         "`aliases` deve ser uma lista ou null.", f"{onde}.aliases"))
+    elif isinstance(aliases, list):
+        vistos_aliases = set()
+        for i, alias in enumerate(aliases):
+            local = f"{onde}.aliases[{i}]"
+            if not isinstance(alias, dict):
+                out.append(_erro("ALIAS_NOT_OBJECT",
+                                 "cada alias deve ser um objeto.", local))
+                continue
+            campos = ("scheme", "value", "authority")
+            faltantes = [campo for campo in campos
+                         if not _texto_nao_vazio(alias.get(campo))]
+            if faltantes:
+                out.append(_erro(
+                    "ALIAS_MISSING_FIELD",
+                    "alias exige scheme, value e authority não vazios: "
+                    + ", ".join(faltantes) + ".", local))
+                continue
+            chave = (alias["scheme"].strip(), alias["value"].strip(),
+                     alias["authority"].strip())
+            if chave in vistos_aliases:
+                out.append(_erro("ALIAS_DUPLICATE",
+                                 "alias repetido no mesmo registro.", local))
+            vistos_aliases.add(chave)
 
     lic = bruto.get("license")
     if lic is not None:
@@ -775,6 +806,18 @@ class Conhecido:
     #: `version` declarada pelo emissor, quando houver. Só serve para comparar
     #: downgrade quando os dois lados usam o mesmo esquema reconhecível.
     version: str | None = None
+    #: Aliases declarados pela revisão, sem assumir que identificam a mesma autoria.
+    aliases: list[dict] = field(default_factory=list)
+
+
+def _chave_alias(alias: Any) -> tuple[str, str, str] | None:
+    """Chave literal e escopada; não normaliza autoridade nem identidade upstream."""
+    if not isinstance(alias, dict):
+        return None
+    valores = (alias.get("scheme"), alias.get("value"), alias.get("authority"))
+    if not all(_texto_nao_vazio(v) for v in valores):
+        return None
+    return tuple(v.strip() for v in valores)
 
 
 @dataclass
@@ -816,6 +859,7 @@ def classificar(registros: list[Registro],
       mesmo id + mesma revisão + digest dif.   -> CONFLITO: bloqueia, preserva
       mesmo id + revisão diferente             -> atualização (anterior fica)
       mesmo digest + id diferente              -> mesmo conteúdo, aliases
+      mesmo alias/autoridade em ids diferentes -> candidato, quarentena
       mesmo nome + digest diferente            -> sobreposição, registros separados
 
     Um registro nunca é admitido como atualização se houver conflito: perder
@@ -824,11 +868,24 @@ def classificar(registros: list[Registro],
     por_id: dict[str, list[Conhecido]] = {}
     por_digest: dict[str, list[Conhecido]] = {}
     por_nome: dict[str, list[Conhecido]] = {}
+    por_alias: dict[tuple[str, str, str], set[str]] = {}
     for c in existentes:
         por_id.setdefault(c.id, []).append(c)
         por_digest.setdefault(c.digest, []).append(c)
         if c.name:
             por_nome.setdefault(c.name.casefold(), []).append(c)
+        for alias in c.aliases:
+            chave = _chave_alias(alias)
+            if chave:
+                por_alias.setdefault(chave, set()).add(c.id)
+
+    # Inclui o próprio lote na detecção: duas identidades novas que declaram
+    # o mesmo alias sob a mesma autoridade também exigem revisão.
+    for reg in registros:
+        for alias in reg.bruto.get("aliases") or []:
+            chave = _chave_alias(alias)
+            if chave:
+                por_alias.setdefault(chave, set()).add(reg.id)
 
     # Um conflito em qualquer registro do lote impede o lote inteiro? Não: o
     # contrato fala em bloquear a "revisão disputada", não o documento. Cada
@@ -892,6 +949,22 @@ def classificar(registros: list[Registro],
                         "Aliases, autoria e base de licença são preservados "
                         "separadamente; hash não identifica autoria."),
                 admitido=True))
+            continue
+
+        aliases_compartilhados = set()
+        for alias in reg.bruto.get("aliases") or []:
+            chave = _chave_alias(alias)
+            if chave:
+                aliases_compartilhados.update(por_alias.get(chave, set()))
+        aliases_compartilhados.discard(reg.id)
+        if aliases_compartilhados:
+            saida.append(Classificado(
+                reg, Classe.ALIAS_CANDIDATO,
+                relacionados=sorted(aliases_compartilhados),
+                motivo=("alias idêntico sob a mesma autoridade já aparece em "
+                        "outra identidade. Os registros não serão fundidos; "
+                        "a alegação fica em quarentena para revisão humana."),
+                admitido=False))
             continue
 
         sobreposto = por_nome.get(reg.name.casefold(), [])

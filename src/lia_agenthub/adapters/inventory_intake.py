@@ -184,6 +184,7 @@ class InventoryStore:
                     name=dados_rev.get("name", ""),
                     kind=dados_rev.get("kind"),
                     version=dados_rev.get("version"),
+                    aliases=dados_rev.get("aliases") or [],
                 ))
         return out
 
@@ -337,7 +338,11 @@ class InventoryIntake:
 
         admitidos = [c for c in plano.classificados if c.admitido]
         bloquearam = [c for c in plano.classificados
-                      if c.classe in (dom.Classe.CONFLITO_IDENTIDADE, dom.Classe.DOWNGRADE)]
+                      if c.classe in (
+                          dom.Classe.CONFLITO_IDENTIDADE,
+                          dom.Classe.ALIAS_CANDIDATO,
+                          dom.Classe.DOWNGRADE,
+                      )]
         plano.estado_proposto = ESTADO_QUARENTENA if bloquearam else ESTADO_RECEBIDO
 
         # Feed: mesmo `inventoryId` com `revision` repetida e digest diferente

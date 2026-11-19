@@ -39,8 +39,8 @@ compatibilidade deve fixar esses campos na revisão validada.
 
 | Lacuna | Evidência atual | Critério de fechamento |
 | --- | --- | --- |
-| Identidade central e inventário por origem | `Capability.id` é ID local derivado do conteúdo; o índice de inventário agora preserva alegações `sources[]` por feed/revisão e `issuerProjects`, inclusive quando duas origens declaram o mesmo ID, revisão e digest | Ainda falta reconciliação de aliases entre identidades, autoridade de origem canônica e histórico de decisões de identidade, sem alterar IDs v1 |
-| Tipos e relações | O intake preserva por revisão `aliases`, `dependencies`, `offers` e `compatibility` como declarações, sem execução ou promoção | Ainda falta validar semanticamente os alvos e esquemas, normalizar relações tipadas e produzir consultas de grafo; tools continuam subordinadas ao servidor MCP |
+| Identidade central e inventário por origem | O índice preserva `sources[]` por feed/revisão. Alias exato (`scheme`, `value`, `authority`) compartilhado entre IDs diferentes é detectado e retido como candidato, sem fusão automática | Ainda falta fluxo humano para decidir candidatos, reconciliação persistente de aliases e autoridade de origem canônica, sem alterar IDs v1 |
+| Tipos e relações | O intake preserva por revisão `aliases`, `dependencies`, `offers` e `compatibility`; aliases têm validação estrutural e colisões escopadas são colocadas em quarentena | Ainda falta validar semanticamente dependências/ofertas, normalizar relações tipadas e produzir consultas de grafo; tools continuam subordinadas ao servidor MCP |
 | Procedência de múltiplas origens | `Source` preserva upstream, commit e extensões. Stitch usa proveniência lateral | Preservar origem, escopo e autoria por declaração e revisão. Comparar ou marcar desconhecido quando faltar prova |
 | Licença por componente | Licenças declaradas e base de redistribuição são separadas. `License` v1 contempla código, conteúdo e pesos | Registrar documento, titular, escopo, canal, revisão e obrigações por componente, com decisão humana e revogação |
 | Compatibilidade e dependências | `requirements` pode estar ausente. O índice v1 entrega capacidades ativas e metadados de seleção | Detectar incompatibilidades, restrições de versão e dependências não resolvidas; separar o que foi declarado do que foi verificado |
@@ -50,8 +50,7 @@ compatibilidade deve fixar esses campos na revisão validada.
 
 Os gaps de pesquisa carregam a revisão em que foram constatados. Por exemplo,
 a ausência de catálogo de servidores em LR-MCP-002 já não descreve a branch
-do Hub: ela contém descritores e oficina MCP. Continuam abertos o inventário
-multi-origem, o status por host e a identidade central proposta. A evidência
+do Hub: ela contém descritores e oficina MCP. Continuam abertos a reconciliação humana de aliases, o status por host e a identidade central completa. A evidência
 de licença AIRI/Alethe e o catálogo de modelos são referências de pesquisa,
 com seus próprios limites e sem revalidação nesta rodada.
 

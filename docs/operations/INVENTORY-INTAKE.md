@@ -143,6 +143,7 @@ de gravidade:
 | mesmo id, revisão diferente | `update` | admitido; anterior preservada |
 | mesma identidade, versão declarada menor | `downgrade` | **retido em quarentena** |
 | mesmo digest, id diferente | `same-content` | admitido, com relação registrada |
+| alias igual (`scheme`, `value`, `authority`) em IDs diferentes | `alias-candidate` | **retido em quarentena** para revisão; nunca funde identidades automaticamente |
 | mesmo nome, conteúdo diferente | `overlap` | admitido, registros separados |
 | tipo v1 sem `kind` | `pending-type` | **não normalizado** |
 
@@ -246,3 +247,14 @@ diz qual chamada foi feita.
 - O leitor não valida o conteúdo semântico de `dependencies`, `environment` e
   `offers`; preserva e relaciona.
 - A suíte local não mede host instalado. Testes verdes não são homologação.
+
+
+### Colisões de alias
+
+Aliases são comparados pela tupla literal `(scheme, value, authority)`. Uma
+colisão entre IDs diferentes é apenas um **candidato de identidade**: os dois
+registros não são fundidos e o novo relato fica em quarentena para revisão
+humana. Autoridades diferentes não colidem. O intake valida que cada alias
+seja objeto com os três campos não vazios e recusa duplicatas dentro do mesmo
+registro. A comparação não prova que duas capacidades são iguais nem escolhe
+uma origem canônica.

@@ -582,3 +582,82 @@ def test_downgrade_com_esquema_desconhecido_nao_e_inventado(doc):
     conhecido = Conhecido(reg.id, "rev-000", "c" * 64, version="v9")
     (c,) = classificar([reg], [conhecido])
     assert c.classe is Classe.ATUALIZACAO
+
+
+# --------------------------------------------------------------------------
+# Aliases escopados e colisões de identidade
+# --------------------------------------------------------------------------
+def test_alias_precisa_de_scheme_value_e_authority(doc):
+    doc["records"][0]["aliases"] = [
+        {"scheme": "upstream", "value": "skill:abc"}
+    ]
+    leitura = ler(_bytes(doc))
+    assert leitura.ok is False
+    assert "ALIAS_MISSING_FIELD" in _erros(leitura)
+
+
+def test_alias_repetido_no_mesmo_registro_e_rejeitado(doc):
+    alias = {"scheme": "upstream", "value": "skill:abc",
+             "authority": "lia-forge"}
+    doc["records"][0]["aliases"] = [alias, copy.deepcopy(alias)]
+    leitura = ler(_bytes(doc))
+    assert leitura.ok is False
+    assert "ALIAS_DUPLICATE" in _erros(leitura)
+
+
+def test_alias_igual_sob_mesma_authority_exige_revisao(doc):
+    alias = {"scheme": "upstream", "value": "skill:abc",
+             "authority": "lia-forge"}
+    doc["records"][0]["aliases"] = [alias]
+    primeiro = ler(_bytes(doc)).envelope.registros[0]
+    conhecido = Conhecido(
+        id=primeiro.id, revision_id=primeiro.revision_id,
+        digest=primeiro.digest, name=primeiro.name,
+        kind=primeiro.kind, version=primeiro.version,
+        aliases=[alias],
+    )
+    outro = copy.deepcopy(doc)
+    outro["records"][0]["id"] = "urn:lia:cap:11111111-2222-3333-4444-555555555555"
+    outro["records"][0]["name"] = "Outra capacidade"
+    registro_novo = ler(_bytes(outro)).envelope.registros[0]
+    (classificado,) = classificar([registro_novo], [conhecido])
+    assert classificado.classe is Classe.ALIAS_CANDIDATO
+    assert classificado.admitido is False
+    assert classificado.relacionados == [primeiro.id]
+
+
+def test_alias_igual_de_autoridades_diferentes_nao_colide(doc):
+    alias_a = {"scheme": "upstream", "value": "skill:abc",
+               "authority": "lia-forge"}
+    alias_b = {"scheme": "upstream", "value": "skill:abc",
+               "authority": "lia-studio"}
+    doc["records"][0]["aliases"] = [alias_a]
+    conhecido = ler(_bytes(doc)).envelope.registros[0]
+    outro = copy.deepcopy(doc)
+    outro["records"][0]["id"] = "urn:lia:cap:11111111-2222-3333-4444-555555555555"
+    outro["records"][0]["name"] = "Outra capacidade"
+    outro["records"][0]["aliases"] = [alias_b]
+    novo = ler(_bytes(outro)).envelope.registros[0]
+    (classificado,) = classificar([novo], [
+        Conhecido(id=conhecido.id, revision_id=conhecido.revision_id,
+                  digest=conhecido.digest, aliases=[alias_a])
+    ])
+    assert classificado.classe is Classe.NOVO
+    assert classificado.admitido is True
+
+
+def test_duas_identidades_no_mesmo_lote_com_alias_igual_sao_retidas(doc):
+    alias = {"scheme": "upstream", "value": "skill:abc",
+             "authority": "lia-forge"}
+    doc["records"][0]["aliases"] = [alias]
+    outro = copy.deepcopy(doc["records"][0])
+    outro["id"] = "urn:lia:cap:11111111-2222-3333-4444-555555555555"
+    outro["revisionId"] = "rev-002"
+    outro["name"] = "Outra capacidade"
+    doc["records"].append(outro)
+    leitura = ler(_bytes(doc))
+    assert leitura.ok is True
+    classificados = classificar(leitura.envelope.registros, [])
+    assert [c.classe for c in classificados] == [
+        Classe.ALIAS_CANDIDATO, Classe.ALIAS_CANDIDATO]
+    assert all(not c.admitido for c in classificados)
