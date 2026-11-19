@@ -11,7 +11,7 @@ from uuid import UUID, uuid4
 
 from ..domain.integrity import sha256_bytes, tree_hash
 from ..domain.paths import validate_relative
-from ..domain.skills import check_references, diff_corpo, diff_frontmatter, has_blocking, validate_skill
+from ..domain.skills import check_references, diff_corpo, diff_frontmatter, has_blocking, parse_frontmatter, validate_skill
 from ..domain.unicode_policy import Context, scan
 
 
@@ -233,6 +233,24 @@ class SkillWorkshop:
             connection.execute("INSERT INTO revision_trees VALUES (?, ?, ?)",
                                (skill_id, revision, self._tree_hash(text, files)))
             return self._revision(connection, skill_id, revision)
+
+    def list_skills(self) -> list[dict]:
+        with self._connect() as connection:
+            connection.execute("BEGIN")
+            rows = connection.execute("""
+                SELECT drafts.id, drafts.generation, drafts.text, origins.evidence,
+                       (SELECT MAX(revision) FROM revisions WHERE revisions.id = drafts.id)
+                       AS latest_revision
+                FROM drafts LEFT JOIN origins ON origins.id = drafts.id
+                ORDER BY drafts.id
+            """).fetchall()
+        return [{
+            "id": row["id"],
+            "generation": row["generation"],
+            "name": parse_frontmatter(row["text"]).frontmatter.get("name"),
+            "latestRevision": row["latest_revision"],
+            "origin": json.loads(row["evidence"]) if row["evidence"] else None,
+        } for row in rows]
 
     def history(self, skill_id: str) -> list[dict]:
         skill_id = str(UUID(skill_id))

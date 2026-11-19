@@ -410,6 +410,9 @@ def _skill_parser(sub) -> None:
             command.add_argument("--profile", help="perfil do host para gerar manifesto de consumo")
         command.set_defaults(func=cmd_skill)
 
+    listing = actions.add_parser("list", help="lista rascunhos e revisões da oficina")
+    listing.set_defaults(func=cmd_skill, skill_cmd="list_skills")
+
     materialize = actions.add_parser("materialize", help="materializa uma revisão local fixada")
     materialize.add_argument("lock", help="manifesto de consumo JSON")
     materialize.add_argument("package", help="pacote .lia-capability local")

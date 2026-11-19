@@ -18,6 +18,9 @@ def test_oficina_versoes_e_edicao_concorrente(tmp_path, capsys):
 
     draft = run("create", str(source))
     skill_id = draft["id"]
+    listed, = run("list")
+    assert listed == {"id": skill_id, "generation": 1, "name": "teste",
+                      "latestRevision": None, "origin": None}
     assert run("preview", skill_id)["validation"]["ok"]
     first = run("publish", skill_id, "1")
     assert first["text"].encode() == source.read_bytes()
@@ -31,6 +34,7 @@ def test_oficina_versoes_e_edicao_concorrente(tmp_path, capsys):
     assert run("restore", skill_id, "2", "1")["generation"] == 3
     assert run("publish", skill_id, "3")["digest"] == first["digest"]
     assert [r["revision"] for r in run("history", skill_id)] == [3, 2, 1]
+    assert run("list")[0]["latestRevision"] == 3
     assert run("read_revision", skill_id, "1") == first
     package = run("pack", skill_id, "1")
     assert package["ok"]

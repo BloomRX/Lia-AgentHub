@@ -388,3 +388,30 @@ payload ficaram vazias. Os pacotes continuam nos lotes privados e as
 bases de edição ainda ficam separadas. As cópias versionadas nos
 projetos seguem pendentes de corte e o Model Lab continua sem uma
 árvore atual acessível.
+
+## Execução · oficina central e reempacotamento
+
+A instância local em J:/Lia/migration/agent-hub/registry/hub passou a
+conter também a oficina consolidada. consolidate-skill-workshops.py
+copiou as bases locais de ensaio de Studio e Forge como dados, recusou
+IDs duplicados, verificou procedência e SHA-256 de cada revisão contra
+seu manifesto fixado e publicou a base em um destino novo. As bases
+originais continuam disponíveis para recuperação.
+
+O comando python -m lia_agenthub --home CAMINHO skill list lista
+rascunhos, nomes, procedência e a última revisão. Os 17 IDs da oficina
+resolvem no catálogo local de 68 identidades. Os 51 registros do
+Project seguem por referência. Reempacotei a Skill de bootstrap do
+Studio a partir da oficina unificada. O pacote foi materializado em
+pasta vazia com 8 arquivos e o digest de árvore
+60fd56bd587a53bdb6983bb46bf16854b9a73dc8bb4e114db685bd7612457882.
+A identidade, a procedência e os anexos atravessaram a consolidação.
+O novo ZIP tem seu próprio manifesto de consumo.
+
+O ensaio usa uma raiz local explícita. Os projetos ainda precisam
+consumir de forma verificável as revisões selecionadas antes do
+corte das cópias versionadas.
+
+Uma tentativa com hash de árvore alterado foi recusada antes da
+publicação da base. A suíte Windows registrou 839 aprovados e um skip
+de symlink.
