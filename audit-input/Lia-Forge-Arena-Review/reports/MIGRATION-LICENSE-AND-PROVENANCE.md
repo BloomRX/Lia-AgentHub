@@ -1,0 +1,3 @@
+# Licença e proveniência
+
+LICENSE (MIT) e THIRD_PARTY_NOTICES.md preservados. O lockfile fixa as dependências e os avisos identificam as licenças declaradas. Revisar avisos e obrigações no produto empacotado após instalar. Código, documentação e fixtures em fonte vêm da árvore T13. O SVG é identificado no inventário de origem como marca do Lia Forge. O ICO e as imagens de conceito ficaram fora por falta de liberação individual. Presença em Git e licença do código não comprovam direito sobre arte, pesos ou bibliotecas externas. Os workflows ComfyUI contêm grafos, com checkpoints a selecionar separadamente. Arena deve revisar direitos da marca, dependências transitivas e equivalência dos guias aninhados antes de publicar.
