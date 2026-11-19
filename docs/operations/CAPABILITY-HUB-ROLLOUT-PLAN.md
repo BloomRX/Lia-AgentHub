@@ -520,3 +520,20 @@ Rechecagem das branches remotas confirmou 0 SKILL.md em Lia Go
 (be218893a5da3094417fe162675f013302500e41) e Lia-Research
 (33074e280cb557ac23537eac9a6883a0b89d0283). Nessas revisões não há
 arquivos de Skill a retirar. O Model Lab voltou a retornar HTTP 404.
+
+## Execução · evidências por componente do Project
+
+A leitura direta conferiu o Git blob e registrou SHA-256 de cada um dos
+50 SKILL.md ainda sem revisão individual de evidência. Alethe conserva
+a revisão própria. A auditoria encontrou 6 declarações MIT no frontmatter
+atual: uma em .agents (lia-eventa-ipc) e cinco no acervo vendorizado. Nos
+outros 44 registros, o escopo permanece desconhecido. Vinte e um nomes
+corresponderam ao histórico de LR-LIC-003. Correspondência por nome
+registra a pista histórica sem atribuir o conteúdo atual ao mesmo autor.
+
+O recebimento no Hub foi aceito com zero achados no recibo
+rec-c91aa29963609a42. A consulta manteve 68 identidades, incluindo 51
+do Project com duas revisões de metadados. Os hashes e a evidência
+local ficam no diretório registry. As declarações MIT não foram
+registradas como autorizações de redistribuição. O comando auditou
+metadados sem copiar nem executar as Skills.
