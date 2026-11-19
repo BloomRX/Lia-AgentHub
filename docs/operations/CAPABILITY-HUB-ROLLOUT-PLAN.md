@@ -678,3 +678,24 @@ Manifestos e resultados estão em
 e nos arquivos ao lado. O ensaio cobre a oficina e o contrato de consumo
 na CLI. O corte e a regressão de cada repositório continuam sujeitos aos
 critérios por host da seção 5.
+
+### Lia-Project · pontos de integração antes do corte
+
+A branch remota `arena/7fa837f0-lia-project` ainda aponta para
+`9778ffb83611eecfd2fecdd8ba8b046b344b2ad3`. A leitura usou uma
+clonagem bare isolada com `--single-branch --depth 1 --filter=blob:none`.
+O gitdir do worktree local existente não estava disponível.
+`git ls-tree -r`, `git show` e `git grep` na árvore fixada
+confirmaram os pontos de integração abaixo.
+
+| Consumidor | Dependência observada | Verificação no corte |
+| --- | --- | --- |
+| CI DevFlow | `.github/workflows/devflow-ci.yml` executa `tools/test_agent_skills.py`, cujo caminho é `.agents/skills`. Também exige nomes, orçamento de descoberta e referências ao catálogo e aos documentos | Preparar o conteúdo fixado antes do passo existente e executar a validação integral num checkout sem a cópia versionada |
+| Testes da Alethe | `Tests/tools/alethe-budget.test.py` referencia `.agents/skills/alethe/scripts/orchestrate.py`. `Tests/tools/alethe-editor.browser.mjs` usa a mesma raiz de conteúdo | Preservar os caminhos de anexos para os fluxos existentes após aprovação por componente |
+| Instruções do AIRI | `airi/AGENTS.md` referencia Skills relativas sob `airi/.agents/skills`. `airi/skills-lock.json` registra origem, caminho e hash de entradas de upstream | Preservar a resolução relativa e reconciliar cada pin do Hub com o registro de upstream antes de retirar cópias do AIRI |
+
+`.agents/skills/lia-eventa-ipc` é candidata ao piloto por conter apenas
+`SKILL.md` no Git e declarar MIT no frontmatter. A escolha depende de
+confirmar a base de cópia e testar a descoberta no host de desenvolvimento.
+As instruções sobre IPC se aplicam quando Eventa já está presente.
+Esta análise não executou conteúdo de Skills nem alterou Lia-Project.
