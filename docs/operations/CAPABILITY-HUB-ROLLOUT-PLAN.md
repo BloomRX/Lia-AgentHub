@@ -368,3 +368,23 @@ O recebimento é de metadados. Licenças e autorização por componente
 continuam pendentes. O commit examinado não possui LICENSE na raiz.
 Os caminhos sob airi preservam a classificação de upstream. As 51
 cópias de origem ainda permanecem no Lia-Project.
+
+## Execução · registro local unificado
+
+O diretório local J:/Lia/migration/agent-hub/registry/hub recebeu os
+inventários do Project, Studio e Forge 2.0 na mesma instância. A consulta
+de estado confirmou 68 identidades inventoried: 51, 16 e 1, respectivamente.
+Os três recebimentos retornaram zero achados. Os manifestos e recibos
+ficaram em J:/Lia/migration/agent-hub/registry.
+
+Para Studio e Forge, packaged-skill-inventory.py conferiu o SHA-256 do
+pacote, a árvore verificada, o manifesto v1 e o vínculo entre procedência
+e revisão da oficina. Preservou os 17 IDs da oficina, os caminhos Git,
+a atribuição disponível e a referência à evidência de licença. Repetir
+a geração para o mesmo manifesto manteve o arquivo byte a byte.
+
+Esse registro local reúne metadados. A biblioteca e a quarentena de
+payload ficaram vazias. Os pacotes continuam nos lotes privados e as
+bases de edição ainda ficam separadas. As cópias versionadas nos
+projetos seguem pendentes de corte e o Model Lab continua sem uma
+árvore atual acessível.
