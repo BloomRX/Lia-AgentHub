@@ -557,3 +557,18 @@ da CLI fora do checkout. Leu 17 Skills da oficina e 68 registros do
 catálogo e materializou as 16 Skills do Studio pelo parâmetro -HubCli.
 Esta máquina ainda tem Python instalado. A homologação em Windows limpo
 e os bloqueios de distribuição pública continuam separados.
+
+## Execução · patch de corte do Forge 2.0 para revisão
+
+O patch foi preparado em diretório local de migração. Ele retira do Git a
+Skill de desenvolvimento da revisão examinada e acrescenta o manifesto
+fixado, o comando de preparação via LiaAgentHubCli.exe e as instruções de
+reversão. O conteúdo materializado fica no caminho que os hosts de
+desenvolvimento usam e é ignorado pelo Git.
+
+Verifiquei a aplicação do patch contra a árvore original. No snapshot
+isolado, a CLI empacotada recriou o arquivo e git hash-object --no-filters
+confirmou o mesmo blob. Após afastar o diretório gerado, a reversão
+restaurou a fonte original com o mesmo blob novamente. O Forge 2.0 tem
+somente main no remoto. A árvore real permaneceu limpa e o patch, o
+manifesto e o pacote privado permanecem no workspace.
