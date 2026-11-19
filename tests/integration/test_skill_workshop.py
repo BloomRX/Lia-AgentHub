@@ -97,3 +97,41 @@ def test_materializa_revisao_local_sem_banco_da_oficina(tmp_path, capsys):
     rollback = tmp_path / "rollback"
     run(host_home, "materialize", lock, packed["path"], rollback)
     assert (rollback / "SKILL.md").read_bytes() == (destination / "SKILL.md").read_bytes()
+
+
+def test_anexos_sao_versionados_e_restaurados(tmp_path, capsys):
+    skill = tmp_path / "fonte"
+    skill.mkdir()
+    (skill / "SKILL.md").write_text(
+        "---\nname: anexos\ndescription: Skill com anexos\n---\n\n[Guia](guia.md)\n",
+        encoding="utf-8",
+    )
+    guide = skill / "guia.md"
+    guide.write_bytes(b"original")
+
+    def run(*args, status=0):
+        assert main(["--home", str(tmp_path / "hub"), "skill", *map(str, args)]) == status
+        output = capsys.readouterr()
+        return json.loads(output.out) if status == 0 else output.err
+
+    skill_id = run("create", skill)["id"]
+    assert run("preview", skill_id)["files"] == ["guia.md"]
+    run("publish", skill_id, 1)
+    guide.write_bytes(b"alterado")
+    run("edit", skill_id, 1, skill)
+    assert run("diff", skill_id, 1)["files"] == {"guia.md": "changed"}
+    run("publish", skill_id, 2)
+    run("restore", skill_id, 2, 1)
+    run("publish", skill_id, 3)
+    packed = run("pack", skill_id, 3, "--profile", "lia-studio")
+    lock = tmp_path / "lock.json"
+    lock.write_text(json.dumps(packed["lock"]), encoding="utf-8")
+    destination = tmp_path / "consumo"
+    run("materialize", lock, packed["path"], destination)
+    assert (destination / "guia.md").read_bytes() == b"original"
+
+    internal = skill / ".lia"
+    internal.mkdir()
+    (internal / "capability.json").write_text("{}", encoding="utf-8")
+    assert "Entrada proibida" in run("edit", skill_id, 3, skill, status=1)
+    assert run("preview", skill_id)["generation"] == 3

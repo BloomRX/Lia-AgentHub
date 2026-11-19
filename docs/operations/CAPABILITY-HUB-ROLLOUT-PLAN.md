@@ -205,3 +205,26 @@ lia-agent-evaluation, lia-game-design-review e lia-brand-check não declaram
 licença no frontmatter. Os três commits contêm LICENSE na raiz. A cobertura
 de cada arquivo e a atribuição de upstream ainda precisam ser confirmadas
 no inventário de migração.
+
+## Execução · anexos e primeiro piloto do Hub
+
+Create e edit recebem um SKILL.md em UTF-8 ou uma pasta de Skill. Editar
+somente o SKILL.md mantém os anexos registrados. Editar pela pasta substitui
+o conjunto de anexos mediante conferência de geração. Preview lista anexos,
+diff mostra adições, remoções e mudanças, e publish fixa o hash da árvore.
+Restore recupera conteúdo e anexos da revisão anterior. Revisões antigas
+sem anexos continuam legíveis.
+
+O piloto local lia-inventory-review publicou a revisão 1 com dois arquivos
+e gerou um pacote privado para o perfil lia-agent-hub. A CLI materializou
+o pacote em outra pasta sem criar a raiz de dados informada pelo consumidor.
+Get-FileHash confirmou byte a byte o SKILL.md e revisao.md. O digest de árvore
+foi fc46ee5cfeee5cd3a01b34e4a198a28acf01ecdc81a9faf2a94c00f4161b3106.
+O cenário materializou os arquivos como dados. Falta provar o carregamento
+pelo host de um projeto e a remoção controlada de uma cópia real.
+
+A regressão desta entrega registrou 838 aprovados e um skip de symlink.
+A verificação direta da licença corrige a triagem anterior: o caminho
+LICENSE na raiz do commit de Project retornou 404. Studio e Forge 2.0
+retornaram textos MIT. A licença do repositório e o escopo de eventual
+material de terceiros devem ser conferidos separadamente por Skill.

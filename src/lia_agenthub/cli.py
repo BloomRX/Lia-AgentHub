@@ -279,7 +279,10 @@ def cmd_inventory(args) -> int:
 # --------------------------------------------------------------------------
 def cmd_skill(args) -> int:
     from .adapters.paths_resolver import resolve_locations
-    from .adapters.safe_extract import MAX_SINGLE, stat_import_path
+    import stat
+
+    from .adapters.safe_extract import MAX_FILES, MAX_SINGLE, inspect_directory, stat_import_path
+    from .domain.unicode_policy import has_bom
     from .adapters.skill_workshop import SkillWorkshop
     from .domain.errors import SecurityError
 
@@ -292,20 +295,47 @@ def cmd_skill(args) -> int:
     try:
         if hasattr(args, "arquivo"):
             source = Path(args.arquivo)
-            if stat_import_path(source).st_size > MAX_SINGLE:
-                return _erro("SKILL.md excede o limite de tamanho.", 1)
-            # Preserva as quebras originais para o hash da revisão.
-            parameters["text"] = source.read_bytes().decode("utf-8")
+            metadata = stat_import_path(source)
+            if stat.S_ISDIR(metadata.st_mode):
+                entries = inspect_directory(source).files
+                if len(entries) > MAX_FILES:
+                    return _erro("A pasta excede o limite de arquivos.", 1)
+                files = {entry.path: entry.data for entry in entries}
+                if "SKILL.md" not in files:
+                    return _erro("A pasta precisa de um SKILL.md na raiz.", 1)
+                seen_paths = {}
+                for path, data in files.items():
+                    parts = path.split("/")
+                    if has_bom(data):
+                        return _erro(f"Arquivo começa com BOM: {path}", 1)
+                    for length in range(1, len(parts) + 1):
+                        prefix = "/".join(parts[:length])
+                        if seen_paths.setdefault(prefix.casefold(), prefix) != prefix:
+                            return _erro(f"Colisão de caminhos na pasta: {path}", 1)
+                parameters["text"] = files.pop("SKILL.md").decode("utf-8")
+                parameters["files"] = files
+            else:
+                if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > MAX_SINGLE:
+                    return _erro("SKILL.md inválido ou grande demais.", 1)
+                with source.open("rb") as stream:
+                    data = stream.read(MAX_SINGLE + 1)
+                if len(data) > MAX_SINGLE or has_bom(data):
+                    return _erro("SKILL.md excede o limite ou começa com BOM.", 1)
+                parameters["text"] = data.decode("utf-8")
         if args.skill_cmd == "pack":
             from tempfile import TemporaryDirectory
             from .adapters.safe_extract import Extraction, ExtractedFile
+            from .domain.paths import looks_like_script
 
             record = workshop.read_revision(**parameters)
             destination = Path(args.dest).resolve() if args.dest else locations.exports
             with TemporaryDirectory(prefix="lia-skill-") as temporary:
                 hub = AgentHub(resolve_locations(Path(temporary)))
-                data = record["text"].encode("utf-8")
-                archive = Extraction(files=[ExtractedFile("SKILL.md", data, False)])
+                files = workshop.payload(**parameters)
+                archive = Extraction(files=[
+                    ExtractedFile(path, data, looks_like_script(tuple(path.split("/"))))
+                    for path, data in files.items()
+                ])
                 upstream = f"urn:lia:cap:{record['id']}:{record['revision']}"
                 report = hub.importer.from_extraction(archive, upstream=upstream)
                 if not report.ok:
@@ -363,7 +393,7 @@ def _skill_parser(sub) -> None:
         if action in ("diff", "restore", "read_revision", "pack"):
             command.add_argument("revision", type=int)
         if action in ("create", "edit"):
-            command.add_argument("arquivo", help="arquivo SKILL.md em UTF-8")
+            command.add_argument("arquivo", help="SKILL.md em UTF-8 ou pasta de Skill com anexos")
         if action == "pack":
             command.add_argument("--dest", help="diretório de destino do backup privado")
             command.add_argument("--profile", help="perfil do host para gerar manifesto de consumo")
