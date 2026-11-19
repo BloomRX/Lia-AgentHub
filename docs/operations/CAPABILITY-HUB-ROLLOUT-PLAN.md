@@ -759,3 +759,20 @@ bundle/studio-skills.json -HubCli CAMINHO` com a CLI do build
 Os hashes dos arquivos materializados conferiram com a árvore do
 ensaio de corte. Este lote está preparado localmente. A escolha do
 canal para consumidores do Studio continua pendente antes do corte.
+
+### Studio · ensaio de corte com a CLI Windows
+
+Preparei uma variante do patch de corte em
+`J:/Lia/migration/agent-hub/studio-cut-cli-38a48d9/studio-agent-hub-cut-cli.patch`,
+SHA-256 `df25db517773f41b29145c2ee53f8e6878e7aac23513f1318b28e32717c1b021`.
+A variante preserva a opção existente por Python e acrescenta
+`-HubCli` e `-Revocations` ao script `desktop/prepare_hub_skills.ps1`.
+O wrapper mantém a verificação dos hashes fixados no Studio.
+
+Na exportação isolada de `38a48d9`, com as fontes antigas retiradas,
+`desktop/prepare_hub_skills.ps1 -BundleDirectory LOTE -HubCheckout HUB
+-HubCli EXE` reconstruiu os 16 `SKILL.md` usando o lote de consumo e
+o PATH restrito ao Windows. `git apply --check` aceitou a variante
+no checkout real, que permaneceu limpo. A opção de revogação no
+wrapper é encaminhada ao bootstrap do Hub. O ensaio desta variante
+exercitou o caminho de materialização com a CLI.
