@@ -5,7 +5,7 @@
 > **Estado atual: MVP funcional; expansão do registro central em andamento.**
 > M1–M8 do MVP e o intake v1 estão implementados. A última linha de base
 > executada antes da expansão registrou **823 testes aprovados e 2 ignorados**.
-> Esta branch acrescentou 10 testes de regressão para proveniência multi-origem,
+> Esta branch acrescentou dez casos de regressão para proveniência multi-origem,
 > aliases e relações declaradas; eles ainda aguardam execução em CI/ambiente local.
 > Permanecem pendentes a medição de rede em Windows, o build do `.exe` em
 > ambiente com PyInstaller e a decisão de licença (`D-16`).
