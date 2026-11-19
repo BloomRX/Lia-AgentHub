@@ -616,6 +616,24 @@ A lista foi criada só para o teste. Ambos os binários retornaram
 `NotSigned` em `Get-AuthenticodeSignature`. A janela nativa e uma
 instalação Windows sem Python permanecem fora deste ensaio.
 
+### Janela nativa no binário recompilado
+
+Em um segundo ensaio fora do checkout, `LiaAgentHub.exe --home PASTA
+--verbose` abriu a janela `Lia Agent Hub` (PID 19808, handle 329556).
+O WebView2 157.0.4341.60 iniciou sob o processo da janela (PID 18656).
+A linha de comando do runtime mostrou `--disable-background-networking`,
+`--disable-component-update` e `--disable-sync`.
+O log HTTP registrou respostas 200 para o HTML, CSS, JavaScript,
+`/api/items?lifecycle=active` e `/api/quarantine` em loopback.
+`CloseMainWindow()` encerrou o executável com código 0 e os PIDs
+observados da árvore deixaram de existir.
+
+A captura de processos e logs está em
+`J:/Lia/migration/agent-hub/windows-native-458d5f8.log`.
+O ensaio confirma a inicialização nativa e a comunicação HTTP inicial.
+A avaliação visual, a medição de egress D-09 e o Windows sem Python
+instalado seguem com seus critérios próprios.
+
 ### Forge legado no inventário central
 
 O checkout local `J:/Lia/Lia-Forge-Workspace/windows-validation`, na
