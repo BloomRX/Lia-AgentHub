@@ -1,0 +1,80 @@
+{
+  "name": "lia-forge-studio",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "dev:expose": "vite --mode expose",
+    "build": "vite build",
+    "desktop": "electron .",
+    "postinstall": "install-electron",
+    "test": "node tests/mcp-smoke.mjs && node tests/vite-store-smoke.mjs && node tests/domain-contracts-smoke.mjs && node tests/capability-registry-smoke.mjs && node tests/adapter-sdk-smoke.mjs && node tests/qa-content-smoke.mjs && node tests/imaging-smoke.mjs && node tests/rig2d-vfx-smoke.mjs && node tests/glb-inspect-smoke.mjs && node tests/preflight-destinations-smoke.mjs && node tests/production-pipeline-smoke.mjs && node tests/orchestrator-engine-smoke.mjs && node tests/asset-manager-smoke.mjs && node tests/asset-catalog-smoke.mjs && node tests/asset-reconciliation-smoke.mjs && node tests/asset-comparison-smoke.mjs && node tests/studio-service-smoke.mjs && node tests/comfyui-client-smoke.mjs && node tests/task-manager-smoke.cjs && node tests/navigation-guard-smoke.cjs && node tests/ipc-guard-smoke.cjs && node tests/ipc-coherence-smoke.cjs && node tests/asset-progress-smoke.mjs && node tests/manual-artifacts-smoke.cjs && node tests/external-tools-smoke.cjs && node tests/workflow-runner-smoke.cjs && node tests/workflow-run-store-smoke.cjs && node tests/blender-workflow-plan-smoke.cjs && node tests/blender-adapter-smoke.cjs && node tests/lia-paths-smoke.cjs && node tests/project-structure-smoke.mjs && node tests/run-lifecycle-smoke.mjs && node tests/workflow-coverage-smoke.mjs && node tests/journey-smoke.mjs && node tests/studio-ui-render-smoke.mjs && node tests/http-api-policy-smoke.mjs && node tests/http-bind-smoke.mjs && node tests/run-authorization-smoke.mjs && node tests/rights-provenance-smoke.mjs && node tests/path-containment-smoke.mjs && node tests/host-integration-smoke.mjs",
+    "preview": "vite preview",
+    "preview:expose": "vite preview --mode expose",
+    "package:win": "npm run build && electron-builder --win nsis --x64",
+    "package:win:portable": "npm run build && electron-builder --win portable --x64",
+    "test:python": "python3 -m unittest discover -s tests -p 'test_*.py' -v",
+    "test:all": "npm test && npm run test:python"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "lucide-react": "0.468.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.7.0",
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0",
+    "vite": "6.4.5"
+  },
+  "build": {
+    "appId": "com.liaforge.studio",
+    "productName": "Lia Forge",
+    "asar": true,
+    "asarUnpack": [
+      "scripts/blender_spritesheet.py"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "shared/**/*",
+      "scripts/comfyui-client.mjs",
+      "scripts/blender_spritesheet.py",
+      "workflows/comfyui/**/*",
+
+      "package.json",
+      "LICENSE",
+      "THIRD_PARTY_NOTICES.md"
+    ],
+    "win": {
+
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Lia Forge",
+      "perMachine": false,
+      "allowElevation": false
+    }
+  }
+}
