@@ -98,15 +98,37 @@ class SkillWorkshop:
 
     def create(self, text: str, files: dict[str, bytes] | None = None,
                origin: dict | None = None) -> dict:
-        skill_id = str(uuid4())
-        evidence = self._validate_origin(origin, text, files or {}) if origin is not None else None
+        attachments = files or {}
+        evidence = self._validate_origin(origin, text, attachments) if origin is not None else None
         with self._connect() as connection:
-            connection.execute("INSERT INTO drafts VALUES (?, 1, ?)", (skill_id, text))
-            self._save_files(connection, skill_id, files or {})
-            if evidence is not None:
-                connection.execute("INSERT INTO origins VALUES (?, ?)",
-                                   (skill_id, json.dumps(evidence, ensure_ascii=False)))
+            return self._insert_draft(connection, text, attachments, evidence)
+
+    def _insert_draft(self, connection, text: str, files: dict[str, bytes],
+                      origin: dict | None) -> dict:
+        skill_id = str(uuid4())
+        connection.execute("INSERT INTO drafts VALUES (?, 1, ?)", (skill_id, text))
+        self._save_files(connection, skill_id, files)
+        if origin is not None:
+            connection.execute("INSERT INTO origins VALUES (?, ?)",
+                               (skill_id, json.dumps(origin, ensure_ascii=False)))
         return {"id": skill_id, "generation": 1}
+
+    def fork(self, skill_id: str, revision: int, copy_basis_sha256: str) -> dict:
+        if not re.fullmatch(r"[0-9a-f]{64}", copy_basis_sha256):
+            raise WorkshopError("Informe a evidência de autorização de cópia.")
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            source = self._revision(connection, skill_id, revision)
+            files = self._revision_files(connection, source)
+            origin = {
+                "kind": "workshop-fork",
+                "parentSkillId": f"urn:lia:cap:{source['id']}",
+                "parentRevision": source["revision"],
+                "parentTreeSha256": self._tree_hash(source["text"], files),
+                "copyBasisSha256": copy_basis_sha256,
+                "parentOrigin": source["origin"],
+            }
+            return self._insert_draft(connection, source["text"], files, origin)
 
     def _draft(self, connection, skill_id: str) -> dict:
         row = connection.execute(

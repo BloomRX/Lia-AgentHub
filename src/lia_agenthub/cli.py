@@ -328,6 +328,18 @@ def cmd_skill(args) -> int:
             if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > 65536:
                 return _erro("O manifesto de origem precisa ser um JSON de até 64 KiB.", 1)
             parameters["origin"] = json.loads(origin_path.read_bytes())
+        if args.skill_cmd == "fork":
+            from .domain.integrity import sha256_bytes
+
+            evidence = Path(args.copy_evidence)
+            metadata = stat_import_path(evidence)
+            if not stat.S_ISREG(metadata.st_mode) or not 0 < metadata.st_size <= 65536:
+                return _erro("A evidência de cópia precisa ser um arquivo de até 64 KiB.", 1)
+            with evidence.open("rb") as stream:
+                content = stream.read(65537)
+            if not content.strip() or len(content) > 65536:
+                return _erro("A evidência de cópia está vazia ou excede 64 KiB.", 1)
+            parameters["copy_basis_sha256"] = sha256_bytes(content)
         if args.skill_cmd == "pack":
             from tempfile import TemporaryDirectory
             from .adapters.safe_extract import Extraction, ExtractedFile
@@ -409,6 +421,12 @@ def _skill_parser(sub) -> None:
             command.add_argument("--dest", help="diretório de destino do backup privado")
             command.add_argument("--profile", help="perfil do host para gerar manifesto de consumo")
         command.set_defaults(func=cmd_skill)
+
+    fork = actions.add_parser("fork", help="deriva um rascunho de uma revisão publicada")
+    fork.add_argument("skill_id")
+    fork.add_argument("revision", type=int)
+    fork.add_argument("--copy-evidence", required=True, help="documento local de autorização de cópia")
+    fork.set_defaults(func=cmd_skill)
 
     listing = actions.add_parser("list", help="lista rascunhos e revisões da oficina")
     listing.set_defaults(func=cmd_skill, skill_cmd="list_skills")

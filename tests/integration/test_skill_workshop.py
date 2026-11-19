@@ -179,3 +179,57 @@ def test_procedencia_git_fica_vinculada_ao_snapshot_e_ao_pacote(tmp_path, capsys
         manifest = json.loads(bundle.read("manifest.json"))
     assert provenance["source"]["workshopOrigin"] == {"kind": "git-snapshot", **origin}
     assert not manifest["license"]["redistributable"]
+
+
+def test_fork_preserva_atribuicao_e_anexos_sem_conceder_redistribuicao(tmp_path, capsys):
+    from lia_agenthub.domain.integrity import sha256_file, tree_hash
+
+    source = tmp_path / "source"
+    source.mkdir()
+    text = source / "SKILL.md"
+    guide = source / "guia.md"
+    text.write_text(
+        "---\nname: origem\ndescription: Skill de origem sintetica\n---\n\n[Guia](guia.md)\n",
+        encoding="utf-8",
+    )
+    guide.write_bytes(b"Anexo")
+    tree = tree_hash({path.name: sha256_file(path) for path in (text, guide)})
+    origin = tmp_path / "origin.json"
+    origin.write_text(json.dumps({
+        "repository": "https://example.invalid/lia/studio",
+        "commit": "a" * 40,
+        "path": ".agents/skills/origem/SKILL.md",
+        "author": "Equipe de origem",
+        "maintainer": "Studio",
+        "licensePath": "LICENSE",
+        "licenseSha256": "b" * 64,
+        "treeSha256": tree,
+    }), encoding="utf-8")
+    command = ["--home", str(tmp_path / "hub"), "skill"]
+
+    def run(*args, status=0):
+        assert main([*command, *map(str, args)]) == status
+        output = capsys.readouterr()
+        return json.loads(output.out) if status == 0 else output.err
+
+    upstream = run("create", source, "--origin", origin)["id"]
+    run("publish", upstream, 1)
+    evidence = tmp_path / "autorizacao.txt"
+    evidence.touch()
+    assert "evidência" in run("fork", upstream, 1, "--copy-evidence", evidence, status=1)
+    assert len(run("list")) == 1
+    evidence.write_text("Autorizacao de copia para este teste sintetico.", encoding="utf-8")
+    fork = run("fork", upstream, 1, "--copy-evidence", evidence)["id"]
+    assert fork != upstream
+    assert run("preview", fork)["files"] == ["guia.md"]
+    lineage = run("publish", fork, 1)["origin"]
+    assert lineage["parentOrigin"]["author"] == "Equipe de origem"
+    assert lineage["parentSkillId"] == f"urn:lia:cap:{upstream}"
+    assert lineage["parentRevision"] == 1
+    assert lineage["parentTreeSha256"] == tree
+    assert lineage["copyBasisSha256"] == sha256_file(evidence)
+    package = run("pack", fork, 1)
+    with zipfile.ZipFile(package["path"]) as bundle:
+        assert json.loads(bundle.read("provenance.json"))["source"]["workshopOrigin"] == lineage
+        assert not json.loads(bundle.read("manifest.json"))["license"]["redistributable"]
+        assert bundle.read("payload/guia.md") == b"Anexo"

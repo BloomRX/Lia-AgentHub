@@ -415,3 +415,22 @@ corte das cópias versionadas.
 Uma tentativa com hash de árvore alterado foi recusada antes da
 publicação da base. A suíte Windows registrou 839 aprovados e um skip
 de symlink.
+
+## Execução · derivação autorizada na oficina
+
+O comando python -m lia_agenthub skill fork ID REVISAO --copy-evidence
+ARQUIVO cria um rascunho com identidade própria. O Hub exige um documento
+local de evidência de cópia e registra seu SHA-256 sem guardar o documento.
+A origem do derivado conserva o ID, a revisão e a árvore da Skill original
+e sua atribuição. Editar ou empacotar o derivado conserva essa cadeia.
+O documento fornecido continua sujeito à revisão humana. A operação não
+marca a licença como redistribuível.
+
+O teste do fluxo recusou evidência vazia, publicou a derivação com anexo,
+empacotou e conferiu a atribuição, os hashes e a restrição de redistribuição.
+
+Olhando a árvore do Project em 9778ffb, há LICENSE e UPSTREAM.md junto à
+Skill Alethe e um LICENSE sob airi. A raiz do Project continua sem LICENSE.
+O achado separa os documentos que precisam de revisão. A evidência de
+licença do repositório vendorizado tem escopo a confirmar por componente,
+como mostra LR-LIC-003.
