@@ -289,7 +289,7 @@ def cmd_skill(args) -> int:
     locations = resolve_locations(Path(args.home) if args.home else None)
     workshop = SkillWorkshop(locations.home / "Oficina" / "skills.sqlite3")
     parameters = {}
-    for name in ("skill_id", "generation", "revision"):
+    for name in ("skill_id", "generation", "revision", "reason"):
         if hasattr(args, name):
             parameters[name] = getattr(args, name)
     try:
@@ -408,7 +408,9 @@ def cmd_materialize_skill(args) -> int:
 
     try:
         sources = tuple((Path(pin), Path(directory)) for pin, directory in args.dependency)
-        result = materialize(Path(args.lock), Path(args.package), Path(args.dest), dependencies=sources)
+        revocations = Path(args.revocations) if args.revocations else None
+        result = materialize(Path(args.lock), Path(args.package), Path(args.dest),
+                             dependencies=sources, revocations=revocations)
     except (ValueError, KeyError, TypeError, SecurityError, zipfile.BadZipFile) as error:
         return _erro(str(error), 1)
     _json(result)
@@ -446,12 +448,22 @@ def _skill_parser(sub) -> None:
     listing = actions.add_parser("list", help="lista rascunhos e revisões da oficina")
     listing.set_defaults(func=cmd_skill, skill_cmd="list_skills")
 
+    revoke = actions.add_parser("revoke", help="retira uma revisão de circulação")
+    revoke.add_argument("skill_id")
+    revoke.add_argument("revision", type=int)
+    revoke.add_argument("--reason", required=True)
+    revoke.set_defaults(func=cmd_skill)
+
+    revocations = actions.add_parser("revocations", help="exporta a lista local de revogações")
+    revocations.set_defaults(func=cmd_skill)
+
     materialize = actions.add_parser("materialize", help="materializa uma revisão local fixada")
     materialize.add_argument("lock", help="manifesto de consumo JSON")
     materialize.add_argument("package", help="pacote .lia-capability local")
     materialize.add_argument("dest", help="novo diretório de destino")
     materialize.add_argument("--dependency", action="append", nargs=2, default=[],
                              metavar=("LOCK", "DIRETORIO"), help="dependência local já materializada")
+    materialize.add_argument("--revocations", help="lista local de revisões revogadas")
     materialize.set_defaults(func=cmd_materialize_skill)
 
 

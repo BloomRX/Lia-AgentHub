@@ -572,3 +572,23 @@ confirmou o mesmo blob. Após afastar o diretório gerado, a reversão
 restaurou a fonte original com o mesmo blob novamente. O Forge 2.0 tem
 somente main no remoto. A árvore real permaneceu limpa e o patch, o
 manifesto e o pacote privado permanecem no workspace.
+
+## Execução · revogação de revisões
+
+Skill revoke ID REVISAO --reason MOTIVO registra a revogação local com
+data e hash de árvore. Consultar a revisão e seu histórico continua
+possível. A revisão revogada fica indisponível para empacotar, derivar ou
+restaurar. Um novo pedido de revogação conserva o primeiro registro.
+
+Skill revocations exporta a lista sem os motivos internos. Materialize
+--revocations ARQUIVO verifica a revisão principal e suas dependências.
+Os scripts de bootstrap do Studio aceitam -Revocations para aplicar a
+mesma lista antes de expor a biblioteca. O ensaio recusou a última
+revisão de um lote de 16 Skills quando ela constava da lista de teste,
+sem expor o diretório ativo. A oficina central de migração não foi
+alterada por esse teste.
+
+O host precisa receber uma lista atual de uma fonte confiável.
+A verificação offline não consulta rede e não invalida automaticamente
+cópias que o host já materializou. O operador decide quando trocar
+a referência ativa.

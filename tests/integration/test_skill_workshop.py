@@ -271,3 +271,43 @@ def test_materializacao_verifica_dependencias_transitivas_locais(tmp_path, capsy
     guide.write_bytes(original)
     run("materialize", *top, *dependency_args)
     assert (top[2] / "SKILL.md").is_file()
+
+
+def test_revogacao_preserva_historico_e_bloqueia_consumo_offline(tmp_path, capsys):
+    command = ["--home", str(tmp_path / "hub"), "skill"]
+
+    def run(*args, status=0):
+        assert main([*command, *map(str, args)]) == status
+        output = capsys.readouterr()
+        return json.loads(output.out) if status == 0 else output.err
+
+    def pack(name, dependency=None):
+        source = tmp_path / f"{name}.md"
+        source.write_text(f"---\nname: {name}\ndescription: Skill de teste\n---\n\nTexto.\n", encoding="utf-8")
+        skill_id = run("create", source)["id"]
+        run("publish", skill_id, 1)
+        arguments = ("--requires", dependency) if dependency else ()
+        bundle = run("pack", skill_id, 1, "--profile", "lia-studio", *arguments)
+        lock = tmp_path / f"{name}.json"
+        lock.write_text(json.dumps(bundle["lock"]), encoding="utf-8")
+        return skill_id, lock, bundle["path"]
+
+    identity, pin, package = pack("origem")
+    destination = tmp_path / "existente"
+    run("materialize", pin, package, destination)
+    _, child_pin, child_package = pack("dependente", pin)
+    first = run("revoke", identity, 1, "--reason", "Retirada de teste")
+    assert run("revoke", identity, 1, "--reason", "Nova tentativa") == first
+    assert run("history", identity)[0]["revoked_at"]
+    assert run("read_revision", identity, 1)["revision"] == 1
+    assert "revogada" in run("pack", identity, 1, status=1)
+    assert "revogada" in run("restore", identity, 1, 1, status=1)
+    assert (destination / "SKILL.md").is_file()
+
+    revoked = tmp_path / "revoked.json"
+    revoked.write_text(json.dumps(run("revocations")), encoding="utf-8")
+    denied = tmp_path / "recusada"
+    assert "revogada" in run("materialize", pin, package, denied, "--revocations", revoked, status=1)
+    assert "revogada" in run("materialize", child_pin, child_package, denied,
+                             "--dependency", pin, destination, "--revocations", revoked, status=1)
+    assert not denied.exists()

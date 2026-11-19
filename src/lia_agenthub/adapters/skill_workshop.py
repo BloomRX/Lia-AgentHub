@@ -65,6 +65,13 @@ class SkillWorkshop:
                         id TEXT PRIMARY KEY, evidence TEXT NOT NULL
                     )
                 """)
+                connection.execute("""
+                    CREATE TABLE IF NOT EXISTS revocations (
+                        id TEXT NOT NULL, revision INTEGER NOT NULL, digest TEXT NOT NULL,
+                        reason TEXT NOT NULL, revoked_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        PRIMARY KEY (id, revision)
+                    )
+                """)
                 yield connection
 
     @classmethod
@@ -119,6 +126,7 @@ class SkillWorkshop:
         with self._connect() as connection:
             connection.execute("BEGIN IMMEDIATE")
             source = self._revision(connection, skill_id, revision)
+            self._require_available(connection, source)
             files = self._revision_files(connection, source)
             origin = {
                 "kind": "workshop-fork",
@@ -129,6 +137,45 @@ class SkillWorkshop:
                 "parentOrigin": source["origin"],
             }
             return self._insert_draft(connection, source["text"], files, origin)
+
+    @staticmethod
+    def _require_available(connection, record: dict) -> None:
+        if connection.execute(
+            "SELECT 1 FROM revocations WHERE id = ? AND revision = ?",
+            (record["id"], record["revision"]),
+        ).fetchone():
+            raise WorkshopError("A revisão está revogada.")
+
+    def revoke(self, skill_id: str, revision: int, reason: str) -> dict:
+        reason = reason.strip()
+        if not reason or len(reason) > 500:
+            raise WorkshopError("Informe um motivo de revogação de até 500 caracteres.")
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            record = self._revision(connection, skill_id, revision)
+            files = self._revision_files(connection, record)
+            identity = record["id"]
+            digest = self._tree_hash(record["text"], files)
+            connection.execute(
+                "INSERT INTO revocations (id, revision, digest, reason) VALUES (?, ?, ?, ?) "
+                "ON CONFLICT (id, revision) DO NOTHING",
+                (identity, revision, digest, reason),
+            )
+            row = connection.execute(
+                "SELECT * FROM revocations WHERE id = ? AND revision = ?", (identity, revision),
+            ).fetchone()
+            return dict(row)
+
+    def revocations(self) -> dict:
+        with self._connect() as connection:
+            rows = connection.execute(
+                "SELECT id, revision, digest FROM revocations ORDER BY id, revision"
+            ).fetchall()
+        return {"revocationVersion": 1, "revisions": [
+            {"skillId": f"urn:lia:cap:{row['id']}", "revision": row["revision"],
+             "treeSha256": row["digest"]}
+            for row in rows
+        ]}
 
     def _draft(self, connection, skill_id: str) -> dict:
         row = connection.execute(
@@ -239,7 +286,9 @@ class SkillWorkshop:
                 (skill_id, generation),
             ).fetchone()
             if previous is not None:
-                return self._revision(connection, skill_id, previous["revision"])
+                existing = self._revision(connection, skill_id, previous["revision"])
+                self._require_available(connection, existing)
+                return existing
             revision = connection.execute(
                 "SELECT COALESCE(MAX(revision), 0) + 1 FROM revisions WHERE id = ?",
                 (skill_id,),
@@ -279,8 +328,9 @@ class SkillWorkshop:
         with self._connect() as connection:
             self._draft(connection, skill_id)
             return [dict(row) for row in connection.execute(
-                "SELECT revision, generation, digest, created_at FROM revisions "
-                "WHERE id = ? ORDER BY revision DESC", (skill_id,),
+                "SELECT r.revision, r.generation, r.digest, r.created_at, v.revoked_at "
+                "FROM revisions r LEFT JOIN revocations v ON r.id = v.id AND r.revision = v.revision "
+                "WHERE r.id = ? ORDER BY r.revision DESC", (skill_id,),
             )]
 
     def diff(self, skill_id: str, revision: int) -> dict:
@@ -302,6 +352,7 @@ class SkillWorkshop:
         with self._connect() as connection:
             connection.execute("BEGIN IMMEDIATE")
             record = self._revision(connection, skill_id, revision)
+            self._require_available(connection, record)
             files = self._revision_files(connection, record)
             updated = self._replace(connection, skill_id, generation, record["text"])
             self._save_files(connection, record["id"], files)
@@ -315,5 +366,6 @@ class SkillWorkshop:
         with self._connect() as connection:
             connection.execute("BEGIN")
             record = self._revision(connection, skill_id, revision)
+            self._require_available(connection, record)
             files = self._revision_files(connection, record)
             return {"SKILL.md": record["text"].encode("utf-8"), **files}

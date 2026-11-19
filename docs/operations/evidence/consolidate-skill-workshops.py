@@ -18,6 +18,7 @@ TABLES = {
     "revision_files": "id, revision, path, data",
     "revision_trees": "id, revision, digest",
     "origins": "id, evidence",
+    "revocations": "id, revision, digest, reason, revoked_at",
 }
 
 
@@ -51,6 +52,10 @@ def consolidate(destination: Path, inputs: list[tuple[Path, list[Path]]]) -> int
                     source.execute("PRAGMA trusted_schema = OFF")
                     source.execute("BEGIN")
                     for table, columns in TABLES.items():
+                        if table == "revocations" and source.execute(
+                            "SELECT 1 FROM sqlite_schema WHERE type = 'table' AND name = 'revocations'"
+                        ).fetchone() is None:
+                            continue  # pre-revocation workshop
                         slots = ", ".join("?" for _ in columns.split(","))
                         rows = source.execute(f"SELECT {columns} FROM {table}")
                         target.executemany(f"INSERT INTO {table} ({columns}) VALUES ({slots})", rows)
@@ -62,7 +67,10 @@ def consolidate(destination: Path, inputs: list[tuple[Path, list[Path]]]) -> int
             pin = pins[record["id"]]
             if record["latestRevision"] != pin["revision"] or not record["origin"]:
                 raise ValueError(f"Revisão ou procedência divergente: {record['id']}")
-            files = workshop.payload(record["id"], pin["revision"])
+            with workshop._connect() as connection:
+                revision = workshop._revision(connection, record["id"], pin["revision"])
+                files = workshop._revision_files(connection, revision)
+                files["SKILL.md"] = revision["text"].encode("utf-8")
             digest = tree_hash({name: sha256_bytes(data) for name, data in files.items()})
             if digest != pin["treeSha256"]:
                 raise ValueError(f"Árvore divergente: {record['id']}")

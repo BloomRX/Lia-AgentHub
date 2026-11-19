@@ -3,7 +3,8 @@ param(
     [Parameter(Mandatory)][string]$StudioRoot,
     [Parameter(Mandatory)][string]$ManifestPath,
     [Parameter(Mandatory,ParameterSetName='Python')][string]$PythonExe,
-    [Parameter(Mandatory,ParameterSetName='Packaged')][string]$HubCli
+    [Parameter(Mandatory,ParameterSetName='Packaged')][string]$HubCli,
+    [string]$Revocations
 )
 
 $ErrorActionPreference = 'Stop'
@@ -62,6 +63,10 @@ foreach ($entry in $manifest.skills) {
     }
 }
 
+$policyArgs = @()
+if ($Revocations) {
+    $policyArgs = @('--revocations',(Resolve-Path -LiteralPath $Revocations).Path)
+}
 $stagePath = Join-Path $studio ".lia-studio-skills-$([guid]::NewGuid())"
 $names = @($entries.Keys | Sort-Object)
 $moved = [Collections.Generic.List[string]]::new()
@@ -70,7 +75,7 @@ try {
     foreach ($name in $names) {
         $entry = $entries[$name]
         $staged = Join-Path $stagePath $name
-        & $runner @prefix skill materialize $entry.lock $entry.package $staged | Out-Null
+        & $runner @prefix skill materialize $entry.lock $entry.package $staged @policyArgs | Out-Null
         if ($LASTEXITCODE -ne 0) { throw "Pacote recusado: $name (código $LASTEXITCODE)." }
     }
 

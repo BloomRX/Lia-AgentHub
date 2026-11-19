@@ -9,7 +9,8 @@ param(
     [Parameter(Mandatory)][string]$LockPath,
     [Parameter(Mandatory)][string]$PackagePath,
     [Parameter(Mandatory,ParameterSetName='Python')][string]$PythonExe,
-    [Parameter(Mandatory,ParameterSetName='Packaged')][string]$HubCli
+    [Parameter(Mandatory,ParameterSetName='Packaged')][string]$HubCli,
+    [string]$Revocations
 )
 
 $ErrorActionPreference = 'Stop'
@@ -31,5 +32,9 @@ if ($pin.profile -cne 'lia-studio' -or $pin.capabilityId -cnotmatch ("^" + [rege
     throw 'O manifesto precisa fixar esta Skill para o perfil lia-studio.'
 }
 $target = Join-Path $studio ".agents/skills/$SkillName"
-& $runner @prefix skill materialize $lockFile $packageFile $target
+$policyArgs = @()
+if ($Revocations) {
+    $policyArgs = @('--revocations',(Resolve-Path -LiteralPath $Revocations).Path)
+}
+& $runner @prefix skill materialize $lockFile $packageFile $target @policyArgs
 if ($LASTEXITCODE -ne 0) { throw "Materialização recusada (código $LASTEXITCODE)." }

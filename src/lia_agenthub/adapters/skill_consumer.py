@@ -55,7 +55,36 @@ def dependency_pin(lock: dict) -> dict:
     return {name: lock[name] for name in ("skillId", "revision", "treeSha256")}
 
 
-def _verify_dependencies(lock: dict, sources: tuple[tuple[Path, Path], ...]) -> None:
+def read_revocations(path: Path) -> set[tuple[str, int]]:
+    metadata = stat_import_path(path)
+    if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > MAX_SINGLE:
+        raise ValueError("Lista de revogações inválida.")
+    document = json.loads(path.read_bytes())
+    if (not isinstance(document, dict) or type(document.get("revocationVersion")) is not int
+            or document["revocationVersion"] != 1 or not isinstance(document.get("revisions"), list)
+            or len(document["revisions"]) > 10000):
+        raise ValueError("Lista de revogações inválida.")
+    revisions = set()
+    for pin in document["revisions"]:
+        if not isinstance(pin, dict) or set(pin) != {"skillId", "revision", "treeSha256"}:
+            raise ValueError("Revogação inválida.")
+        identity, revision, digest = pin["skillId"], pin["revision"], pin["treeSha256"]
+        if (not isinstance(identity, str) or not identity.startswith("urn:lia:cap:")
+                or type(revision) is not int or revision < 1 or not isinstance(digest, str)
+                or not re.fullmatch(r"[a-f0-9]{64}", digest)):
+            raise ValueError("Revogação inválida.")
+        UUID(identity.removeprefix("urn:lia:cap:"))
+        revisions.add((identity, revision))
+    return revisions
+
+
+def _require_available(pin: dict, revoked: set[tuple[str, int]]) -> None:
+    if (pin["skillId"], pin["revision"]) in revoked:
+        raise ValueError(f"Revisão revogada: {pin['skillId']} / {pin['revision']}")
+
+
+def _verify_dependencies(lock: dict, sources: tuple[tuple[Path, Path], ...],
+                         revoked: set[tuple[str, int]]) -> None:
     if len(sources) > 100:
         raise ValueError("O conjunto local excede 100 dependências.")
     supplied = {}
@@ -70,6 +99,7 @@ def _verify_dependencies(lock: dict, sources: tuple[tuple[Path, Path], ...]) -> 
 
     def visit(requirement: dict) -> None:
         identity = requirement["skillId"]
+        _require_available(requirement, revoked)
         if identity in visiting:
             raise ValueError(f"Ciclo de dependência: {identity}")
         local = supplied.get(identity)
@@ -98,10 +128,13 @@ def _verify_dependencies(lock: dict, sources: tuple[tuple[Path, Path], ...]) -> 
 
 
 def materialize(lock_path: Path, package_path: Path, destination: Path, *,
-                dependencies: tuple[tuple[Path, Path], ...] = ()) -> dict:
+                dependencies: tuple[tuple[Path, Path], ...] = (),
+                revocations: Path | None = None) -> dict:
     """Verify the dependency closure and package before preparing a new directory."""
     lock = read_lock(lock_path)
-    _verify_dependencies(lock, dependencies)
+    revoked = read_revocations(revocations) if revocations is not None else set()
+    _require_available(lock, revoked)
+    _verify_dependencies(lock, dependencies, revoked)
     skill_id, revision = lock["skillId"], lock["revision"]
     package_stat = stat_import_path(package_path)
     if not stat.S_ISREG(package_stat.st_mode) or package_stat.st_size > MAX_TOTAL_BYTES:
