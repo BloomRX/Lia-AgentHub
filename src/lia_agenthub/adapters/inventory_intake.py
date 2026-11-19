@@ -307,6 +307,14 @@ class InventoryIntake:
     def _processar(self, caminho: str | Path, *, efetivar: bool) -> Plano:
         caminho = Path(caminho)
         nome = caminho.name
+        # Windows pode reportar diretório como PermissionError em read_bytes(),
+        # enquanto POSIX costuma lançar IsADirectoryError. Detectar antes da
+        # leitura mantém o código de erro estável entre plataformas.
+        if caminho.is_dir():
+            return Plano(False, dom.Leitura(False, None, [dom._erro(
+                "FILE_IS_DIRECTORY",
+                "O caminho é um diretório; o intake recebe um arquivo de inventário.", "")]),
+                nome, 0)
         try:
             dados = caminho.read_bytes()
         except FileNotFoundError:
