@@ -433,3 +433,72 @@ def test_cli_recusa_com_commit_nao_se_disfarca_de_preview(locations, doc, tmp_pa
     assert "RECUSADO (nada gravado)" in saida
     assert "PRÉ-VISUALIZAÇÃO" not in saida
     assert _sem_dados(locations)
+
+
+# --------------------------------------------------------------------------
+# Proveniência multi-origem e relações declaradas
+# --------------------------------------------------------------------------
+def test_mesma_identidade_preserva_declaracoes_de_feeds_diferentes(
+        intake, doc, tmp_path, locations):
+    """Um feed novo não pode sobrescrever a origem que já declarou a revisão."""
+    primeiro = _salvar(tmp_path, doc, "forge.json")
+    intake.receber(primeiro)
+
+    segundo_doc = copy.deepcopy(doc)
+    segundo_doc["inventoryId"] = "studio-snapshot"
+    segundo_doc["revision"] = "snapshot-studio-001"
+    segundo_doc["issuer"] = {
+        "project": "lia-studio",
+        "repository": "https://example.invalid/studio",
+        "maintainer": "Mantenedor Studio",
+    }
+    segundo = _salvar(tmp_path, segundo_doc, "studio.json")
+    resultado = intake.receber(segundo)
+
+    assert resultado.classificados[0].classe.value == "exact-duplicate"
+    estado = json.loads((Path(locations.common) / "Inventarios" / "estado.json")
+                        .read_text(encoding="utf-8"))
+    revisao = next(iter(estado.values()))["revisions"]["rev-001"]
+    assert len(revisao["sources"]) == 2
+    assert {s["issuer"]["project"] for s in revisao["sources"]} == {
+        "lia-forge", "lia-studio"}
+    assert len(estado[next(iter(estado))]["issuerProjects"]) == 2
+
+
+def test_reenvio_do_mesmo_feed_acrescenta_recibo_sem_duplicar_origem(
+        intake, doc, tmp_path, locations):
+    caminho = _salvar(tmp_path, doc)
+    primeiro = intake.receber(caminho)
+    segundo = intake.receber(caminho)
+
+    estado = json.loads((Path(locations.common) / "Inventarios" / "estado.json")
+                        .read_text(encoding="utf-8"))
+    revisao = next(iter(estado.values()))["revisions"]["rev-001"]
+    assert len(revisao["sources"]) == 1
+    claim = revisao["sources"][0]
+    assert claim["receiptIds"] == [primeiro.receipt_id, segundo.receipt_id]
+
+
+def test_estado_preserva_aliases_dependencias_e_ofertas_como_declaracoes(
+        intake, doc, tmp_path, locations):
+    registro = doc["records"][0]
+    registro["aliases"] = [
+        {"scheme": "upstream", "value": "forge:workflow/revisao",
+         "authority": "lia-forge"}
+    ]
+    registro["dependencies"] = [
+        {"targetId": "urn:lia:cap:11111111-2222-3333-4444-555555555555",
+         "optional": True, "versionRange": ">=1.0.0"}
+    ]
+    registro["offers"] = [
+        {"id": "revisar-asset", "kind": "workflow-step"}
+    ]
+
+    intake.receber(_salvar(tmp_path, doc))
+    estado = json.loads((Path(locations.common) / "Inventarios" / "estado.json")
+                        .read_text(encoding="utf-8"))
+    revisao = next(iter(estado.values()))["revisions"]["rev-001"]
+    assert revisao["aliases"] == registro["aliases"]
+    assert revisao["dependencies"] == registro["dependencies"]
+    assert revisao["offers"] == registro["offers"]
+    assert revisao["sources"][0]["origins"] == registro["origins"]

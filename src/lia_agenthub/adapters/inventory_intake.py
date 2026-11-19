@@ -430,19 +430,94 @@ class InventoryIntake:
     def _atualizar_estado(self, env: dom.Envelope,
                           admitidos: list[dom.Classificado],
                           receipt_id: str) -> None:
+        """Atualiza a projeção sem descartar declarações de outras origens.
+
+        O índice é uma projeção reconstruível; recibos continuam sendo a prova
+        imutável. Uma mesma identidade/revisão pode ser declarada por feeds
+        diferentes. Nesse caso, preservamos cada alegação de origem em
+        `sources`, sem eleger uma origem canônica nem fundir licenças.
+        """
         estado = self.store.estado()
+        agora = _agora()
+
         for c in admitidos:
             reg = c.registro
             entrada = estado.setdefault(reg.id, {"revisions": {}})
             revisoes = entrada.setdefault("revisions", {})
-            revisoes[reg.revision_id] = {
-                "digest": reg.digest, "name": reg.name, "kind": reg.kind,
-                "version": reg.version, "receiptId": receipt_id,
-                "receivedAt": _agora(),
-                "state": ESTADO_CATALOGADO,
+            revisao = revisoes.get(reg.revision_id)
+
+            if revisao is None:
+                revisao = {
+                    "digest": reg.digest,
+                    "name": reg.name,
+                    "kind": reg.kind,
+                    "version": reg.version,
+                    "receiptId": receipt_id,
+                    "receivedAt": agora,
+                    "state": ESTADO_CATALOGADO,
+                    "sources": [],
+                }
+                revisoes[reg.revision_id] = revisao
+
+            # A classificação já impede admitir o mesmo id/revisão com outro
+            # digest. Esta guarda evita corromper a projeção se o estado tiver
+            # sido alterado fora do fluxo esperado.
+            elif revisao.get("digest") != reg.digest:
+                raise IntakeError(
+                    f"Conflito de digest para {reg.id} / {reg.revision_id}; "
+                    "a projeção existente foi preservada.")
+
+            # Relações e aliases permanecem declarações do emissor. Não são
+            # resolvidos, instalados nem convertidos em autorização pelo Hub.
+            for campo in ("aliases", "dependencies", "offers", "compatibility"):
+                revisao[campo] = reg.bruto.get(campo, [])
+
+            sources = revisao.setdefault("sources", [])
+            issuer = {
+                "project": env.issuer.get("project"),
+                "repository": env.issuer.get("repository"),
+                "maintainer": env.issuer.get("maintainer"),
             }
+            claim_key = (
+                env.inventory_id, env.revision, issuer["project"],
+                reg.revision_id, reg.digest,
+            )
+            claim = next((
+                item for item in sources
+                if (
+                    item.get("inventoryId"),
+                    item.get("inventoryRevision"),
+                    (item.get("issuer") or {}).get("project"),
+                    item.get("recordRevisionId"),
+                    item.get("recordDigest"),
+                ) == claim_key
+            ), None)
+
+            if claim is None:
+                claim = {
+                    "inventoryId": env.inventory_id,
+                    "inventoryRevision": env.revision,
+                    "issuer": issuer,
+                    "recordRevisionId": reg.revision_id,
+                    "recordDigest": reg.digest,
+                    "receivedAt": agora,
+                    "receiptIds": [],
+                    "origins": reg.bruto.get("origins", []),
+                }
+                sources.append(claim)
+
+            # Reenvio idempotente mantém uma única alegação de origem, mas
+            # todos os recibos continuam rastreáveis.
+            recibos = claim.setdefault("receiptIds", [])
+            if receipt_id not in recibos:
+                recibos.append(receipt_id)
+
             entrada["lastRevision"] = reg.revision_id
             entrada["name"] = reg.name
             entrada["kind"] = reg.kind
             entrada["issuerProject"] = env.issuer.get("project")
+            projetos = entrada.setdefault("issuerProjects", [])
+            if issuer["project"] and issuer["project"] not in projetos:
+                projetos.append(issuer["project"])
+
         self.store.gravar_estado(estado)
