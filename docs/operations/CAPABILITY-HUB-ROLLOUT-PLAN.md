@@ -495,3 +495,28 @@ lia-game-project-bootstrap como builtin. A captura do identificador
 da janela não foi possível em duas execuções em modo oculto. Encerrei
 os processos de teste. O resultado comprova consumo de Skills pelo
 executável, mas o fechamento pela janela fica sem validação.
+
+## Execução · patch de corte do Studio para revisão
+
+O patch local J:/Lia/migration/agent-hub/studio-cut-38a48d9/studio-agent-hub-cut.patch
+tem SHA-256 AEE952B03B43D6B64623E32EDAD020D95259C0127EA0C120B928E7950AE22AB4
+e base 38a48d9e7cfd526a22ffacb60bf322c3a15847d9. Retira do Git 16 SKILL.md
+e 7 anexos, preserva o README do diretório, ignora cópias materializadas
+e adiciona o bootstrap e as travas de SHA-256 do manifesto do lote e dos
+16 manifestos individuais. Os arquivos de conteúdo continuam disponíveis
+no lote privado já preparado. A aplicação do patch foi conferida contra
+o checkout atual e executada somente na exportação isolada.
+
+Com o patch aplicado e os diretórios gerados ausentes, prepare_hub_skills.ps1
+recriou 16 Skills. Passaram 3 testes do leitor e TestSkillReuse. O build
+padrão do Studio gerou LiaStudio.exe e incluiu a árvore materializada byte
+a byte. Antes de testar a reconstrução, a reversão do patch restaurou
+as 16 fontes versionadas e os 3 testes do leitor passaram novamente.
+O patch está pronto para a revisão de corte prevista no plano. O Studio
+ainda precisa dispor do lote em um local aprovado para os consumidores
+do repositório após o corte.
+
+Rechecagem das branches remotas confirmou 0 SKILL.md em Lia Go
+(be218893a5da3094417fe162675f013302500e41) e Lia-Research
+(33074e280cb557ac23537eac9a6883a0b89d0283). Nessas revisões não há
+arquivos de Skill a retirar. O Model Lab voltou a retornar HTTP 404.
