@@ -1,21 +1,28 @@
-<#
+﻿<#
 Materializa uma Skill fixada para o leitor e o build do Lia Studio.
 O pacote e o manifesto devem estar disponíveis localmente.
 #>
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName='Python')]
 param(
     [Parameter(Mandatory)][string]$StudioRoot,
     [Parameter(Mandatory)][ValidatePattern('^lia-(?!user-)[a-z0-9-]+$')][string]$SkillName,
     [Parameter(Mandatory)][string]$LockPath,
     [Parameter(Mandatory)][string]$PackagePath,
-    [Parameter(Mandatory)][string]$PythonExe
+    [Parameter(Mandatory,ParameterSetName='Python')][string]$PythonExe,
+    [Parameter(Mandatory,ParameterSetName='Packaged')][string]$HubCli
 )
 
 $ErrorActionPreference = 'Stop'
 $studio = (Resolve-Path -LiteralPath $StudioRoot).Path
 $lockFile = (Resolve-Path -LiteralPath $LockPath).Path
 $packageFile = (Resolve-Path -LiteralPath $PackagePath).Path
-$runner = (Resolve-Path -LiteralPath $PythonExe).Path
+$prefix = @()
+if ($PSCmdlet.ParameterSetName -eq 'Packaged') {
+    $runner = (Resolve-Path -LiteralPath $HubCli).Path
+} else {
+    $runner = (Resolve-Path -LiteralPath $PythonExe).Path
+    $prefix = @('-m','lia_agenthub')
+}
 if (!(Test-Path -LiteralPath (Join-Path $studio 'app/lia/skills.py') -PathType Leaf)) {
     throw "Leitor de Skills do Lia Studio ausente em $studio."
 }
@@ -24,5 +31,5 @@ if ($pin.profile -cne 'lia-studio' -or $pin.capabilityId -cnotmatch ("^" + [rege
     throw 'O manifesto precisa fixar esta Skill para o perfil lia-studio.'
 }
 $target = Join-Path $studio ".agents/skills/$SkillName"
-& $runner -m lia_agenthub skill materialize $lockFile $packageFile $target
+& $runner @prefix skill materialize $lockFile $packageFile $target
 if ($LASTEXITCODE -ne 0) { throw "Materialização recusada (código $LASTEXITCODE)." }

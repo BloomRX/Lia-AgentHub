@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-    Gera dist\LiaAgentHub.exe a partir do código, com validação prévia.
+    Gera LiaAgentHub.exe e LiaAgentHubCli.exe com validação prévia.
 
 .DESCRIPTION
     Sequência: confere Python -> cria venv -> instala dependências ->
@@ -139,6 +139,12 @@ if (-not (Test-Path $exe)) { Fail "executavel nao foi gerado em $exe" }
 $mb = [math]::Round((Get-Item $exe).Length / 1MB, 1)
 Write-Ok "gerado: $exe ($mb MB)"
 
+& $vpy -m PyInstaller --noconfirm --clean packaging\lia_agenthub_cli.spec
+if ($LASTEXITCODE -ne 0) { Fail "PyInstaller falhou no executavel de console" }
+$cliExe = "dist\LiaAgentHubCli.exe"
+if (-not (Test-Path $cliExe)) { Fail "executavel de console nao foi gerado em $cliExe" }
+Write-Ok "gerado: $cliExe"
+
 # ---------------------------------------------------------------- verificacao
 Write-Step "6/6 Verificacao do artefato"
 
@@ -148,8 +154,14 @@ $p = Start-Process -FilePath $exe -ArgumentList "--version" -PassThru -Wait -Win
 if ($p.ExitCode -ne 0) { Fail "o executavel saiu com codigo $($p.ExitCode)" }
 Write-Ok "executavel inicia e encerra com codigo 0"
 
+$helpText = & $cliExe skill --help
+if ($LASTEXITCODE -ne 0 -or -not ($helpText -match "materialize")) {
+    Fail "ajuda da CLI empacotada falhou"
+}
+Write-Ok "CLI empacotada imprime ajuda e encerra com codigo 0"
+
 Write-Host ""
-Write-Host "Artefato: $((Resolve-Path $exe).Path)" -ForegroundColor Green
+Write-Host "Artefatos: $((Resolve-Path $exe).Path), $((Resolve-Path $cliExe).Path)" -ForegroundColor Green
 Write-Host ""
 Write-Host "IMPORTANTE: o executavel NAO e assinado digitalmente." -ForegroundColor Yellow
 Write-Host "O Windows pode exibir 'O Windows protegeu o computador'." -ForegroundColor Yellow

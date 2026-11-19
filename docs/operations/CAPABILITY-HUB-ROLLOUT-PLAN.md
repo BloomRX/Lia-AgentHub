@@ -537,3 +537,23 @@ do Project com duas revisões de metadados. Os hashes e a evidência
 local ficam no diretório registry. As declarações MIT não foram
 registradas como autorizações de redistribuição. O comando auditou
 metadados sem copiar nem executar as Skills.
+
+## Execução · CLI Windows para os hosts
+
+O build produz LiaAgentHub.exe para a janela e LiaAgentHubCli.exe com
+console e saída utilizável em scripts. Ambos são onefile. A CLI usa
+o mesmo despacho do código-fonte e funciona com um diretório de dados
+explícito. Scripts de bootstrap do Studio aceitam -HubCli como alternativa
+a -PythonExe. Os pacotes e manifestos ainda são fornecidos localmente.
+
+O build com testes completos passou e o verificador de arquivo listou os
+módulos de oficina e consumo nos dois binários. LiaAgentHub.exe tem
+12 640 635 bytes, SHA-256
+BE44839CB102F5B7F8071E1EC0029D40F2924D65C5D022BC1C2D4D96FD6D3A55.
+LiaAgentHubCli.exe tem 9 583 233 bytes, SHA-256
+BD13647B669C482E0A900C822B73FF4CB85764A28A7272150456B87B9A974693.
+O smoke externo removeu Python do PATH do processo e executou uma cópia
+da CLI fora do checkout. Leu 17 Skills da oficina e 68 registros do
+catálogo e materializou as 16 Skills do Studio pelo parâmetro -HubCli.
+Esta máquina ainda tem Python instalado. A homologação em Windows limpo
+e os bloqueios de distribuição pública continuam separados.

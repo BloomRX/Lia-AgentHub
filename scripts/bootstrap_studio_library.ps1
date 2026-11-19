@@ -1,15 +1,22 @@
-[CmdletBinding()]
+﻿[CmdletBinding(DefaultParameterSetName='Python')]
 param(
     [Parameter(Mandatory)][string]$StudioRoot,
     [Parameter(Mandatory)][string]$ManifestPath,
-    [Parameter(Mandatory)][string]$PythonExe
+    [Parameter(Mandatory,ParameterSetName='Python')][string]$PythonExe,
+    [Parameter(Mandatory,ParameterSetName='Packaged')][string]$HubCli
 )
 
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 $studio = (Resolve-Path -LiteralPath $StudioRoot).Path
 $manifestFile = (Resolve-Path -LiteralPath $ManifestPath).Path
-$runner = (Resolve-Path -LiteralPath $PythonExe).Path
+$prefix = @()
+if ($PSCmdlet.ParameterSetName -eq 'Packaged') {
+    $runner = (Resolve-Path -LiteralPath $HubCli).Path
+} else {
+    $runner = (Resolve-Path -LiteralPath $PythonExe).Path
+    $prefix = @('-m','lia_agenthub')
+}
 $manifest = Get-Content -Raw -LiteralPath $manifestFile -Encoding utf8 | ConvertFrom-Json
 if ($manifest.manifestVersion -ne 1 -or $manifest.profile -cne 'lia-studio' -or !$manifest.skills.Count) {
     throw 'Manifesto de biblioteca Studio inválido.'
@@ -63,7 +70,7 @@ try {
     foreach ($name in $names) {
         $entry = $entries[$name]
         $staged = Join-Path $stagePath $name
-        & $runner -m lia_agenthub skill materialize $entry.lock $entry.package $staged | Out-Null
+        & $runner @prefix skill materialize $entry.lock $entry.package $staged | Out-Null
         if ($LASTEXITCODE -ne 0) { throw "Pacote recusado: $name (código $LASTEXITCODE)." }
     }
 
