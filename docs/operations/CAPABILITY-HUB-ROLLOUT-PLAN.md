@@ -656,3 +656,25 @@ O remoto `BloomRX/Lia-Forge` retornou `Repository not found` para
 `git ls-remote --heads origin`. Os dois checkouts do Forge permaneceram
 limpos. O ensaio de corte do Forge 2.0 continua restrito à revisão para a
 qual foi preparado.
+
+### Atualização e reversão com a CLI empacotada
+
+Em um diretório fora do checkout, com Python fora do PATH, o
+`LiaAgentHubCli.exe` do build `458d5f8` criou e publicou uma Skill
+sintética de perfil `lia-studio`. A sequência foi `create`, `publish`,
+`pack --profile lia-studio`, `materialize`, `edit` e nova publicação.
+Cada revisão teve seu próprio pacote e manifesto. O consumidor
+materializou as revisões 1 e 2 em diretórios novos a partir dos arquivos
+locais, sem criar a raiz de dados do Hub indicada no lado do host.
+
+A reversão do consumidor reutilizou o manifesto e o pacote da revisão 1.
+No lado da oficina, `restore ID 2 1` seguido de `publish ID 3` publicou a
+revisão 3 com a mesma árvore da revisão 1. O SHA-256 de SKILL.md na
+revisão 2 divergiu do inicial, e as duas formas de reversão reproduziram
+o SHA-256 inicial. O histórico retornou `[3, 2, 1]`.
+
+Manifestos e resultados estão em
+`J:/Lia/migration/agent-hub/update-rollback-025eec71ed2b4c458269eb066c40d644/evidence.json`
+e nos arquivos ao lado. O ensaio cobre a oficina e o contrato de consumo
+na CLI. O corte e a regressão de cada repositório continuam sujeitos aos
+critérios por host da seção 5.
