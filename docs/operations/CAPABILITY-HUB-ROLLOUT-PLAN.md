@@ -319,3 +319,29 @@ biblioteca a partir dos arquivos ao lado do manifesto. Se falhar depois
 de iniciar a materialização, pode restar um subconjunto já verificado.
 O carregamento da aplicação completa, a entrega autorizada do lote ao
 mantenedor e a retirada das cópias do repositório continuam pendentes.
+
+## Execução · lote do Studio, piloto Forge e histórico Model Lab
+
+O bootstrap do Studio agora verifica e materializa o lote em preparação
+separada antes de mover qualquer Skill para .agents/skills. Se a publicação
+falhar durante a movimentação, tenta devolver as pastas já movidas à
+preparação. Na falha, informa o caminho dos arquivos de diagnóstico.
+O teste trocou o treeSha256 da última Skill, mantendo o pacote intacto.
+O materializador recusou a árvore divergente e .agents/skills ficou
+ausente. A nova tentativa com o manifesto íntegro materializou 16 Skills.
+
+No Forge 2.0, a Skill de desenvolvimento encontrada no snapshot examinado
+foi recriada num host isolado a partir do pacote privado, usando o perfil
+lia-forge. git hash-object --no-filters confirmou igualdade com o blob
+original. A CLI consumiu o pacote sem criar a raiz de dados do Hub. Os
+artefatos e a evidência de licença ficaram no workspace local. A auditoria
+do Forge identifica a Skill como instrução de desenvolvimento, sem um leitor
+da biblioteca no runtime do app. Ainda falta validar a adoção no host de
+desenvolvimento e o procedimento de corte com o mantenedor. O checkout
+do Forge 2.0 em main ficou limpo.
+
+O Lia-Research em 33074e280cb557ac23537eac9a6883a0b89d0283, arquivo
+data/inventory/lia-all-files.tsv.gz, registra 9 SKILL.md por branch de
+Model Lab em 6 branches históricas, incluindo main e arena/skills-model-lab.
+Essa contagem é histórica. Não substitui um checkout auditável, e a
+API do repositório continua indisponível nesta sessão.
