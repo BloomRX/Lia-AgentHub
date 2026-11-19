@@ -615,3 +615,26 @@ a revisão antes de criar o destino. A cópia de controle permaneceu intacta.
 A lista foi criada só para o teste. Ambos os binários retornaram
 `NotSigned` em `Get-AuthenticodeSignature`. A janela nativa e uma
 instalação Windows sem Python permanecem fora deste ensaio.
+
+### Forge legado no inventário central
+
+O checkout local `J:/Lia/Lia-Forge-Workspace/windows-validation`, na
+branch `codex/windows-stability-fixes` e no commit
+`f94d8b1bb5119a16c03b03cb595d94ccf0a32c4d`, contém um
+`SKILL.md` versionado em `.agents/skills/lia-brand-check/`.
+`git ls-tree` identificou o blob `2a9be442e47466c832604f283f141394bc652f5c`.
+O caminho coincide com o do Forge 2.0, que tem blob
+`74e3d8e85981f2ee0e9f80123d2a9d81df8fa43f`.
+
+O manifesto local `J:/Lia/migration/agent-hub/registry/forge-legacy.inventory.json`
+preserva o hash SHA-256 do arquivo e do documento de licença de origem.
+`LiaAgentHubCli.exe inventory preview` classificou o registro como
+`overlap`. `inventory receive --commit` gravou o recibo
+`rec-161098d0d01684f4`, e `inventory state --json` confirmou 69
+identidades. A revisão legada tem identidade própria por referência e
+permanece com redistribuição pendente.
+
+O remoto `BloomRX/Lia-Forge` retornou `Repository not found` para
+`git ls-remote --heads origin`. Os dois checkouts do Forge permaneceram
+limpos. O ensaio de corte do Forge 2.0 continua restrito à revisão para a
+qual foi preparado.
