@@ -1131,3 +1131,12 @@ A primeira tentativa de hidratar o worktree via `git restore`
 buscou conteúdo fora do escopo do teste e foi interrompida.
 O segundo ensaio inicializou apenas o checkout esparso.
 O canal segue local, sem evidência de acesso pelo CI remoto.
+
+A reversão integral dos cinco commits locais do Lia-Project passou
+no worktree esparso isolado. Após afastar as 28 cópias geradas,
+`git revert --no-commit HEAD~5..HEAD` restaurou as 28 fontes.
+`git write-tree` retornou exatamente a árvore de `9778ffb`,
+`a53a2e8a55acd4b9faf6a189e1d9b0bc2fb9a735`.
+Os sete testes passaram após a reversão e o checkout do piloto
+permaneceu no corte. Evidência:
+`J:/Lia/migration/agent-hub/project-clean-channel-v2-rollback.json`.
