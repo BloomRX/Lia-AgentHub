@@ -1027,3 +1027,10 @@ blobs Git de `9778ffb`. Todos os arquivos gerados foram ignorados
 pelo Git. Os sete testes do contrato passaram, e o Codex descobriu
 as 11 Skills habilitadas na raiz AIRI. A árvore ficou limpa.
 Evidência: `J:/Lia/migration/agent-hub/project-eventa-pilot/airi-v3-discovery.json`.
+
+As 15 Skills da árvore AIRI sem entrada no lock correspondem a
+árvores completas em commits históricos de `moeru-ai/airi`.
+Conferi o SHA-256 do LICENSE em cada snapshot e a API reportou MIT.
+O recibo `rec-623fd446cc743936` atualizou os 15 IDs existentes com
+as origens externas. Essa etapa ainda não empacotou as Skills.
+Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/airi-native-upstream-history.json`.
