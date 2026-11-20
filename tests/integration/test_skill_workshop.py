@@ -7,6 +7,20 @@ from lia_agenthub.adapters.packager import verify_package
 from lia_agenthub.__main__ import main
 
 
+def test_preview_json_round_trips_unicode_with_legacy_stdout(tmp_path, capsys):
+    source = tmp_path / "SKILL.md"
+    text = "---\nname: piloto\ndescription: Skill de teste\n---\n\nOrigem → destino.\n"
+    source.write_bytes(text.encode("utf-8"))
+    command = ["--home", str(tmp_path / "hub"), "skill"]
+    assert main([*command, "create", str(source)]) == 0
+    skill_id = json.loads(capsys.readouterr().out)["id"]
+
+    assert main([*command, "preview", skill_id]) == 0
+    output = capsys.readouterr().out
+    assert output.isascii()
+    assert json.loads(output)["text"] == text
+
+
 def test_oficina_versoes_e_edicao_concorrente(tmp_path, capsys):
     source = tmp_path / "SKILL.md"
     source.write_bytes(b"---\r\nname: teste\r\ndescription: Skill sintetica\r\n---\r\n\r\nPrimeira.\r\n")

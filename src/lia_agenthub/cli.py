@@ -24,7 +24,8 @@ from .app import AgentHub
 
 
 def _json(obj) -> None:
-    print(json.dumps(obj, ensure_ascii=False, indent=2))
+    # Redirecionamentos no Windows podem usar uma página de código legada.
+    print(json.dumps(obj, ensure_ascii=True, indent=2))
 
 
 def _erro(msg: str, codigo: int = 2) -> int:

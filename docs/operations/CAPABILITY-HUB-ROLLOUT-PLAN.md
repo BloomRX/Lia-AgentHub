@@ -962,3 +962,19 @@ com os commits completos, os hashes das licenças e as origens.
 Para `vueuse-functions`, os seis commits do histórico do caminho
 não forneceram blob ou árvore idênticos. As quatro Skills seguem por
 referência. Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/airi-mit-upstream-history.json`.
+
+### AIRI · pacotes privados com licença conferida
+
+Em uma oficina isolada, publiquei e materializei `eventa`,
+`simple-english`, `vue-best-practices` e
+`vue-testing-best-practices`. A CLI Windows recriou os 43 arquivos
+originais com os mesmos SHA-256. Cada lote guarda ao lado do pacote
+a licença MIT do commit de origem, com hash no manifesto de procedência.
+Evidência: `J:/Lia/migration/agent-hub/project-airi-private-v1/evidence.json`.
+
+O ensaio encontrou uma falha em saída JSON redirecionada no Windows.
+A CLI antiga não conseguia representar uma seta em CP1252.
+A serialização passou a usar escapes JSON para Unicode. O teste de
+regressão confirmou a leitura do texto original e o binário recompilado
+concluiu o fluxo com as quatro Skills. A oficina central e o checkout
+do Project ainda conservam o estado anterior para essas quatro entradas.
