@@ -1088,3 +1088,12 @@ somente reescritas de links Markdown. O recibo
 `rec-cbfddfcc592f436b` registrou as origens como variantes, com
 os caminhos modificados e hashes dos arquivos MIT de cada Skill.
 Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/airi-tsdown-vueuse-component-diff.json`.
+
+As variantes `tsdown` e `vueuse-functions` passaram por publicação
+e materialização local na CLI Windows com, respectivamente, 42 e 269
+arquivos. Os 311 hashes conferiram com a árvore do Project, incluindo
+os documentos de licença. A oficina central passou a 46 revisões
+com backup da base anterior. O recibo `rec-7a60cca300f05b57`
+vinculou os dois pins aos registros de variantes existentes.
+Evidência: `J:/Lia/migration/agent-hub/project-airi-link-rewrites-pilot/evidence.json`.
+O checkout continua com as fontes versionadas até o próximo corte.
