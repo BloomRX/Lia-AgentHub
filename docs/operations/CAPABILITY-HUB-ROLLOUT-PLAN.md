@@ -1034,3 +1034,12 @@ Conferi o SHA-256 do LICENSE em cada snapshot e a API reportou MIT.
 O recibo `rec-623fd446cc743936` atualizou os 15 IDs existentes com
 as origens externas. Essa etapa ainda não empacotou as Skills.
 Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/airi-native-upstream-history.json`.
+
+A oficina central recebeu 14 das 15 Skills nativas do AIRI.
+A CLI Windows reconstruiu os 34 arquivos originais com hashes
+idênticos. O consolidador verificou 43 revisões e preservou a
+base anterior. O recibo `rec-778e04b3c59df5ef` vinculou os 14 pins
+aos IDs existentes. `upload-github-attachment` permanece por
+referência: contém um arquivo Git com modo `100755`, que o formato
+de consumo da oficina ainda não preserva.
+Evidência: `J:/Lia/migration/agent-hub/project-airi-private-v3/evidence.json`.
