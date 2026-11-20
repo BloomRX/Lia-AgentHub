@@ -326,3 +326,24 @@ os argumentos ativos. As duas execuções fecharam com código 0 e
 sem sobreviventes observados. Os tokens de sessão capturados foram
 redigidos dos NetLogs. O procedimento e os arquivos por PID estão em
 `J:/Lia/migration/agent-hub/windows-d09-a19cfaf`.
+
+#### Ensaio de isolamento por argumentos do runtime
+
+No mesmo binário, testei os argumentos atuais acrescidos de
+`DnsOverHttps` em `--disable-features` e de
+`--host-resolver-rules="MAP * ~NOTFOUND, EXCLUDE 127.0.0.1, EXCLUDE localhost"`.
+A primeira tentativa, que excluía somente `localhost`, também
+impediu o frontend de alcançar o servidor local. Descartei esse
+resultado como candidato.
+
+Com os dois endereços excluídos do bloqueio, o PID navegador 14864
+recebeu os argumentos. Em 25 segundos, o NetLog registrou seis
+requisições locais, incluindo `/api/items`, e zero eventos
+`DNS_TRANSACTION`. O TCP por PID não registrou destino externo.
+O aplicativo fechou com código 0 e sem os processos observados.
+Evidência: `J:/Lia/migration/agent-hub/windows-d09-loopback-a19cfaf/summary.json`.
+
+O resultado é de uma execução diagnóstica com overrides locais.
+A [documentação do WebView2](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/webview-features-flags)
+orienta o uso dos browser flags para desenvolvimento. D-09 continua
+PARTIAL para o build padrão e a configuração de distribuição.
