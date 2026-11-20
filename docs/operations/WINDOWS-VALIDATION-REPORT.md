@@ -362,3 +362,25 @@ Os cinco padrões de chave e token pesquisados retornaram zero
 correspondências. Os resultados guardam apenas nomes de padrões
 e contagens. Evidência:
 `J:/Lia/migration/agent-hub/windows-product-a19cfaf/credential-pattern-scan.json`.
+
+### Build Windows com modelo MCP stdio
+
+`scripts/build_windows.ps1` executou a suíte completa e empacotou
+`c13add7`. A execução separada da mesma suíte registrou
+847 aprovados e um skip de symlink. O teste no binário gráfico
+fora do checkout importou um descritor stdio baseado no Forge,
+consultou o modelo pela API e confirmou o placeholder e os campos
+de execução não verificada. Após promover o registro e reiniciar,
+a API reproduziu o modelo. Importação, reimportação, quarentena,
+persistência, junction e ACL também foram exercitadas. Ambos os
+processos encerraram com código 0. O CI e o Claude Code não
+receberam configuração durante o ensaio.
+
+| Artefato | SHA-256 |
+| --- | --- |
+| LiaAgentHub.exe | `2cc8884a8eef430190684291dcbf510c7052f34d47da5949908fd697fdf292cb` |
+| LiaAgentHubCli.exe | `6f9e156e5505756df7e12178010c6e26fa45bbf84e379dd4572fe1b42bfca839` |
+
+Logs locais em `J:/Lia/migration/agent-hub/windows-build-c13add7.log`
+e `J:/Lia/migration/agent-hub/windows-product-c13add7/smoke.log`.
+D-09 e Windows limpo seguem com as limitações registradas.
