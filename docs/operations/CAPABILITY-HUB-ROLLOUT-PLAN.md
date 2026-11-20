@@ -890,3 +890,10 @@ Ao afastar a cópia derivada, a mesma consulta retornou zero entradas
 com esse nome. O arquivo foi recolocado após o controle. A consulta
 apenas enumerou metadados da Skill e não iniciou uma sessão de agente.
 Evidência: `J:/Lia/migration/agent-hub/project-eventa-pilot/codex-discovery-evidence.json`.
+
+O corte Eventa foi registrado na branch local existente
+`arena/7fa837f0-lia-project` no commit `08bf697`. Após o commit,
+afastei a cópia derivada e repeti o bootstrap. O checkout esparso
+precisou incluir o novo script e o manifesto em seu filtro.
+A rematerialização conferiu com o blob de `9778ffb`, os sete testes
+passaram e a árvore ficou limpa. O remoto permanece em `9778ffb`.
