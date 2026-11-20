@@ -1079,3 +1079,12 @@ entradas para esse nome nos três diretórios consultados: `airi`,
 A busca por referências no checkout não identificou um carregador.
 O arquivo continua versionado. A evidência de materialização não
 comprova descoberta nem uso no host.
+
+A comparação por arquivo identificou `antfu/skills@2814e65` como
+base das variantes `tsdown` e `vueuse-functions`. Em `tsdown`,
+41 de 42 arquivos têm blobs idênticos. Em `vueuse-functions`,
+265 de 269 são idênticos. A leitura dos cinco diffs confirmou
+somente reescritas de links Markdown. O recibo
+`rec-cbfddfcc592f436b` registrou as origens como variantes, com
+os caminhos modificados e hashes dos arquivos MIT de cada Skill.
+Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/airi-tsdown-vueuse-component-diff.json`.
