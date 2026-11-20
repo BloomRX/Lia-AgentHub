@@ -850,3 +850,11 @@ Hub no caminho esperado, e após restaurar o original com `git restore`.
 A árvore isolada voltou a ficar limpa. O ensaio confirma o contrato de
 descoberta por caminho e catálogo. O carregamento pelo Desktop e o
 corte na branch publicada ainda precisam de validação.
+
+A revisão `private-workshop-1` do registro já existente de
+`lia-eventa-ipc` vincula o manifesto da oficina e os hashes de pacote
+e árvore, preservando a origem e a redistribuição pendente. A CLI
+verificou o pacote e a cópia materializada, classificou o inventário
+como atualização e gravou o recibo `rec-6110c71429b8ebee`.
+O catálogo manteve 78 identidades e a oficina passou a 18 entradas.
+Manifesto local: `J:/Lia/migration/agent-hub/registry/project-eventa-private-pilot.inventory.json`.
