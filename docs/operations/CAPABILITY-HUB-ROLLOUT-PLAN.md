@@ -978,3 +978,12 @@ A serialização passou a usar escapes JSON para Unicode. O teste de
 regressão confirmou a leitura do texto original e o binário recompilado
 concluiu o fluxo com as quatro Skills. A oficina central e o checkout
 do Project ainda conservam o estado anterior para essas quatro entradas.
+
+As quatro revisões AIRI entraram na oficina central. O consolidador
+verificou 22 revisões contra os manifestos antes de trocar a base.
+A base anterior ficou em `J:/Lia/migration/agent-hub/registry/skills-before-airi.sqlite3`.
+O inventário `project-airi-private-workshop.inventory.json` atualizou
+os quatro IDs de catálogo existentes com os pins da oficina e os
+hashes de árvore e pacote. Recibo `rec-df9f5d6b20602e53`.
+A consulta confirmou 78 identidades e 22 entradas de oficina.
+O corte das quatro cópias no checkout do Project segue pendente.
