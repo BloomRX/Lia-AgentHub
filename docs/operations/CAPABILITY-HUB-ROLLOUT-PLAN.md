@@ -858,3 +858,18 @@ verificou o pacote e a cópia materializada, classificou o inventário
 como atualização e gravou o recibo `rec-6110c71429b8ebee`.
 O catálogo manteve 78 identidades e a oficina passou a 18 entradas.
 Manifesto local: `J:/Lia/migration/agent-hub/registry/project-eventa-private-pilot.inventory.json`.
+
+A verificação de escopo do piloto Eventa usou controle negativo:
+com `lia-eventa-ipc` temporariamente ausente na exportação isolada,
+os sete testes ainda passaram. Eles verificam a integridade das Skills
+presentes, mas não exigem a presença desta Skill. A identidade da
+cópia derivada foi comprovada separadamente pelo blob Git.
+
+A configuração fixada de empacotamento do launcher em
+`airi/apps/lia-app/electron-builder.config.ts` lista `out/**`,
+`package.json` e recursos explícitos do stage e licenças. A busca por
+`.agents/skills`, `SKILL.md` e `lia-eventa-ipc` no código do checkout
+local encontrou o validador de desenvolvimento, testes de Alethe e
+o lock de upstream AIRI. A evidência disponível aponta Eventa como
+Skill de desenvolvimento. O próximo teste de descoberta deve usar
+esse host e exigir especificamente o nome fixado antes do corte.
