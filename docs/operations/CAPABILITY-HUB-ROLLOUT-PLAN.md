@@ -841,3 +841,12 @@ O ensaio verificou abertura, leitura pela API e encerramento.
   em `J:/Lia/migration/agent-hub/project-eventa-pilot` materializaram
   bytes idênticos à fonte. O corte no checkout do Project e o teste de
   descoberta pelo host continuam pendentes.
+
+O ensaio de corte do Lia-Project usou um worktree isolado de `9778ffb`.
+Os sete testes de `tools/test_agent_skills.py` passaram antes da
+mudança, depois de retirar a fonte do índice e materializar a revisão do
+Hub no caminho esperado, e após restaurar o original com `git restore`.
+`git hash-object --no-filters` confirmou o blob Git da cópia derivada.
+A árvore isolada voltou a ficar limpa. O ensaio confirma o contrato de
+descoberta por caminho e catálogo. O carregamento pelo Desktop e o
+corte na branch publicada ainda precisam de validação.
