@@ -1191,3 +1191,15 @@ restaurada coincidiu com a lista da oficina central. Reempacotei
 `lia-hub-skill-maintenance` a partir dessa base e rematerializei a
 mesma árvore. Evidência:
 `J:/Lia/migration/agent-hub/workshop-recovery-native/evidence.json`.
+
+### Recuperação conjunta do catálogo e da oficina
+
+Em uma raiz nova, reingressei os 21 manifestos na ordem dos recibos
+originais, localizando os arquivos pelo SHA-256 `fileDigest` antes
+de chamar `inventory receive --commit --json`. Os estados de
+recebimento coincidiram. O `estado.json` reproduziu as 79
+identidades, revisões e origens após desconsiderar somente os IDs
+e horários dos novos recibos. Copiei a base de oficina já
+reconstruída para `Oficina/skills.sqlite3` na raiz de recuperação.
+A CLI listou as mesmas 47 entradas da instância ativa.
+Evidência: `J:/Lia/migration/agent-hub/catalog-recovery-v1/evidence.json`.
