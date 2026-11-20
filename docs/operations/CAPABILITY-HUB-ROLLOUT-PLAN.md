@@ -1105,3 +1105,13 @@ testes passaram e o Codex encontrou as 27 entradas habilitadas.
 A árvore do piloto ficou limpa. Com `lia-eventa-ipc`, o Lia-Project
 tem 28 de 51 Skills migradas localmente.
 Evidência: `J:/Lia/migration/agent-hub/project-eventa-pilot/airi-v5-discovery.json`.
+
+A análise das 20 Skills da raiz recuperou o histórico de 604 commits
+de `9778ffb`. O primeiro commit encontrado para cada caminho levou
+a quatro grupos: `48f8116`, `22a39fe`, `aadf9c3` e `4d3f4f7`.
+O recibo `rec-00b5a56785b7611d` registrou o primeiro e o último
+commit por caminho e preservou o autor declarado no primeiro
+commit. O histórico consultado não registrou LICENSE, LICENSE.md ou
+COPYING na raiz. O crédito de um commit comprova a contribuição
+registrada no Git; a base de cópia continua pendente por componente.
+Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/project-root-skills-git-provenance.json`.
