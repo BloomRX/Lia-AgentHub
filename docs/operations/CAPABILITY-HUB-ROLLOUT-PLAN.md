@@ -1043,3 +1043,12 @@ aos IDs existentes. `upload-github-attachment` permanece por
 referência: contém um arquivo Git com modo `100755`, que o formato
 de consumo da oficina ainda não preserva.
 Evidência: `J:/Lia/migration/agent-hub/project-airi-private-v3/evidence.json`.
+
+O commit local `ee0c897` do Lia-Project trouxe as 14 Skills nativas
+para o mesmo bootstrap. O lote `project-airi-consumption-v4` recriou
+as 25 Skills AIRI nos caminhos originais. Conferi os 147 blobs sem
+filtros contra `9778ffb`, a regra de exclusão do Git e os sete testes
+do contrato. O Codex descobriu as 25 entradas habilitadas, conforme
+`J:/Lia/migration/agent-hub/project-eventa-pilot/airi-v4-discovery.json`.
+Com `lia-eventa-ipc`, o piloto local cobre 26 das 51 Skills inventariadas.
+A branch remota e as 25 Skills restantes ainda aguardam corte.
