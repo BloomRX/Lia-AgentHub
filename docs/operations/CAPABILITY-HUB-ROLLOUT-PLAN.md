@@ -897,3 +897,11 @@ afastei a cópia derivada e repeti o bootstrap. O checkout esparso
 precisou incluir o novo script e o manifesto em seu filtro.
 A rematerialização conferiu com o blob de `9778ffb`, os sete testes
 passaram e a árvore ficou limpa. O remoto permanece em `9778ffb`.
+
+No Forge 2.0, o Codex app-server local confirmou a descoberta de
+`lia-brand-check` na branch `codex/agent-hub-skills-pilot` (`0b0a9b6`).
+`skills/list` retornou exatamente uma entrada habilitada, no caminho
+materializado pelo Hub. Afastar a cópia produziu zero entradas para
+o mesmo nome. A cópia foi recolocada e a árvore ficou limpa.
+O teste listou metadados sem invocar a Skill. Evidência:
+`J:/Lia/migration/agent-hub/forge-pilot-discovery.json`.
