@@ -1009,3 +1009,12 @@ origem são MIT para `pinia`, `pnpm`, `unocss`, `vue`,
 origens com o hash da licença, nos IDs existentes. `tsdown` não
 encontrou árvore idêntica nos oito commits consultados.
 Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/airi-other-upstream-history.json`.
+
+Empacotei as sete árvores adicionais em `project-airi-private-v2`.
+Os 70 arquivos foram reconstruídos byte a byte pela CLI Windows.
+Os lotes incluem a licença de origem e os avisos encontrados no
+commit. A consolidação verificou 29 revisões contra os pins e
+preservou a base anterior em `registry/skills-before-airi-v2.sqlite3`.
+O recibo `rec-1c4bde9d51c35dc1` vinculou as revisões aos sete IDs
+existentes. O corte dessas sete cópias no Project continua pendente.
+Evidência: `J:/Lia/migration/agent-hub/project-airi-private-v2/evidence.json`.
