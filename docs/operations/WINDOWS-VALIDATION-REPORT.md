@@ -269,3 +269,24 @@ e [transporte DoH do Google Public DNS](https://developers.google.com/speed/publ
 A distribuição continua bloqueada. O egress residual exige avaliar uma política
 para o runtime, e falta executar o binário em Windows limpo. As decisões
 D-01, D-05, D-16 e D-18 seguem com os estados e restrições registrados.
+
+### Regressão e build após a correção de Unicode
+
+A revisão `a19cfaf` passou pela suíte Windows de
+`scripts/build_windows.ps1` sem `-SkipTests`. O log está em
+`J:/Lia/migration/agent-hub/windows-build-a19cfaf.log`.
+O script gerou os dois binários. Cópias em
+`J:/Lia/migration/agent-hub/windows-smoke-a19cfaf` foram testadas
+com PATH restrito ao Windows e com o programa fora do checkout.
+O executável gráfico retornou 0 em `--version`. A CLI preservou
+`Origem → destino.` em JSON redirecionado nos comandos
+`skill preview` e `skill publish`.
+
+| Artefato | SHA-256 |
+| --- | --- |
+| LiaAgentHub.exe | `1fbd116d70aa5a17ef71cf6872255fef34076b20bc99bc982d8c99b892c44ef9` |
+| LiaAgentHubCli.exe | `9fffcf834a37714b812f6e2c391f1069a2a16ae46a03f6bebe1312582b9fbe14` |
+
+Um teste direto de criação de symlink em pasta temporária retornou
+WinError 1314. Essa sessão ainda não cobre a criação de symlinks
+NTFS. O ensaio não reclassifica D-09 nem Windows limpo.
