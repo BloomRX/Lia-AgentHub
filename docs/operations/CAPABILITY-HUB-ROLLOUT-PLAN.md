@@ -1000,3 +1000,12 @@ o Codex app-server listou as quatro entradas habilitadas com os
 caminhos gerados. Evidência:
 `J:/Lia/migration/agent-hub/project-eventa-pilot/airi-discovery-evidence.json`.
 O commit permanece no piloto local.
+
+O cruzamento das oito entradas restantes do lock AIRI identificou
+sete árvores completas no histórico dos upstreams. As licenças de
+origem são MIT para `pinia`, `pnpm`, `unocss`, `vue`,
+`web-design-guidelines` e `xsai`, e Apache-2.0 para
+`agent-browser`. O recibo `rec-cd91f03861a649f3` registrou as sete
+origens com o hash da licença, nos IDs existentes. `tsdown` não
+encontrou árvore idêntica nos oito commits consultados.
+Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/airi-other-upstream-history.json`.
