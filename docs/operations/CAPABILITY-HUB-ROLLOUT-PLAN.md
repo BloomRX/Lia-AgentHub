@@ -812,3 +812,16 @@ e `studio-pilot-build.log` sob `J:/Lia/migration/agent-hub`.
 O mantenedor informou que o Model Lab saiu de desenvolvimento.
 Seu piloto de migração é **NOT APPLICABLE**. As nove referências
 históricas permanecem no catálogo com o estado de projeto inativo.
+
+### Studio · executável do piloto validado
+
+Copiei a distribuição do commit local `e3553a8` para um diretório
+fora do checkout, com `LIA_PROJECTS_DIR` isolado e PATH restrito
+ao Windows. `LiaStudio.exe` (PID 22456) abriu a janela nativa
+`Lia Studio` e iniciou o WebView2 filho (PID 18324).
+A API em `127.0.0.1:52446` retornou 16 Skills em `GET /api/skills`
+e o conteúdo de `lia-game-project-bootstrap` na consulta individual.
+`CloseMainWindow()` encerrou o processo com código 0 e a porta deixou
+de escutar. Evidência em
+`J:/Lia/migration/agent-hub/studio-pilot-native-66f35ab83f1c4478a30e41d334ff497c/evidence.json`.
+O ensaio verificou abertura, leitura pela API e encerramento.
