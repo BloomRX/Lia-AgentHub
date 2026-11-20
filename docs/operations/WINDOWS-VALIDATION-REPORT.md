@@ -290,3 +290,16 @@ O executável gráfico retornou 0 em `--version`. A CLI preservou
 Um teste direto de criação de symlink em pasta temporária retornou
 WinError 1314. Essa sessão ainda não cobre a criação de symlinks
 NTFS. O ensaio não reclassifica D-09 nem Windows limpo.
+
+A cópia externa do mesmo build também passou no teste de produto
+com janela nativa e perfil temporário. O cliente HTTP verificou
+403 sem token, diagnóstico autenticado, importação, quarentena,
+validação, promoção, exportação, hash do pacote e reimportação.
+Junctions e operações sob ACL NTFS restritiva foram recusadas.
+A biblioteca persistiu após reabrir. As duas janelas fecharam com
+código 0, portas liberadas e processos WebView2 encerrados.
+O arquivador do PyInstaller verificou os módulos de oficina,
+consumo e servidor, além do frontend e do backend EdgeChromium.
+Evidência: `J:/Lia/migration/agent-hub/windows-product-a19cfaf/smoke.log`
+e `contents.txt` no mesmo diretório. O teste confirmou os argumentos
+do runtime. A medição de egress mantém o estado anterior de D-09.
