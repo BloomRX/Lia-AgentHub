@@ -905,3 +905,21 @@ materializado pelo Hub. Afastar a cópia produziu zero entradas para
 o mesmo nome. A cópia foi recolocada e a árvore ficou limpa.
 O teste listou metadados sem invocar a Skill. Evidência:
 `J:/Lia/migration/agent-hub/forge-pilot-discovery.json`.
+
+### Estado dos cortes locais e publicação
+
+O Codex app-server também listou as 16 Skills do Studio habilitadas
+nos caminhos gerados pelo Hub no checkout `e3553a8`. A lista coincide
+com o manifesto do lote. A consulta apenas leu metadados. Evidência:
+`J:/Lia/migration/agent-hub/studio-pilot-codex-discovery.json`.
+
+| Projeto | Corte local | Estado remoto verificado |
+| --- | --- | --- |
+| Studio | `e3553a8`, 16 Skills | Branch de desenvolvimento em `38a48d9` |
+| Forge 2.0 | `0b0a9b6`, 1 Skill | Branch do piloto ainda local |
+| Lia-Project | `08bf697`, 1 Skill | Branch de desenvolvimento em `9778ffb` |
+
+As três árvores locais estavam limpas. Para publicar os cortes,
+os consumidores e o CI precisam de acesso autorizado aos lotes.
+As outras 50 Skills do Lia-Project continuam por referência até a
+confirmação do escopo de cópia por componente.
