@@ -881,3 +881,12 @@ ignora a cópia derivada e inclui `tools/prepare_eventa_skill.ps1`.
 Com a fonte ausente, esse comando recriou o blob original. O Git ignorou
 a cópia e os sete testes existentes passaram. A branch publicada do
 Project conserva o baseline. O pacote e o patch são do piloto privado.
+
+O host de desenvolvimento também passou no piloto. O Codex CLI
+`0.164.0`, em app-server local via stdio e com diretório de configuração
+isolado, retornou exatamente uma entrada habilitada para `lia-eventa-ipc`
+em `skills/list`, apontando para o SKILL.md materializado no worktree.
+Ao afastar a cópia derivada, a mesma consulta retornou zero entradas
+com esse nome. O arquivo foi recolocado após o controle. A consulta
+apenas enumerou metadados da Skill e não iniciou uma sessão de agente.
+Evidência: `J:/Lia/migration/agent-hub/project-eventa-pilot/codex-discovery-evidence.json`.
