@@ -1203,3 +1203,16 @@ e horários dos novos recibos. Copiei a base de oficina já
 reconstruída para `Oficina/skills.sqlite3` na raiz de recuperação.
 A CLI listou as mesmas 47 entradas da instância ativa.
 Evidência: `J:/Lia/migration/agent-hub/catalog-recovery-v1/evidence.json`.
+
+### Lia-Project · referências MCP
+
+O inventário de `9778ffb` recebeu dois registros `mcp-server`:
+`computer-use-mcp`, declarado para macOS e com transporte stdio
+no código, e `minecraft-brain-repl`, com HTTP streamable e SSE
+no código. A consulta `get_state` recebeu registro `mcp-tool`
+vinculado ao ID e à revisão do servidor Minecraft. A Agent Skill
+`minecraft-debug-mcp` conserva sua identidade e tipo próprios.
+
+O recibo `rec-c0b2668a6da448c8` confirmou três identidades novas,
+totalizando 82. O inventário é parcial e estático. Não houve
+conexão, configuração nem teste de execução de servidores.
