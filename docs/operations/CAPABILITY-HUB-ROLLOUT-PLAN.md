@@ -923,3 +923,19 @@ As três árvores locais estavam limpas. Para publicar os cortes,
 os consumidores e o CI precisam de acesso autorizado aos lotes.
 As outras 50 Skills do Lia-Project continuam por referência até a
 confirmação do escopo de cópia por componente.
+
+### Canal privado local dos pilotos
+
+Consolidei os artefatos de consumo em
+`J:/Lia/migration/agent-hub/private-consumption-v1`. A pasta contém
+41 arquivos de três perfis, com hashes de pacote conferidos contra
+os manifestos. A CLI Windows recriou as 18 Skills a partir desse
+canal, com Python fora do PATH e sem criar a base do Hub no host.
+`hashes.json` registra o SHA-256 de cada arquivo.
+
+Este é o canal escolhido para os pilotos locais. O GitHub do Hub é
+público. A adoção pelos consumidores remotos e pela CI depende de
+um canal privado que eles possam acessar e de autorização para os
+componentes envolvidos. Os cinco registros MIT restantes no Project
+estão sob AIRI. A declaração, sozinha, não encerra a revisão de
+proveniência e escopo desses componentes.
