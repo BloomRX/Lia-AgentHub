@@ -1165,3 +1165,20 @@ canal de consumo. O teste comprova paridade de arquivos; a
 integração no checkout e a regressão dos fluxos da Alethe seguem
 pendentes. Evidência:
 `J:/Lia/migration/agent-hub/alethe-component-composition/evidence.json`.
+
+### Agent Hub · primeira Skill criada na oficina
+
+Criei `lia-hub-skill-maintenance` para revisão de pins, atualização
+e reversão de Skills. O validador da oficina passou e a revisão 1
+foi publicada no armazenamento local. A CLI gerou o pacote no
+perfil `lia-agent-hub` e materializou o mesmo arquivo em uma raiz
+isolada de host, sem criar uma segunda base do Hub. O Codex
+descobriu a entrada habilitada via `skills/list`, sem invocá-la.
+O validador opcional do Skill Creator não pôde rodar porque os
+interpretadores consultados não tinham PyYAML.
+
+O recibo `rec-07f79d0150c5bca7` registra a origem de oficina,
+sem atribuir commit Git à fonte, e mantém redistribuição pendente.
+A consulta confirmou 79 identidades e 47 entradas de oficina.
+Manifesto e evidência local em
+`J:/Lia/migration/agent-hub/hub-maintenance-pilot`.
