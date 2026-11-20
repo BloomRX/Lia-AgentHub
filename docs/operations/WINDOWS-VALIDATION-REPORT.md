@@ -303,3 +303,26 @@ consumo e servidor, além do frontend e do backend EdgeChromium.
 Evidência: `J:/Lia/migration/agent-hub/windows-product-a19cfaf/smoke.log`
 e `contents.txt` no mesmo diretório. O teste confirmou os argumentos
 do runtime. A medição de egress mantém o estado anterior de D-09.
+
+### D-09 no build atual · 20 de novembro de 2026
+
+Medi o mesmo `LiaAgentHub.exe` de `a19cfaf` por 25 segundos em
+cada condição, com perfis novos. O baseline definiu
+`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` só para NetLog. O controle
+usou o mesmo NetLog e todos os argumentos de rede do Hub. A linha de
+comando confirmou a diferença nos processos navegador 6760 e 11368.
+
+| Condição | Processo de rede | Destino TCP estabelecido | Primeira amostra local |
+| --- | --- | --- | --- |
+| Baseline | msedgewebview2.exe 22540 | 150.171.22.17:443 | 03:05:53 |
+| Baseline | msedgewebview2.exe 22540 | 8.8.4.4:443 e 8.8.8.8:443 | 03:05:58 |
+| Controle | msedgewebview2.exe 14776 | 8.8.8.8:443 e 8.8.4.4:443 | 03:06:25 |
+
+O NetLog associou o primeiro destino a `config.edge.skype.com`.
+Esse destino não apareceu no controle. `dns.google/dns-query`
+apareceu nas duas execuções, alinhado às conexões HTTPS observadas.
+O controle continua **PARTIAL**, pois houve egress externo com
+os argumentos ativos. As duas execuções fecharam com código 0 e
+sem sobreviventes observados. Os tokens de sessão capturados foram
+redigidos dos NetLogs. O procedimento e os arquivos por PID estão em
+`J:/Lia/migration/agent-hub/windows-d09-a19cfaf`.
