@@ -1216,3 +1216,14 @@ vinculado ao ID e à revisão do servidor Minecraft. A Agent Skill
 O recibo `rec-c0b2668a6da448c8` confirmou três identidades novas,
 totalizando 82. O inventário é parcial e estático. Não houve
 conexão, configuração nem teste de execução de servidores.
+
+### Catálogo de capacidades além das Skills
+
+A CLI recebeu quatro manifestos parciais de referências de fonte,
+com commits e SHA-256 dos arquivos. Entraram três CLIs
+(Studio, DevFlow e Hub), dois workflows (DevFlow CI e Hub CI),
+o pacote Electron do Forge e a implementação MCP do Forge.
+Os recibos são `rec-834d30b665aca6f0`, `rec-35612a5f13bfae00`,
+`rec-e3602ecade4c0a9b` e `rec-da2134183cb09143`.
+A consulta confirmou 89 identidades. Os sete registros têm
+evidência estática e mantêm distribuição pendente.
