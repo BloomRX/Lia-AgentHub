@@ -1235,3 +1235,14 @@ com placeholder de credencial, e os 20 testes do workshop MCP
 passaram. O registro existente recebeu uma revisão de
 compatibilidade. O servidor Forge segue apenas inventariado.
 Evidência: `J:/Lia/migration/agent-hub/forge-mcp-passive-review/evidence.json`.
+
+A API agora gera um modelo passivo stdio para Claude Code quando
+o host é escolhido explicitamente em `/api/mcp-config`. O descritor
+stdio pode omitir endpoint e não aceita `command`, `args` nem
+`env` de origem. O modelo deixa um placeholder para o executável
+e argumentos vazios para revisão no host. A exportação HTTP e a
+recusa de stdio no formato genérico permanecem cobertas por testes.
+Referência de formato: [Claude Code MCP](https://code.claude.com/docs/en/mcp).
+O piloto importou um descritor local baseado no Forge e gerou a
+prévia em `J:/Lia/migration/agent-hub/forge-mcp-template-pilot/review-template.json`.
+A configuração e a execução no host continuam pendentes.

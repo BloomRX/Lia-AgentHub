@@ -101,6 +101,23 @@ class TestConfiguracaoParaHost:
 
 
 class TestConfigNoHub:
+    def test_stdio_template_is_passive_and_does_not_declare_egress(self, hub, tmp_path):
+        cid = _mcp(hub, tmp_path, {"transport": "stdio", "provider": "Forge"})
+        config = hub.mcp_config(cid, "claude-code")
+        entry = next(iter(config["bloco"]["mcpServers"].values()))
+        assert entry == {"type": "stdio", "command": "<CAMINHO_DO_EXECUTAVEL>", "args": []}
+        assert config["recurso"]["endpoint"] == ""
+        assert config["recurso"]["connectivityVerified"] is False
+        assert config["executadoPeloHub"] is False
+        assert hub.repo._load_any(cid).capability.egress == []
+
+    @pytest.mark.parametrize("field,value", [
+        ("command", "launcher"), ("args", ["--example"]), ("env", {"EXAMPLE": "fixture"}),
+    ])
+    def test_stdio_descriptor_rejects_host_launch_fields(self, field, value):
+        with pytest.raises(DescritorInvalido, match="somente no host"):
+            MCPServer.from_dict({"transport": "stdio", field: value})
+
     def test_stich_gera_bloco_utilizavel(self, hub, tmp_path):
         cid = _mcp(hub, tmp_path, json.loads(STITCH.read_text(encoding="utf-8")))
         r = hub.mcp_config(cid)

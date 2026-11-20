@@ -545,7 +545,7 @@ class Importer:
             # informação de egress mais importante que existe: é para lá que
             # o host vai falar. Registrá-lo faz o risco e a revisão humana
             # enxergarem o destino, em vez de o dado ficar só no descritor.
-            egress=([servidor_mcp.endpoint] if servidor_mcp else []),
+            egress=([servidor_mcp.endpoint] if servidor_mcp and servidor_mcp.endpoint else []),
             content_hash=report.hashes["contentHash"],
             tree_hash=th,
             contains_scripts=report.contains_scripts,

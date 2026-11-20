@@ -93,13 +93,15 @@ class MCPServer:
         if not isinstance(d, dict):
             raise DescritorInvalido("O descritor MCP precisa ser um objeto JSON.")
         endpoint = str(d.get("endpoint") or "").strip()
-        if not endpoint:
-            raise DescritorInvalido("O descritor MCP não declara `endpoint`.")
         transport = str(d.get("transport") or "http").strip().lower()
         if transport not in TRANSPORTES:
             raise DescritorInvalido(
                 f"Transporte `{transport}` não é conhecido. "
                 f"Use um de: {', '.join(TRANSPORTES)}.")
+        if not endpoint and transport != "stdio":
+            raise DescritorInvalido("O descritor MCP não declara `endpoint`.")
+        if transport == "stdio" and any(key in d for key in ("command", "args", "env")):
+            raise DescritorInvalido("Declare o comando, os argumentos e o ambiente somente no host.")
         auth = str(d.get("authentication") or "unknown").strip().lower()
         if auth not in AUTENTICACOES:
             auth = "unknown"
@@ -247,16 +249,22 @@ def config_para_host(servidor: "MCPServer", formato: str = "mcp-json",
     ).strip("-") or "servidor-mcp"
 
     entrada: dict[str, Any] = {}
+    nota = fmt["nota"]
+    pendencias_stdio = []
     if servidor.transport == "http":
         entrada["url" if fmt["usa_url"] else "serverUrl"] = servidor.endpoint
         entrada["type"] = "http" if fmt["usa_url"] else servidor.transport
+    elif servidor.transport == "stdio" and formato == "claude-code":
+        if servidor.headers:
+            raise DescritorInvalido("Um modelo stdio não usa cabeçalhos HTTP.")
+        entrada.update(type="stdio", command="<CAMINHO_DO_EXECUTAVEL>", args=[])
+        nota = "Use este modelo para revisar uma entrada de `mcpServers` no host."
+        pendencias_stdio.append(
+            "No host, substitua <CAMINHO_DO_EXECUTAVEL> e revise os argumentos e o ambiente.")
     else:
-        # stdio exigiria comando e args, que o descritor deste Hub não modela
-        # para serviço remoto. Dizer isso é melhor que emitir bloco vazio.
         raise DescritorInvalido(
-            f"Exportação de configuração cobre `http`; transporte "
-            f"{servidor.transport!r} exigiria comando/args, que não estão "
-            "no descritor.")
+            f"Transporte {servidor.transport!r} indisponível neste formato. "
+            "Para stdio no Claude Code, gere o modelo e revise o comando no host.")
 
     # Cabeçalhos entram com o NOME; o valor é o placeholder. Um bloco que
     # promete funcionar sem credencial seria pior que um bloco que pede.
@@ -266,11 +274,12 @@ def config_para_host(servidor: "MCPServer", formato: str = "mcp-json",
     return {
         "format": formato,
         "label": fmt["label"],
-        "nota": fmt["nota"],
+        "nota": nota,
         "identificadorSugerido": identificador,
         "bloco": {fmt["chave"]: {identificador: entrada}},
         # Campos que o usuário precisa providenciar ANTES de colar.
         "pendencias": (
+            pendencias_stdio +
             ([] if not servidor.headers else
              [f"Substituir {PLACEHOLDER_CREDENCIAL} pelo valor real de "
               f"{', '.join(servidor.headers)} — obtido no fluxo de "
