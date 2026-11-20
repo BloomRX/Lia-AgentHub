@@ -873,3 +873,11 @@ local encontrou o validador de desenvolvimento, testes de Alethe e
 o lock de upstream AIRI. A evidência disponível aponta Eventa como
 Skill de desenvolvimento. O próximo teste de descoberta deve usar
 esse host e exigir especificamente o nome fixado antes do corte.
+
+Preparei o patch local `J:/Lia/migration/agent-hub/project-eventa-pilot/project-eventa-agent-hub-cut.patch`
+(SHA-256 `1dc8ae385c3fb6037cedd0f6e9a4cc5bbbdc3264286cbb761838f32b3ebb6f7`).
+No worktree isolado, o patch retira o SKILL.md do índice, fixa o lock,
+ignora a cópia derivada e inclui `tools/prepare_eventa_skill.ps1`.
+Com a fonte ausente, esse comando recriou o blob original. O Git ignorou
+a cópia e os sete testes existentes passaram. A branch publicada do
+Project conserva o baseline. O pacote e o patch são do piloto privado.
