@@ -987,3 +987,16 @@ os quatro IDs de catálogo existentes com os pins da oficina e os
 hashes de árvore e pacote. Recibo `rec-df9f5d6b20602e53`.
 A consulta confirmou 78 identidades e 22 entradas de oficina.
 O corte das quatro cópias no checkout do Project segue pendente.
+
+O commit local `98498a1` do Lia-Project retirou os 43 arquivos
+versionados das quatro Skills AIRI. O bootstrap
+`tools/prepare_airi_hub_skills.ps1` recriou as cópias nos caminhos
+originais, já ignorados pelo Git. A primeira tentativa revelou que
+o checkout esparso podia ficar sem o diretório pai após o corte.
+O bootstrap passou a criar os diretórios ausentes e a rejeitar
+reparse points nos pais que usa. Conferi os 43 blobs sem filtros.
+Os sete testes do contrato de Skills passaram. Na raiz `airi`,
+o Codex app-server listou as quatro entradas habilitadas com os
+caminhos gerados. Evidência:
+`J:/Lia/migration/agent-hub/project-eventa-pilot/airi-discovery-evidence.json`.
+O commit permanece no piloto local.
