@@ -952,3 +952,13 @@ com SPDX MIT nesse commit. Registrei o SHA-256 da licença, o hash da
 As outras quatro árvores diferiram das pontas consultadas. A revisão
 de origem delas precisa localizar snapshots anteriores.
 Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/airi-mit-upstream-comparison.json`.
+
+O histórico Git confirmou correspondência de árvore inteira para
+`simple-english` em `AminBlg/SimpleEnglish@daea7ea` e para
+`vue-best-practices` e `vue-testing-best-practices` em
+`antfu/skills@c35a558`. A API reportou MIT nos dois commits.
+O recibo `rec-57e97951d69f95f9` atualizou os três registros existentes
+com os commits completos, os hashes das licenças e as origens.
+Para `vueuse-functions`, os seis commits do histórico do caminho
+não forneceram blob ou árvore idênticos. As quatro Skills seguem por
+referência. Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/airi-mit-upstream-history.json`.
