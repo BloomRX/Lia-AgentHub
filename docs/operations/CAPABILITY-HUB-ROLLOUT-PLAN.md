@@ -1018,3 +1018,12 @@ preservou a base anterior em `registry/skills-before-airi-v2.sqlite3`.
 O recibo `rec-1c4bde9d51c35dc1` vinculou as revisões aos sete IDs
 existentes. O corte dessas sete cópias no Project continua pendente.
 Evidência: `J:/Lia/migration/agent-hub/project-airi-private-v2/evidence.json`.
+
+O commit local `c4d4256` do Lia-Project incorporou o segundo corte
+AIRI. O bootstrap único consome os 11 pins de
+`J:/Lia/migration/agent-hub/project-airi-consumption-v3`.
+Sem as fontes versionadas, recriou os 113 arquivos com os mesmos
+blobs Git de `9778ffb`. Todos os arquivos gerados foram ignorados
+pelo Git. Os sete testes do contrato passaram, e o Codex descobriu
+as 11 Skills habilitadas na raiz AIRI. A árvore ficou limpa.
+Evidência: `J:/Lia/migration/agent-hub/project-eventa-pilot/airi-v3-discovery.json`.
