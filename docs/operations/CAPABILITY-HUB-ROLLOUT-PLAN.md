@@ -790,3 +790,25 @@ com a exportação original divergiu por causa da conversão de fins
 de linha no Windows. O resultado verifica a restauração dos blobs
 Git da base. Evidência em
 `J:/Lia/migration/agent-hub/studio-cut-policy-11a3c5f5c5034315901c1b142c1a0ddd/evidence.json`.
+
+### Studio · corte do piloto local aprovado
+
+Com a aprovação do uso de `J:/Lia/migration/agent-hub/studio-4e10327`
+no piloto, apliquei o corte na branch de desenvolvimento existente
+`arena/01a0f4ab-lia-gamedev`. O commit local
+`e3553a89bffba45f0c47a70caa8f3eb4352c8fb9` retira 16 Skills e sete
+anexos do Git e fixa os manifestos de revisão. A CLI do Hub reconstruiu
+as 16 Skills no destino ignorado pelo Git. A branch remota permanece
+no baseline `38a48d9`, pois a aprovação se refere ao piloto local.
+
+`verify_alpha.py --part 10` passou com `PYTHONUTF8=1`. A primeira
+tentativa com saída redirecionada falhou ao imprimir uma seta em
+CP1252. `desktop/build_windows.ps1` produziu `dist/LiaStudio/LiaStudio.exe`.
+O SHA-256 dos 23 arquivos das Skills empacotadas conferiu com a
+biblioteca materializada. Nesta rodada, a janela do novo build ficou
+fora do ensaio. Os logs locais são `studio-pilot-regression-utf8.log`
+e `studio-pilot-build.log` sob `J:/Lia/migration/agent-hub`.
+
+O mantenedor informou que o Model Lab saiu de desenvolvimento.
+Seu piloto de migração é **NOT APPLICABLE**. As nove referências
+históricas permanecem no catálogo com o estado de projeto inativo.
