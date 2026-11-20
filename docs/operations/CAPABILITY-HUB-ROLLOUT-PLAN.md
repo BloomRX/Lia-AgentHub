@@ -1227,3 +1227,11 @@ Os recibos são `rec-834d30b665aca6f0`, `rec-35612a5f13bfae00`,
 `rec-e3602ecade4c0a9b` e `rec-da2134183cb09143`.
 A consulta confirmou 89 identidades. Os sete registros têm
 evidência estática e mantêm distribuição pendente.
+
+O MCP do Forge declara stdio e Node 22.12+ em `docs/mcp.md`.
+O exportador atual do Hub recusou esse transporte com erro que
+explica a limitação. O controle HTTP produziu um bloco revisável
+com placeholder de credencial, e os 20 testes do workshop MCP
+passaram. O registro existente recebeu uma revisão de
+compatibilidade. O servidor Forge segue apenas inventariado.
+Evidência: `J:/Lia/migration/agent-hub/forge-mcp-passive-review/evidence.json`.
