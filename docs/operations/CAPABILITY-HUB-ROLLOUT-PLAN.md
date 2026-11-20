@@ -1052,3 +1052,19 @@ do contrato. O Codex descobriu as 25 entradas habilitadas, conforme
 `J:/Lia/migration/agent-hub/project-eventa-pilot/airi-v4-discovery.json`.
 Com `lia-eventa-ipc`, o piloto local cobre 26 das 51 Skills inventariadas.
 A branch remota e as 25 Skills restantes ainda aguardam corte.
+
+### Lia-Project · 25 Skills ainda versionadas após o piloto
+
+- 20 Skills de desenvolvimento na raiz, excluída Alethe. A árvore
+  examinada não contém LICENSE na raiz e as origens precisam ser
+  resolvidas por componente.
+- Alethe conserva as evidências próprias de licença e os cinco
+  ativos de marca com escopo pendente.
+- `tsdown` e `vueuse-functions` continuam sem árvore idêntica nos
+  históricos examinados de antfu/skills e moeru-ai/airi.
+- `upload-github-attachment` aguarda preservação do modo Git `100755`.
+- `minecraft-debug-mcp` tem três arquivos e árvore idêntica em
+  `moeru-ai/airi@d5a241b`, com LICENSE MIT naquele commit.
+  O catálogo recebeu a origem no recibo `rec-59f34cd456be4f1c`.
+  A Skill fica fora da raiz AIRI de descoberta padrão. O piloto
+  precisa preservar o caminho da integração e seu carregador.
