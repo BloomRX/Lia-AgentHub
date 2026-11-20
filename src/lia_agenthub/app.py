@@ -13,7 +13,7 @@ from .adapters.packager import Target, export, verify_package
 from .adapters.paths_resolver import Locations, resolve_locations
 from .adapters.repository import Repository
 from .adapters.settings import SettingsStore
-from .domain.errors import LiaError
+from .domain.errors import LiaError, NotFound
 from .domain.integrity import sha256_bytes
 from .domain.model import Capability, Lifecycle, Trust
 from .domain.risk import assess
@@ -321,7 +321,13 @@ class AgentHub:
         inicia processo e não guarda credencial — o placeholder é literal.
         """
         from .domain.mcp import MCPServer, config_para_host
-        stored = self.repo._load_any(cap_id)
+        try:
+            stored = self.repo._load_any(cap_id)
+        except (NotFound, OSError):
+            # IDs centrais usam URN e, portanto, contêm `:`. Em Windows eles
+            # não são nomes de diretório válidos para a biblioteca de payload;
+            # a única leitura segura nesse caso é a projeção de inventário.
+            return self._inventory_mcp_config(cap_id, formato)
         cap = stored.capability
 
         # O descritor vive em `extra["mcp"]`, gravado pelo importador. Não
@@ -337,6 +343,74 @@ class AgentHub:
         bloco["recurso"] = {"id": cap.id, "name": cap.name,
                             "endpoint": servidor.endpoint,
                             "connectivityVerified": False}
+        return bloco
+
+    def _inventory_mcp_config(self, cap_id: str, formato: str) -> dict:
+        """Gera modelo de revisão a partir de um MCP apenas inventariado.
+
+        Inventário não é importação. Esta ponte usa somente a declaração
+        explícita de transporte da revisão projetada e, para ``stdio``, nunca
+        reaproveita launcher, argumentos, ambiente ou segredo da origem.
+        """
+        from .domain.mcp import MCPServer, config_para_host
+
+        try:
+            estado = self.intake().store.estado()
+        except IntakeError as exc:
+            raise LiaError(
+                "O catálogo de inventário não pôde ser lido para gerar o modelo MCP.",
+                "Corrija o índice de inventário antes de tentar novamente.") from exc
+
+        entrada = estado.get(cap_id)
+        if not isinstance(entrada, dict) or entrada.get("kind") != "mcp-server":
+            raise LiaError(
+                f"`{cap_id}` não é um servidor MCP inventariado.",
+                "Use o ID de um mcp-server admitido no catálogo ou importe um descritor MCP.")
+
+        revision_id = entrada.get("lastRevision")
+        revisoes = entrada.get("revisions")
+        revisao = revisoes.get(revision_id) if isinstance(revisoes, dict) else None
+        if (not isinstance(revision_id, str) or not isinstance(revisao, dict)
+                or revisao.get("kind") != "mcp-server"
+                or revisao.get("state") != "inventoried"):
+            raise LiaError(
+                f"`{cap_id}` não tem uma revisão MCP inventariada utilizável.",
+                "Revise a projeção do inventário; o Hub não vai adivinhar a revisão.")
+
+        detalhes = revisao.get("details")
+        if not isinstance(detalhes, dict) or detalhes.get("declaredTransport") != "stdio":
+            raise LiaError(
+                f"`{entrada.get('name') or cap_id}` não declara um modelo stdio revisável.",
+                "O inventário precisa declarar `details.declaredTransport: stdio` explicitamente.")
+
+        # Mesmo que um emissor tenha incluído esses campos, eles não podem
+        # atravessar a fronteira de inventário para configuração do host.
+        proibidos = [campo for campo in ("command", "args", "env", "endpoint",
+                                         "headers", "authentication")
+                      if campo in detalhes]
+        if proibidos:
+            raise LiaError(
+                "O inventário declarou campos de conexão/lançamento que o Hub não aceita "+
+                "para este modelo: " + ", ".join(proibidos) + ".",
+                "Remova-os do inventário; o comando, argumentos, ambiente e segredos são definidos no host.")
+
+        servidor = MCPServer.from_dict({"transport": "stdio"})
+        bloco = config_para_host(servidor, formato=formato,
+                                 nome=str(entrada.get("name") or cap_id))
+        bloco["recurso"] = {
+            "id": cap_id,
+            "name": entrada.get("name", ""),
+            "endpoint": "",
+            "connectivityVerified": False,
+            "source": "inventory-reference",
+            "inventoryRevision": revision_id,
+            "inventoryDigest": revisao.get("digest", ""),
+            "inventoryState": "inventoried",
+            "configuredInHost": False,
+        }
+        bloco["avisos"].append(
+            "O modelo veio de metadados inventariados; não há payload importado, "
+            "configuração no host nem evidência operacional.")
         return bloco
 
     def verify_package(self, path: str) -> dict:
@@ -376,6 +450,7 @@ class AgentHub:
             revisoes = info.get("revisions") or {}
             source_claims = []
             declared_relations = {}
+            declared_details = {}
             for revision_id, revision in sorted(revisoes.items()):
                 if not isinstance(revision, dict):
                     continue
@@ -390,6 +465,7 @@ class AgentHub:
                     "offers": revision.get("offers", []),
                     "compatibility": revision.get("compatibility", []),
                 }
+                declared_details[revision_id] = revision.get("details")
             registros.append({
                 "id": reg_id,
                 "name": info.get("name", ""),
@@ -399,6 +475,7 @@ class AgentHub:
                 "sourceCount": len(source_claims),
                 "sources": source_claims,
                 "declaredRelations": declared_relations,
+                "declaredDetails": declared_details,
                 "lastRevision": info.get("lastRevision", ""),
                 "revisions": sorted(revisoes),
                 "state": "inventoried",

@@ -20,6 +20,7 @@ from lia_agenthub.domain.mcp import (
 from lia_agenthub.domain.errors import LiaError
 
 STITCH = Path(__file__).resolve().parents[2] / "docs/stitch/mcp/google-stitch.mcp.json"
+INVENTORY_STDIO_ID = "urn:lia:cap:12345678-1234-4abc-8def-123456789abc"
 
 
 @pytest.fixture
@@ -36,6 +37,51 @@ def _mcp(hub, tmp_path, descritor: dict, nome="srv") -> str:
     r = hub.import_path(str(d))
     assert r.ok, r.blocked_reason
     return r.capability_id
+
+
+def _inventory_stdio(tmp_path: Path, details: dict | None = None) -> Path:
+    """MCP apenas inventariado: referência, nunca payload ou launcher."""
+    doc = {
+        "inventoryVersion": 1,
+        "inventoryId": "forge-mcp-template-test",
+        "revision": "snapshot-1",
+        "generatedAt": "2026-11-20T00:00:00Z",
+        "complete": False,
+        "issuer": {
+            "project": "lia-forge",
+            "repository": "https://example.invalid/forge",
+            "maintainer": "Forge test",
+        },
+        "records": [{
+            "id": INVENTORY_STDIO_ID,
+            "revisionId": "stdio-1",
+            "kind": "mcp-server",
+            "name": "forge-mcp",
+            "version": None,
+            "description": "Servidor MCP declarado apenas para revisão de host.",
+            "origins": [{
+                "project": "lia-forge",
+                "repository": "https://example.invalid/forge",
+                "path": "scripts/forge-mcp.mjs",
+                "branch": None,
+                "commit": None,
+                "author": None,
+                "maintainer": "Forge test",
+                "evidenceIds": [],
+            }],
+            "license": {"declared": None,
+                        "redistribution": {"status": "pending", "authorizationIds": []}},
+            "integrity": [],
+            "dependencies": [],
+            "offers": [],
+            "compatibility": [],
+            "details": details if details is not None else {"declaredTransport": "stdio"},
+        }],
+        "evidence": [],
+    }
+    path = tmp_path / "forge-mcp.inventory.json"
+    path.write_text(json.dumps(doc), encoding="utf-8")
+    return path
 
 
 class TestConfiguracaoParaHost:
@@ -101,6 +147,39 @@ class TestConfiguracaoParaHost:
 
 
 class TestConfigNoHub:
+    def test_inventory_stdio_generates_passive_template_without_import(
+            self, hub, tmp_path, monkeypatch):
+        """O catálogo pode descrever a revisão, mas não vira payload nem host."""
+        import socket
+        monkeypatch.setattr(socket.socket, "connect",
+                            lambda *a, **k: (_ for _ in ()).throw(
+                                AssertionError("tentou conectar")))
+        recebido = hub.inventory_receive(str(_inventory_stdio(tmp_path)))
+        assert recebido["ok"] is True
+
+        config = hub.mcp_config(INVENTORY_STDIO_ID, "claude-code")
+        entry = config["bloco"]["mcpServers"]["forge-mcp"]
+        assert entry == {"type": "stdio", "command": "<CAMINHO_DO_EXECUTAVEL>", "args": []}
+        recurso = config["recurso"]
+        assert recurso["id"] == INVENTORY_STDIO_ID
+        assert recurso["source"] == "inventory-reference"
+        assert recurso["inventoryRevision"] == "stdio-1"
+        assert recurso["inventoryState"] == "inventoried"
+        assert recurso["configuredInHost"] is False
+        assert recurso["connectivityVerified"] is False
+        assert len(recurso["inventoryDigest"]) == 64
+        assert config["executadoPeloHub"] is False
+        assert hub.items() == [], "inventário não pode importar payload implicitamente"
+        record = hub.inventory_state()["records"][0]
+        assert record["declaredDetails"]["stdio-1"] == {"declaredTransport": "stdio"}
+
+    def test_inventory_stdio_rejects_launch_material(self, hub, tmp_path):
+        hub.inventory_receive(str(_inventory_stdio(tmp_path, {
+            "declaredTransport": "stdio", "command": "nao-use-isto",
+        })))
+        with pytest.raises(LiaError, match="conexão/lançamento"):
+            hub.mcp_config(INVENTORY_STDIO_ID, "claude-code")
+
     def test_stdio_template_is_passive_and_does_not_declare_egress(self, hub, tmp_path):
         cid = _mcp(hub, tmp_path, {"transport": "stdio", "provider": "Forge"})
         config = hub.mcp_config(cid, "claude-code")

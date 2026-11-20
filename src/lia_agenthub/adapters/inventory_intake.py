@@ -155,6 +155,10 @@ class InventoryStore:
                 if not isinstance(revisao, dict):
                     raise IntakeError(
                         f"Revisão inválida no índice: {reg_id}/{rev_id}.")
+                detalhes = revisao.get("details")
+                if detalhes is not None and not isinstance(detalhes, dict):
+                    raise IntakeError(
+                        f"Detalhes inválidos no índice: {reg_id}/{rev_id}.")
                 fontes = revisao.get("sources")
                 if fontes is not None and (
                         not isinstance(fontes, list)
@@ -525,7 +529,10 @@ class InventoryIntake:
 
             # Relações e aliases permanecem declarações do emissor. Não são
             # resolvidos, instalados nem convertidos em autorização pelo Hub.
-            for campo in ("aliases", "dependencies", "offers", "compatibility"):
+            # `details` também é metadado passivo: guardá-lo torna possível
+            # produzir artefatos de revisão sem importar payload. Ele nunca é
+            # interpretado como comando pelo intake.
+            for campo in ("aliases", "dependencies", "offers", "compatibility", "details"):
                 revisao[campo] = reg.bruto.get(campo, [])
 
             sources = revisao.setdefault("sources", [])

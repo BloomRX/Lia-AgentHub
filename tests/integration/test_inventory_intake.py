@@ -72,6 +72,13 @@ def test_preview_classifica_igual_ao_recebimento(intake, doc, tmp_path):
     assert preview.estado_proposto == efetivo.estado_proposto
 
 
+def test_details_com_formato_invalido_sao_recusados(intake, doc, tmp_path):
+    doc["records"][0]["details"] = ["não", "é", "objeto"]
+    plano = intake.previsualizar(_salvar(tmp_path, doc))
+    assert plano.ok is False
+    assert "DETAILS_NOT_OBJECT" in [a.code for a in plano.leitura.erros]
+
+
 def test_preview_de_arquivo_inexistente_nao_levanta(intake, tmp_path):
     plano = intake.previsualizar(tmp_path / "nao-existe.json")
     assert plano.ok is False

@@ -487,6 +487,11 @@ def _validar_registro(bruto: Any, onde: str, ev_ids: set[str],
         out.append(_erro("RECORD_TOO_MANY_ORIGINS",
                          f"{len(origens)} origens; limite {MAX_REFERENCIAS_POR_REGISTRO}.", onde))
 
+    detalhes = bruto.get("details")
+    if detalhes is not None and not isinstance(detalhes, dict):
+        out.append(_erro("DETAILS_NOT_OBJECT",
+                         "`details` deve ser objeto ou null.", f"{onde}.details"))
+
     aliases = bruto.get("aliases", [])
     if aliases is not None and not isinstance(aliases, list):
         out.append(_erro("ALIASES_NOT_LIST",
