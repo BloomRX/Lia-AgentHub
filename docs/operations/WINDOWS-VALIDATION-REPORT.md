@@ -347,3 +347,18 @@ O resultado é de uma execução diagnóstica com overrides locais.
 A [documentação do WebView2](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/webview-features-flags)
 orienta o uso dos browser flags para desenvolvimento. D-09 continua
 PARTIAL para o build padrão e a configuração de distribuição.
+
+#### Disponibilidade de Windows limpo e varredura dos artefatos
+
+O host desta rodada é Windows 11 Home, build 26200, com sessão
+sem elevação. A checagem não encontrou Windows Sandbox, comandos
+do Hyper-V, VirtualBox, VMware ou QEMU disponíveis, nem um
+diretório de VM identificado no workspace. A condição Windows
+limpo sem Python permanece **BLOCKED**.
+
+A varredura do build atual examinou os dois binários brutos,
+171 entradas CArchive, 472 entradas PYZ e o log de produto.
+Os cinco padrões de chave e token pesquisados retornaram zero
+correspondências. Os resultados guardam apenas nomes de padrões
+e contagens. Evidência:
+`J:/Lia/migration/agent-hub/windows-product-a19cfaf/credential-pattern-scan.json`.
