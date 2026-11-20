@@ -1115,3 +1115,19 @@ commit. O histórico consultado não registrou LICENSE, LICENSE.md ou
 COPYING na raiz. O crédito de um commit comprova a contribuição
 registrada no Git; a base de cópia continua pendente por componente.
 Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/project-root-skills-git-provenance.json`.
+
+### Canal privado local consolidado
+
+O canal `J:/Lia/migration/agent-hub/private-consumption-v2` consolida
+46 pacotes e seus pins, incluindo o lote Minecraft ainda sem corte.
+Validei os 46 pacotes, seus hashes e os documentos de licença
+associados à procedência onde disponíveis. `hashes.json` indexa
+153 arquivos. A pasta não contém a base da oficina.
+
+No worktree esparso novo de `92ec72c`, os dois bootstraps do
+Lia-Project recriaram as 28 Skills já cortadas usando apenas o
+canal consolidado e a CLI Windows. Os sete testes passaram.
+A primeira tentativa de hidratar o worktree via `git restore`
+buscou conteúdo fora do escopo do teste e foi interrompida.
+O segundo ensaio inicializou apenas o checkout esparso.
+O canal segue local, sem evidência de acesso pelo CI remoto.
