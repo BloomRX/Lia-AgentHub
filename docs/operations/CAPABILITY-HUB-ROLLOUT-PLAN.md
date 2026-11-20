@@ -1097,3 +1097,11 @@ com backup da base anterior. O recibo `rec-7a60cca300f05b57`
 vinculou os dois pins aos registros de variantes existentes.
 Evidência: `J:/Lia/migration/agent-hub/project-airi-link-rewrites-pilot/evidence.json`.
 O checkout continua com as fontes versionadas até o próximo corte.
+
+O commit local `92ec72c` acrescentou `tsdown` e `vueuse-functions`
+ao corte. Com o lote `project-airi-consumption-v5`, o bootstrap
+recriou 27 Skills. Os 458 blobs coincidiram com `9778ffb`; os sete
+testes passaram e o Codex encontrou as 27 entradas habilitadas.
+A árvore do piloto ficou limpa. Com `lia-eventa-ipc`, o Lia-Project
+tem 28 de 51 Skills migradas localmente.
+Evidência: `J:/Lia/migration/agent-hub/project-eventa-pilot/airi-v5-discovery.json`.
