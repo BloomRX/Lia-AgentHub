@@ -1140,3 +1140,18 @@ no worktree esparso isolado. Após afastar as 28 cópias geradas,
 Os sete testes passaram após a reversão e o checkout do piloto
 permaneceu no corte. Evidência:
 `J:/Lia/migration/agent-hub/project-clean-channel-v2-rollback.json`.
+
+### Alethe · ensaio por componente
+
+O LICENSE local tem o mesmo blob Git do upstream
+`Kc1t/alethe-orchestrate-skill@c36c341`. Em uma oficina isolada,
+empacotei apenas os 18 arquivos do componente de software e
+documentação e confirmei os hashes após materializar. Os cinco
+ativos de marca ficaram fora do pacote. A inspeção estática de
+`scripts/diagram.py` confirmou leitura direta de `assets/brands`
+quando o provedor tem uma marca cadastrada, sem fallback para
+arquivo ausente. Isso impede tratar o pacote parcial como substituto
+da Skill completa. Nenhum script foi executado.
+O pacote fica fora do canal de consumo e a árvore do Project
+continua com a Skill completa. Evidência:
+`J:/Lia/migration/agent-hub/alethe-component-pilot/evidence.json`.
