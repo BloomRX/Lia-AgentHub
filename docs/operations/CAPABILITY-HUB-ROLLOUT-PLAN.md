@@ -1068,3 +1068,14 @@ A branch remota e as 25 Skills restantes ainda aguardam corte.
   O catálogo recebeu a origem no recibo `rec-59f34cd456be4f1c`.
   A Skill fica fora da raiz AIRI de descoberta padrão. O piloto
   precisa preservar o caminho da integração e seu carregador.
+
+O lote privado `project-airi-minecraft-pilot` recriou os três arquivos
+de `minecraft-debug-mcp` com hashes idênticos e preservou a licença
+ao lado do pacote. A oficina central passou a 44 revisões e o recibo
+`rec-6ba497c1ae26a419` vinculou o pin ao ID existente.
+Com o arquivo original presente, `skills/list` retornou zero
+entradas para esse nome nos três diretórios consultados: `airi`,
+`integrations/minecraft` e `integrations/minecraft/codex-skills`.
+A busca por referências no checkout não identificou um carregador.
+O arquivo continua versionado. A evidência de materialização não
+comprova descoberta nem uso no host.
