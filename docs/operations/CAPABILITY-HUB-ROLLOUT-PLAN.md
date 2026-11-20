@@ -1182,3 +1182,12 @@ sem atribuir commit Git à fonte, e mantém redistribuição pendente.
 A consulta confirmou 79 identidades e 47 entradas de oficina.
 Manifesto e evidência local em
 `J:/Lia/migration/agent-hub/hub-maintenance-pilot`.
+
+O ensaio de recuperação reconstruiu as 47 revisões em uma nova base.
+O consolidador exige declarar explicitamente os IDs sem procedência
+Git por `--native-id`. O controle negativo recusou a base que omitia
+essa declaração e deixou o destino ausente. A consulta da cópia
+restaurada coincidiu com a lista da oficina central. Reempacotei
+`lia-hub-skill-maintenance` a partir dessa base e rematerializei a
+mesma árvore. Evidência:
+`J:/Lia/migration/agent-hub/workshop-recovery-native/evidence.json`.

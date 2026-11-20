@@ -36,7 +36,11 @@ def load_pins(inputs: list[tuple[Path, list[Path]]]) -> dict:
     return pins
 
 
-def consolidate(destination: Path, inputs: list[tuple[Path, list[Path]]]) -> int:
+def consolidate(
+    destination: Path,
+    inputs: list[tuple[Path, list[Path]]],
+    native_ids: frozenset[str] = frozenset(),
+) -> int:
     pins = load_pins(inputs)
     if destination.exists():
         raise FileExistsError(destination)
@@ -63,10 +67,13 @@ def consolidate(destination: Path, inputs: list[tuple[Path, list[Path]]]) -> int
         records = workshop.list_skills()
         if {record["id"] for record in records} != pins.keys():
             raise ValueError("Identidades da oficina divergem dos manifestos fixados.")
+        without_origin = {record["id"] for record in records if record["origin"] is None}
+        if without_origin != native_ids:
+            raise ValueError("As Skills sem origem Git precisam corresponder aos IDs nativos declarados.")
         for record in records:
             pin = pins[record["id"]]
-            if record["latestRevision"] != pin["revision"] or not record["origin"]:
-                raise ValueError(f"Revisão ou procedência divergente: {record['id']}")
+            if record["latestRevision"] != pin["revision"]:
+                raise ValueError(f"Revisão divergente: {record['id']}")
             with workshop._connect() as connection:
                 revision = workshop._revision(connection, record["id"], pin["revision"])
                 files = workshop._revision_files(connection, revision)
@@ -84,11 +91,14 @@ def main() -> None:
     parser.add_argument("destination", type=Path)
     parser.add_argument("--source", action="append", required=True, nargs="+", type=Path,
                         metavar="DB [LOCK ...]")
+    parser.add_argument("--native-id", action="append", default=[],
+                        help="ID da Skill criada na oficina, sem origem Git")
     args = parser.parse_args()
     inputs = [(db, pins) for db, *pins in args.source]
     if any(not pins for _, pins in inputs):
         parser.error("cada base precisa de pelo menos um manifesto")
-    print(f"Revisões verificadas na oficina: {consolidate(args.destination, inputs)}")
+    count = consolidate(args.destination, inputs, frozenset(args.native_id))
+    print(f"Revisões verificadas na oficina: {count}")
 
 
 if __name__ == "__main__":
