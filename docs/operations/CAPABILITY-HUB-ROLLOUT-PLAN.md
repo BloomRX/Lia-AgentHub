@@ -825,3 +825,19 @@ e o conteúdo de `lia-game-project-bootstrap` na consulta individual.
 de escutar. Evidência em
 `J:/Lia/migration/agent-hub/studio-pilot-native-66f35ab83f1c4478a30e41d334ff497c/evidence.json`.
 O ensaio verificou abertura, leitura pela API e encerramento.
+
+### Forge 2.0 e Lia-Project · pilotos locais autorizados
+
+- Forge 2.0: criei a branch local `codex/agent-hub-skills-pilot` em
+  `J:/Lia/migration/agent-hub/forge-pilot`. O commit `0b0a9b6` retira
+  a fonte versionada e fixa seu manifesto. `prepare_brand_skill.ps1`
+  recriou a Skill com o blob original e o caminho derivado ficou
+  ignorado pelo Git. O remoto só oferecia `main`, que ficou intacta.
+- Lia-Project: confirmei 46 blobs do checkout local contra `9778ffb` e
+  os sete testes do contrato de Skills passaram no baseline. Com a
+  autorização de cópia privada, publiquei `lia-eventa-ipc` na oficina
+  local (`9e5c3e96-7381-4590-99ab-a5a9d4eba543`, revisão 1), preservando
+  a declaração MIT na fonte e o snapshot Git. O manifesto e o pacote
+  em `J:/Lia/migration/agent-hub/project-eventa-pilot` materializaram
+  bytes idênticos à fonte. O corte no checkout do Project e o teste de
+  descoberta pelo host continuam pendentes.
