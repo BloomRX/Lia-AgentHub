@@ -939,3 +939,16 @@ um canal privado que eles possam acessar e de autorização para os
 componentes envolvidos. Os cinco registros MIT restantes no Project
 estão sob AIRI. A declaração, sozinha, não encerra a revisão de
 proveniência e escopo desses componentes.
+
+### AIRI · comparação de proveniência das Skills MIT
+
+Comparei cinco Skills com declaração MIT contra as árvores Git dos
+upstreams indicados em `airi/skills-lock.json`. Para `eventa`, o blob
+de SKILL.md e a árvore inteira coincidiram com `moeru-ai/eventa` em
+`488d14d1aed6e291168b93df4d1d697766d36a34`. A API retornou LICENSE
+com SPDX MIT nesse commit. Registrei o SHA-256 da licença, o hash da
+árvore e a origem externa no registro existente. Recibo:
+`rec-ff933f1d2e9de4e0`. A cópia e a distribuição continuam pendentes.
+As outras quatro árvores diferiram das pontas consultadas. A revisão
+de origem delas precisa localizar snapshots anteriores.
+Evidência: `J:/Lia/migration/agent-hub/project-9778ffb/airi-mit-upstream-comparison.json`.
