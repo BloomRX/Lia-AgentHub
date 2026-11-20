@@ -1155,3 +1155,13 @@ da Skill completa. Nenhum script foi executado.
 O pacote fica fora do canal de consumo e a árvore do Project
 continua com a Skill completa. Evidência:
 `J:/Lia/migration/agent-hub/alethe-component-pilot/evidence.json`.
+
+Em uma pasta isolada, recompilei a árvore de arquivos da Alethe
+com 18 arquivos do pacote parcial e cinco blobs de marca do
+commit `9778ffb`, recuperados do Git do Lia-Project. A comparação
+de caminhos e hashes Git confirmou os 23 arquivos originais.
+Os ativos de marca não foram incluídos no pacote do Hub ou no
+canal de consumo. O teste comprova paridade de arquivos; a
+integração no checkout e a regressão dos fluxos da Alethe seguem
+pendentes. Evidência:
+`J:/Lia/migration/agent-hub/alethe-component-composition/evidence.json`.
