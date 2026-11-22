@@ -1132,6 +1132,14 @@ buscou conteúdo fora do escopo do teste e foi interrompida.
 O segundo ensaio inicializou apenas o checkout esparso.
 O canal segue local, sem evidência de acesso pelo CI remoto.
 
+No Studio, `desktop/prepare_hub_skills.ps1` recriou as 16 Skills
+do piloto `e3553a8` a partir da pasta `lia-studio` do canal
+consolidado e da CLI de `e431eb5`. O ensaio usou o worktree
+destacado `J:/Lia/migration/agent-hub/studio-cut-current-cli`.
+Os 23 arquivos retirados do Git coincidiram com os blobs de
+`38a48d9` por `git hash-object --no-filters`. Todos estavam
+ignorados e o worktree ficou limpo.
+
 Uma nova consulta ao remoto encontrou o Lia-Project em `3153c8b`.
 A base comum com o piloto `92ec72c` continua `9778ffb`. A comparação
 de caminhos mostrou zero interseções entre os 490 caminhos alterados
