@@ -450,3 +450,15 @@ instalado para o build.
 | --- | --- |
 | LiaAgentHub.exe | `3c55379f72524ac025937281df0e72c3d3316d2ead6ba5c4ae574631332d3d2e` |
 | LiaAgentHubCli.exe | `fe2cd06cb38137436d55820f39f50bbcb81ccf8254a7ccadbed942da59c56e86` |
+
+### Matriz consolidada após o CI Windows
+
+| Critério | Estado | Escopo comprovado |
+| --- | --- | --- |
+| Suíte Windows e build em CI | PASS | 852 testes sem skips no runner. O job de build gerou os dois executáveis e os iniciou fora do checkout. |
+| Janela nativa e fluxos de produto | PASS | O teste local do binário empacotado abriu WebView2 e exercitou as operações descritas acima. O job do CI cobre a CLI e a chamada de versão do gráfico. |
+| M4 · symlink de arquivo | PASS | O runner executou o teste de criação e tratamento de symlink sem skip. A sessão local ainda carece do privilégio. |
+| M4 · outros reparse points | PARTIAL | Há evidência de junction NTFS e do symlink exercitado em CI. Os demais tipos não foram reproduzidos. |
+| D-09 · egress no build padrão | PARTIAL | Os argumentos chegaram ao runtime. O controle padrão ainda deixou conexões DoH externas na medição local. |
+| Windows limpo sem Python | BLOCKED | O runner tinha Python para compilar. O teste externo isolou o PATH. |
+| Distribuição pública | BLOCKED | D-09, Windows limpo e decisões humanas de distribuição continuam pendentes. |
