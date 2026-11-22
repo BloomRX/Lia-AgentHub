@@ -1246,3 +1246,11 @@ Referência de formato: [Claude Code MCP](https://code.claude.com/docs/en/mcp).
 O piloto importou um descritor local baseado no Forge e gerou a
 prévia em `J:/Lia/migration/agent-hub/forge-mcp-template-pilot/review-template.json`.
 A configuração e a execução no host continuam pendentes.
+
+Para preparar o modelo de uma revisão específica do catálogo, use
+`GET /api/mcp-config?id=<URN>&format=claude-code&revision=<revisionId>`
+na sessão local do Hub. A resposta conserva o ID e digest da revisão
+selecionada. Sem `revision`, a API usa a última revisão recebida.
+Uma revisão inexistente é recusada. O teste de regressão recebe duas
+revisões e verifica que a seleção explícita preserva o nome e digest
+da primeira.

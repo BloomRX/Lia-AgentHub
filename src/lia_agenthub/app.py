@@ -314,7 +314,8 @@ class AgentHub:
             "results": resultados,
         }
 
-    def mcp_config(self, cap_id: str, formato: str = "mcp-json") -> dict:
+    def mcp_config(self, cap_id: str, formato: str = "mcp-json",
+                   revision_id: str | None = None) -> dict:
         """Bloco de configuração do servidor MCP para o usuário copiar.
 
         O Hub entrega TEXTO. Não escreve no arquivo de outro aplicativo, não
@@ -323,7 +324,9 @@ class AgentHub:
         from .domain.mcp import MCPServer, config_para_host
         # IDs centrais são chaves do inventário, não caminhos de biblioteca.
         if cap_id.startswith("urn:lia:cap:"):
-            return self._inventory_mcp_config(cap_id, formato)
+            return self._inventory_mcp_config(cap_id, formato, revision_id)
+        if revision_id is not None:
+            raise LiaError("A seleção de revisão exige um ID central do inventário.")
         stored = self.repo._load_any(cap_id)
         cap = stored.capability
 
@@ -342,7 +345,8 @@ class AgentHub:
                             "connectivityVerified": False}
         return bloco
 
-    def _inventory_mcp_config(self, cap_id: str, formato: str) -> dict:
+    def _inventory_mcp_config(self, cap_id: str, formato: str,
+                              revision_id: str | None) -> dict:
         """Gera modelo de revisão a partir de um MCP apenas inventariado.
 
         Inventário não é importação. Esta ponte usa somente a declaração
@@ -364,7 +368,8 @@ class AgentHub:
                 f"`{cap_id}` não é um servidor MCP inventariado.",
                 "Use o ID de um mcp-server admitido no catálogo ou importe um descritor MCP.")
 
-        revision_id = entrada.get("lastRevision")
+        if revision_id is None:
+            revision_id = entrada.get("lastRevision")
         revisoes = entrada.get("revisions")
         revisao = (revisoes.get(revision_id)
                    if isinstance(revisoes, dict) and isinstance(revision_id, str) else None)
@@ -393,11 +398,13 @@ class AgentHub:
                 "Remova-os do inventário; o comando, argumentos, ambiente e segredos são definidos no host.")
 
         servidor = MCPServer.from_dict({"transport": "stdio"})
+        if formato != "claude-code":
+            raise LiaError("O modelo stdio inventariado exige o formato claude-code.")
         bloco = config_para_host(servidor, formato=formato,
-                                 nome=str(entrada.get("name") or cap_id))
+                                 nome=str(revisao.get("name") or cap_id))
         bloco["recurso"] = {
             "id": cap_id,
-            "name": entrada.get("name", ""),
+            "name": revisao.get("name", ""),
             "endpoint": "",
             "connectivityVerified": False,
             "source": "inventory-reference",

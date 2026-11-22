@@ -180,6 +180,24 @@ class TestConfigNoHub:
         with pytest.raises(LiaError, match="conexão/lançamento"):
             hub.mcp_config(INVENTORY_STDIO_ID, "claude-code")
 
+    def test_inventory_stdio_can_pin_a_previous_revision(self, hub, tmp_path):
+        path = _inventory_stdio(tmp_path)
+        first = hub.inventory_receive(str(path))
+        doc = json.loads(path.read_text(encoding="utf-8"))
+        doc["revision"] = "snapshot-2"
+        doc["records"][0].update(revisionId="stdio-2", name="forge-mcp-renamed")
+        path.write_text(json.dumps(doc), encoding="utf-8")
+        second = hub.inventory_receive(str(path))
+        assert second["committed"]
+        pinned = hub.mcp_config(INVENTORY_STDIO_ID, "claude-code", "stdio-1")
+        assert pinned["recurso"]["inventoryDigest"] == first["records"][0]["digest"]
+        assert list(pinned["bloco"]["mcpServers"]) == ["forge-mcp"]
+        assert hub.mcp_config(INVENTORY_STDIO_ID, "claude-code")["recurso"]["inventoryRevision"] == "stdio-2"
+        with pytest.raises(LiaError, match="revisão"):
+            hub.mcp_config(INVENTORY_STDIO_ID, "claude-code", "missing")
+        with pytest.raises(LiaError, match="claude-code"):
+            hub.mcp_config(INVENTORY_STDIO_ID)
+
     def test_stdio_template_is_passive_and_does_not_declare_egress(self, hub, tmp_path):
         cid = _mcp(hub, tmp_path, {"transport": "stdio", "provider": "Forge"})
         config = hub.mcp_config(cid, "claude-code")

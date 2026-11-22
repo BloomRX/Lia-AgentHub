@@ -219,10 +219,11 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/mcp-config":
             cap = (qs.get("id") or [""])[0]
             formato = (qs.get("format") or ["mcp-json"])[0]
+            revisao = (qs.get("revision") or [None])[0]
             if not cap:
                 self._error("Informe `id`.", "", 400)
                 return
-            return self._json(hub.mcp_config(cap, formato))
+            return self._json(hub.mcp_config(cap, formato, revisao))
         if path == "/api/inventory":
             return self._json(hub.inventory_state())
         if path == "/api/inventory/receipts":
