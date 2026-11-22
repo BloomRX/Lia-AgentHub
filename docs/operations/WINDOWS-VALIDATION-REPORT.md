@@ -404,3 +404,21 @@ código 0. Recibo do teste: `rec-ca438d1634a07160`.
 Evidências locais em `J:/Lia/migration/agent-hub/windows-build-inventory-mcp.log`
 e `J:/Lia/migration/agent-hub/smoke-inventory-mcp.log`. O ensaio isolou
 o PATH do Python. A homologação em máquina sem Python continua BLOCKED.
+
+### Seleção de revisão no build e431eb5
+
+`scripts/build_windows.ps1` executou a suíte e gerou os binários.
+Em uma cópia externa com dados isolados, a CLI recebeu o inventário
+do Forge (recibo `rec-742a2e501cb87520`). A janela abriu em WebView2
+(PID 19788) e encerrou com código 0. A API retornou 200 para
+`revision=stdio-review-2`, com o digest conferido contra o recibo,
+400 para uma revisão inexistente e 403 sem token. A biblioteca
+permaneceu vazia.
+
+| Artefato | SHA-256 |
+| --- | --- |
+| LiaAgentHub.exe | `d72cdf3863591dd4fd471322b17c24951fc493728482368321883ef4364049c5` |
+| LiaAgentHubCli.exe | `a53b4716bad47b542e9a2f226e487af1561413cf72c1f176774cb06e65087809` |
+
+Logs em `J:/Lia/migration/agent-hub/windows-build-e431eb5.log` e
+`J:/Lia/migration/agent-hub/smoke-inventory-mcp-e431eb5.log`.
