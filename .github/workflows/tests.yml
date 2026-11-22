@@ -54,3 +54,30 @@ jobs:
       - name: Build and verify Windows executables
         shell: pwsh
         run: ./scripts/build_windows.ps1 -PythonExe (Get-Command python).Source
+      - name: Smoke-test packaged inventory outside the checkout
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+          $smoke = Join-Path $env:RUNNER_TEMP ('lia-smoke-' + [guid]::NewGuid())
+          New-Item -ItemType Directory -Path $smoke | Out-Null
+          Copy-Item -LiteralPath dist/LiaAgentHub.exe,dist/LiaAgentHubCli.exe,docs/examples/central-capability-inventory.v1.json -Destination $smoke
+          Set-Location -LiteralPath $smoke
+          $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"
+          Remove-Item Env:PYTHONHOME,Env:PYTHONPATH -ErrorAction SilentlyContinue
+          $env:LIA_AGENTHUB_HOME = Join-Path $smoke 'data'
+          $env:APPDATA = Join-Path $smoke 'roaming'
+          $env:LOCALAPPDATA = Join-Path $smoke 'local'
+          $gui = Start-Process .\LiaAgentHub.exe -ArgumentList '--version' -Wait -PassThru -WindowStyle Hidden
+          if ($gui.ExitCode -ne 0) { throw "GUI version exit: $($gui.ExitCode)" }
+          $fixture = Get-Content -LiteralPath central-capability-inventory.v1.json -Raw | ConvertFrom-Json
+          $receipt = .\LiaAgentHubCli.exe inventory receive central-capability-inventory.v1.json --commit --json | ConvertFrom-Json
+          if (!$receipt.committed -or !$receipt.receiptId) { throw 'Inventory was not committed' }
+          $state = .\LiaAgentHubCli.exe inventory state --json | ConvertFrom-Json
+          $record = @($state.records | Where-Object id -CEQ $fixture.records[0].id)
+          if (!$state.ok -or $record.Count -ne 1 -or $record[0].state -cne 'inventoried' -or
+              $record[0].lastRevision -cne $fixture.records[0].revisionId) {
+            throw 'Persisted inventory did not match the fixture'
+          }
+          "Packaged inventory persisted across processes: $($receipt.receiptId)"
+          Get-FileHash -LiteralPath LiaAgentHub.exe,LiaAgentHubCli.exe
