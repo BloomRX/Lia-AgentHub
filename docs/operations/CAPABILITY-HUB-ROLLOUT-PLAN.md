@@ -1132,6 +1132,13 @@ buscou conteúdo fora do escopo do teste e foi interrompida.
 O segundo ensaio inicializou apenas o checkout esparso.
 O canal segue local, sem evidência de acesso pelo CI remoto.
 
+Na regressão com a CLI Windows de `e431eb5`, `Get-FileHash`
+confirmou os 153 arquivos do índice, e `verify-package --json`
+aceitou cada um dos 46 pacotes. `skill materialize` recriou
+`lia-brand-check` em pasta temporária. `git hash-object --no-filters`
+retornou `74e3d8e85981f2ee0e9f80123d2a9d81df8fa43f`, o mesmo
+blob de `SKILL.md` em `4b4c714` do Forge.
+
 A reversão integral dos cinco commits locais do Lia-Project passou
 no worktree esparso isolado. Após afastar as 28 cópias geradas,
 `git revert --no-commit HEAD~5..HEAD` restaurou as 28 fontes.
