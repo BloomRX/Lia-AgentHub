@@ -1140,6 +1140,13 @@ Os 23 arquivos retirados do Git coincidiram com os blobs de
 `38a48d9` por `git hash-object --no-filters`. Todos estavam
 ignorados e o worktree ficou limpo.
 
+No Forge, `scripts/prepare_brand_skill.ps1` recriou
+`lia-brand-check` no worktree destacado
+`J:/Lia/migration/agent-hub/forge-cut-current-cli`, a partir do
+piloto `0b0a9b6`, do canal consolidado e da CLI de `e431eb5`.
+O arquivo coincidiu com o blob de `4b4c714`, ficou ignorado e
+`git status -sb` ficou limpo. O remoto ainda lista apenas `main`.
+
 Uma nova consulta ao remoto encontrou o Lia-Project em `3153c8b`.
 A base comum com o piloto `92ec72c` continua `9778ffb`. A comparação
 de caminhos mostrou zero interseções entre os 490 caminhos alterados
