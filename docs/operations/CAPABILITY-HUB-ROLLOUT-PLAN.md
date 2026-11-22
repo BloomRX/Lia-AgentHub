@@ -1147,6 +1147,9 @@ O ensaio sobre o novo HEAD reaplicou os cinco commits por
 `89e8e1e`. Os bootstraps Eventa e AIRI usaram o canal privado local e a
 CLI Windows de `e431eb5`. Os 459 caminhos removidos do Git, incluindo
 28 arquivos `SKILL.md`, estavam presentes após a materialização.
+`git hash-object --no-filters` confirmou que os 459 arquivos
+materializados eram idênticos aos blobs de `3153c8b`.
+`git check-ignore --stdin` confirmou a exclusão dos 459 caminhos.
 `pytest tools/test_agent_skills.py -q` passou com sete testes e
 88 subtestes. Os três arquivos remotos de documentação permaneceram
 idênticos aos de `3153c8b`, e `git status -sb` ficou limpo.
