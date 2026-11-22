@@ -1132,6 +1132,15 @@ buscou conteúdo fora do escopo do teste e foi interrompida.
 O segundo ensaio inicializou apenas o checkout esparso.
 O canal segue local, sem evidência de acesso pelo CI remoto.
 
+Uma nova consulta ao remoto encontrou o Lia-Project em `3153c8b`.
+A base comum com o piloto `92ec72c` continua `9778ffb`. A comparação
+de caminhos mostrou zero interseções entre os 490 caminhos alterados
+no piloto e os três arquivos de documentação alterados no remoto.
+Essa comparação confirma o escopo da divergência. O piloto ainda
+precisa ser reaplicado e verificado sobre o novo HEAD antes de um corte
+remoto. O Studio segue com o piloto um commit à frente de `38a48d9`
+e a branch local do piloto Forge continua sem equivalente no remoto.
+
 Na regressão com a CLI Windows de `e431eb5`, `Get-FileHash`
 confirmou os 153 arquivos do índice, e `verify-package --json`
 aceitou cada um dos 46 pacotes. `skill materialize` recriou
