@@ -422,3 +422,18 @@ permaneceu vazia.
 
 Logs em `J:/Lia/migration/agent-hub/windows-build-e431eb5.log` e
 `J:/Lia/migration/agent-hub/smoke-inventory-mcp-e431eb5.log`.
+
+### Segundo ambiente Windows · GitHub Actions
+
+O [run 44989795688](https://github.com/BloomRX/Lia-AgentHub/actions/runs/44989795688)
+de `cfcc6ab` passou nos três jobs. O job Windows com Python 3.13
+registrou **852 testes aprovados e nenhum skip**. A suíte inclui
+`test_symlink_em_diretorio_e_recusado`, que exige que a importação
+recuse o diretório ou sinalize o link. A limitação de privilégio
+continua válida para a máquina local. No runner, a criação do
+symlink permitiu que o teste executasse.
+
+O job de empacotamento com Python 3.12 executou `scripts/build_windows.ps1`,
+gerou os dois executáveis e confirmou saída 0 em `--version` no gráfico
+e na ajuda da CLI. A janela nativa, a medição D-09 e a execução num
+Windows sem Python ficaram fora do escopo desse job.
