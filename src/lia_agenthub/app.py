@@ -13,7 +13,7 @@ from .adapters.packager import Target, export, verify_package
 from .adapters.paths_resolver import Locations, resolve_locations
 from .adapters.repository import Repository
 from .adapters.settings import SettingsStore
-from .domain.errors import LiaError, NotFound
+from .domain.errors import LiaError
 from .domain.integrity import sha256_bytes
 from .domain.model import Capability, Lifecycle, Trust
 from .domain.risk import assess
@@ -321,13 +321,10 @@ class AgentHub:
         inicia processo e não guarda credencial — o placeholder é literal.
         """
         from .domain.mcp import MCPServer, config_para_host
-        try:
-            stored = self.repo._load_any(cap_id)
-        except (NotFound, OSError):
-            # IDs centrais usam URN e, portanto, contêm `:`. Em Windows eles
-            # não são nomes de diretório válidos para a biblioteca de payload;
-            # a única leitura segura nesse caso é a projeção de inventário.
+        # IDs centrais são chaves do inventário, não caminhos de biblioteca.
+        if cap_id.startswith("urn:lia:cap:"):
             return self._inventory_mcp_config(cap_id, formato)
+        stored = self.repo._load_any(cap_id)
         cap = stored.capability
 
         # O descritor vive em `extra["mcp"]`, gravado pelo importador. Não
@@ -369,7 +366,8 @@ class AgentHub:
 
         revision_id = entrada.get("lastRevision")
         revisoes = entrada.get("revisions")
-        revisao = revisoes.get(revision_id) if isinstance(revisoes, dict) else None
+        revisao = (revisoes.get(revision_id)
+                   if isinstance(revisoes, dict) and isinstance(revision_id, str) else None)
         if (not isinstance(revision_id, str) or not isinstance(revisao, dict)
                 or revisao.get("kind") != "mcp-server"
                 or revisao.get("state") != "inventoried"):

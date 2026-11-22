@@ -532,8 +532,9 @@ class InventoryIntake:
             # `details` também é metadado passivo: guardá-lo torna possível
             # produzir artefatos de revisão sem importar payload. Ele nunca é
             # interpretado como comando pelo intake.
-            for campo in ("aliases", "dependencies", "offers", "compatibility", "details"):
+            for campo in ("aliases", "dependencies", "offers", "compatibility"):
                 revisao[campo] = reg.bruto.get(campo, [])
+            revisao["details"] = reg.bruto.get("details")
 
             sources = revisao.setdefault("sources", [])
             issuer = {
