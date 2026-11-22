@@ -384,3 +384,23 @@ receberam configuração durante o ensaio.
 Logs locais em `J:/Lia/migration/agent-hub/windows-build-c13add7.log`
 e `J:/Lia/migration/agent-hub/windows-product-c13add7/smoke.log`.
 D-09 e Windows limpo seguem com as limitações registradas.
+
+### Modelo MCP a partir do catálogo no build c606330
+
+O script `scripts/build_windows.ps1` executou a suíte completa e gerou
+os dois binários. Fora do checkout, `LiaAgentHubCli.exe inventory receive
+--commit --json` recebeu o manifesto real do Forge em um perfil isolado.
+O executável gráfico abriu em WebView2 (PID 8224). A API retornou 403 sem
+token e 200 com token para o URN do Forge. O modelo Claude Code trouxe
+placeholder de executável, argumentos vazios e o digest da revisão
+`stdio-review-2`. A biblioteca permaneceu vazia e a janela encerrou com
+código 0. Recibo do teste: `rec-ca438d1634a07160`.
+
+| Artefato | SHA-256 |
+| --- | --- |
+| LiaAgentHub.exe | `3f889a627c0a27f2572680eeed1deefe45b6b6d47f29473c0b6c1801194415ee` |
+| LiaAgentHubCli.exe | `049fa7c24dc157bb74982f4f950ab2ae79c3604856537e2f23ea2abab5972678` |
+
+Evidências locais em `J:/Lia/migration/agent-hub/windows-build-inventory-mcp.log`
+e `J:/Lia/migration/agent-hub/smoke-inventory-mcp.log`. O ensaio isolou
+o PATH do Python. A homologação em máquina sem Python continua BLOCKED.
