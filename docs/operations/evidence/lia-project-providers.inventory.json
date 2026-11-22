@@ -1,0 +1,123 @@
+{
+  "inventoryVersion": 1,
+  "inventoryId": "lia-project-provider-definition-references",
+  "revision": "3153c8b133ac1a76dc97513f0a1aa66d92846bb6",
+  "generatedAt": "2026-11-22T00:00:00Z",
+  "complete": false,
+  "issuer": {
+    "project": "lia-project",
+    "repository": "https://github.com/BloomRX/Lia-Project",
+    "maintainer": "Lia-Project"
+  },
+  "records": [
+    {
+      "id": "urn:lia:cap:e07f53dd-ec07-4677-9c60-659c290eae91",
+      "revisionId": "3153c8b133ac1a76dc97513f0a1aa66d92846bb6",
+      "kind": "model-provider",
+      "name": "Groq",
+      "version": null,
+      "description": "Referência à definição groq do catálogo do Launcher do Lia-Project.",
+      "origins": [
+        {
+          "project": "lia-project",
+          "repository": "https://github.com/BloomRX/Lia-Project",
+          "path": "lia/core/src/providers/catalog.ts",
+          "commit": "3153c8b133ac1a76dc97513f0a1aa66d92846bb6"
+        }
+      ],
+      "aliases": [
+        {
+          "scheme": "provider-definition-id",
+          "value": "groq",
+          "authority": "lia-project"
+        }
+      ],
+      "license": {
+        "declared": null,
+        "redistribution": {
+          "status": "pending",
+          "authorizationIds": []
+        }
+      },
+      "details": {
+        "subtype": "provider",
+        "definitionId": "groq",
+        "declaredAvailability": "ready",
+        "sourceClass": "static-product-definition"
+      }
+    },
+    {
+      "id": "urn:lia:cap:3c48a606-223a-47de-846a-1f3916e96dac",
+      "revisionId": "3153c8b133ac1a76dc97513f0a1aa66d92846bb6",
+      "kind": "model-provider",
+      "name": "Local Chat",
+      "version": null,
+      "description": "Referência à definição local-chat do catálogo do Launcher do Lia-Project.",
+      "origins": [
+        {
+          "project": "lia-project",
+          "repository": "https://github.com/BloomRX/Lia-Project",
+          "path": "lia/core/src/providers/catalog.ts",
+          "commit": "3153c8b133ac1a76dc97513f0a1aa66d92846bb6"
+        }
+      ],
+      "aliases": [
+        {
+          "scheme": "provider-definition-id",
+          "value": "local-chat",
+          "authority": "lia-project"
+        }
+      ],
+      "license": {
+        "declared": null,
+        "redistribution": {
+          "status": "pending",
+          "authorizationIds": []
+        }
+      },
+      "details": {
+        "subtype": "provider",
+        "definitionId": "local-chat",
+        "declaredAvailability": "ready",
+        "sourceClass": "static-product-definition"
+      }
+    },
+    {
+      "id": "urn:lia:cap:e8e6e88d-cfc7-4ae6-9621-bf560ab71c59",
+      "revisionId": "3153c8b133ac1a76dc97513f0a1aa66d92846bb6",
+      "kind": "model-provider",
+      "name": "OpenAI-compatible",
+      "version": null,
+      "description": "Referência à definição openai-compatible do catálogo do Launcher do Lia-Project.",
+      "origins": [
+        {
+          "project": "lia-project",
+          "repository": "https://github.com/BloomRX/Lia-Project",
+          "path": "lia/core/src/providers/catalog.ts",
+          "commit": "3153c8b133ac1a76dc97513f0a1aa66d92846bb6"
+        }
+      ],
+      "aliases": [
+        {
+          "scheme": "provider-definition-id",
+          "value": "openai-compatible",
+          "authority": "lia-project"
+        }
+      ],
+      "license": {
+        "declared": null,
+        "redistribution": {
+          "status": "pending",
+          "authorizationIds": []
+        }
+      },
+      "details": {
+        "subtype": "provider",
+        "definitionId": "openai-compatible",
+        "declaredAvailability": "unavailable",
+        "sourceClass": "static-product-definition"
+      }
+    }
+  ],
+  "evidence": []
+}
