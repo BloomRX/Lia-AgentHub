@@ -1159,6 +1159,17 @@ verifica permissões de execução.
 idênticos aos de `3153c8b`, e `git status -sb` ficou limpo.
 O ensaio ficou no worktree isolado.
 
+No HEAD remoto testado, o DevFlow do Lia-Project roda em
+`windows-latest` e `ubuntu-latest` e chama `tools/test_agent_skills.py`,
+sem uma etapa de hidratação. No checkout isolado, afastei temporariamente
+a cópia gerada de `lia-eventa-ipc` e executei a mesma suíte diretamente.
+Os sete testes passaram. Restaurei a cópia e confirmei a árvore limpa.
+Essa suíte verifica Skills presentes e pode ficar verde sem Eventa.
+O futuro gate de consumo deve verificar a revisão fixada e exigir a
+presença das Skills migradas após a hidratação. Os commits consultados
+do Studio (`38a48d9`) e Forge (`4b4c714`) não têm workflows em
+`.github/workflows`.
+
 Na regressão com a CLI Windows de `e431eb5`, `Get-FileHash`
 confirmou os 153 arquivos do índice, e `verify-package --json`
 aceitou cada um dos 46 pacotes. `skill materialize` recriou
