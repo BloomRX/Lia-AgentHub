@@ -1,0 +1,48 @@
+{
+  "inventoryVersion": 1,
+  "inventoryId": "lia-agent-hub-stitch-mcp-reference",
+  "revision": "e2f1a47e5dfd599ab905bb5ab2c6612423d88cd7",
+  "generatedAt": "2026-11-22T00:00:00Z",
+  "complete": false,
+  "issuer": {
+    "project": "lia-agent-hub",
+    "repository": "https://github.com/BloomRX/Lia-AgentHub",
+    "maintainer": "Lia Agent Hub"
+  },
+  "records": [
+    {
+      "id": "urn:lia:cap:9ad8628b-3b6a-46ae-a857-8295f699dd3a",
+      "revisionId": "e2f1a47e5dfd599ab905bb5ab2c6612423d88cd7",
+      "kind": "mcp-server",
+      "name": "google-stitch-mcp",
+      "version": null,
+      "description": "Referência ao serviço MCP Google Stitch a partir do descritor mantido no Hub.",
+      "origins": [{
+        "project": "lia-agent-hub",
+        "repository": "https://github.com/BloomRX/Lia-AgentHub",
+        "path": "docs/stitch/mcp/google-stitch.mcp.json",
+        "commit": "e2f1a47e5dfd599ab905bb5ab2c6612423d88cd7"
+      }],
+      "aliases": [{
+        "scheme": "lia-capability-v1",
+        "value": "mcp-pacote-1f4d442f",
+        "authority": "lia-agent-hub"
+      }],
+      "license": {
+        "declared": null,
+        "redistribution": {"status": "pending", "authorizationIds": []}
+      },
+      "integrity": [{
+        "algorithm": "sha256",
+        "scope": "descriptor",
+        "digest": "ea96ba7cc3850df5083869e08747369fa23be0be579ed4dd3111def8a7e2c906"
+      }],
+      "details": {
+        "provider": "Google Stitch",
+        "declaredTransport": "http",
+        "sourceClass": "static-descriptor-reference"
+      }
+    }
+  ],
+  "evidence": []
+}

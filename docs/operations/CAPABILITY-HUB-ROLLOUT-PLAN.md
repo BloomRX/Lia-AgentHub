@@ -1322,6 +1322,15 @@ contrato, mas ainda não aparecem nesse inventário. O catálogo separado
 do Stitch também precisa ser reconciliado com a projeção central antes
 de tratar a cobertura de MCP como completa.
 
+O primeiro vínculo dessa reconciliação é o servidor Google Stitch.
+O manifesto `docs/operations/evidence/stitch-mcp.inventory.json` fixa
+o commit e o SHA-256 do descritor versionado, conserva o alias do
+catálogo anterior e mantém a redistribuição pendente. A CLI Windows
+gravou `rec-34ef74a41688d823` sem achados e a consulta confirmou
+90 identidades com teto `inventoried`. A evidência refere-se ao
+descritor do Hub. As Skills do catálogo Stitch ainda aguardam
+reconciliação individual.
+
 O MCP do Forge declara stdio e Node 22.12+ em `docs/mcp.md`.
 O exportador atual do Hub recusou esse transporte com erro que
 explica a limitação. O controle HTTP produziu um bloco revisável
