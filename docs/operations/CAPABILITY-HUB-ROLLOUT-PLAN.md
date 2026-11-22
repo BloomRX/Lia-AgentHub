@@ -1179,6 +1179,14 @@ quanto um arquivo extra. Após restaurar a árvore, 28 pins, sete
 testes e 88 subtestes passaram. A execução em runner remoto continua
 pendente de acesso ao canal privado e à CLI.
 
+A consulta `gh api repos/BloomRX/Lia-Project/actions/runners`
+retornou zero runners registrados para esse repositório. As consultas
+de visibilidade confirmaram Lia-Project e Lia-Studio públicos e
+Lia-Forge-2.0 privado. O fluxo de consumo restrito precisa de um
+ambiente autorizado a acessar o lote privado. Um job de PR público
+não deve receber as credenciais nem os pacotes. O teste local não
+comprova acesso em runner hospedado.
+
 Na regressão com a CLI Windows de `e431eb5`, `Get-FileHash`
 confirmou os 153 arquivos do índice, e `verify-package --json`
 aceitou cada um dos 46 pacotes. `skill materialize` recriou
