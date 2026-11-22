@@ -1337,6 +1337,10 @@ como declaração atribuída ao catálogo legado e manteve a redistribuição
 pendente. A CLI recebeu os 16 registros sem achados no recibo
 `rec-ac014046fca2368e`, totalizando 106 identidades. A operação
 recebeu referências e não materializou conteúdo.
+O gerador emite UTF-8 com LF. A regeneração reproduziu o SHA-256
+`6940f1b5c06bbc29e9d82b7d754faad70eb5368152de398e057a51aae75e34db`
+do arquivo recebido. O preview classificou os 16 registros como
+`exact-duplicate` e a projeção permaneceu com 106 identidades.
 
 O MCP do Forge declara stdio e Node 22.12+ em `docs/mcp.md`.
 O exportador atual do Hub recusou esse transporte com erro que

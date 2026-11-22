@@ -2,6 +2,7 @@
 
 import json
 import subprocess
+import sys
 import uuid
 
 COMMIT = "90b6e5cbb8658c898046dae6e8d210960a09558e"
@@ -49,7 +50,7 @@ def main():
         })
     if len(records) != 16:
         raise ValueError("Esperadas 16 referências Stitch.")
-    print(json.dumps({
+    document = {
         "inventoryVersion": 1,
         "inventoryId": "lia-agent-hub-stitch-skill-references",
         "revision": COMMIT,
@@ -59,7 +60,10 @@ def main():
                    "maintainer": "Lia Agent Hub"},
         "records": records,
         "evidence": [],
-    }, ensure_ascii=True, indent=2))
+    }
+    # Fix encoding and line endings so the receipt's file digest can be rebuilt.
+    sys.stdout.buffer.write((json.dumps(document, ensure_ascii=False, indent=2)
+                             + "\n").encode("utf-8"))
 
 
 if __name__ == "__main__":
