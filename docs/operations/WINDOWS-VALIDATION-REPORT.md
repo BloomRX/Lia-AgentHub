@@ -437,3 +437,16 @@ O job de empacotamento com Python 3.12 executou `scripts/build_windows.ps1`,
 gerou os dois executáveis e confirmou saída 0 em `--version` no gráfico
 e na ajuda da CLI. A janela nativa, a medição D-09 e a execução num
 Windows sem Python ficaram fora do escopo desse job.
+
+O [run 44990064122](https://github.com/BloomRX/Lia-AgentHub/actions/runs/44990064122)
+de `c2251a0` também passou no teste dos binários copiados para
+`RUNNER_TEMP`. Com o PATH restrito aos diretórios do Windows, a CLI
+recebeu o inventário de exemplo, emitiu `rec-dc4e5cbb4021ff0c` e
+recuperou o ID e a revisão em um segundo processo. O executável
+gráfico respondeu a `--version` com código 0. O runner tinha Python
+instalado para o build.
+
+| Artefato do runner | SHA-256 |
+| --- | --- |
+| LiaAgentHub.exe | `3c55379f72524ac025937281df0e72c3d3316d2ead6ba5c4ae574631332d3d2e` |
+| LiaAgentHubCli.exe | `fe2cd06cb38137436d55820f39f50bbcb81ccf8254a7ccadbed942da59c56e86` |
