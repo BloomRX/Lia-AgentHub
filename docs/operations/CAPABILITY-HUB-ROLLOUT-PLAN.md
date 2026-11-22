@@ -1141,6 +1141,17 @@ precisa ser reaplicado e verificado sobre o novo HEAD antes de um corte
 remoto. O Studio segue com o piloto um commit à frente de `38a48d9`
 e a branch local do piloto Forge continua sem equivalente no remoto.
 
+O ensaio sobre o novo HEAD reaplicou os cinco commits por
+`git cherry-pick 9778ffb..92ec72c` em um worktree destacado
+`J:/Lia/migration/agent-hub/project-pilot-3153c8b`, resultando em
+`89e8e1e`. Os bootstraps Eventa e AIRI usaram o canal privado local e a
+CLI Windows de `e431eb5`. Os 459 caminhos removidos do Git, incluindo
+28 arquivos `SKILL.md`, estavam presentes após a materialização.
+`pytest tools/test_agent_skills.py -q` passou com sete testes e
+88 subtestes. Os três arquivos remotos de documentação permaneceram
+idênticos aos de `3153c8b`, e `git status -sb` ficou limpo.
+O ensaio ficou no worktree isolado.
+
 Na regressão com a CLI Windows de `e431eb5`, `Get-FileHash`
 confirmou os 153 arquivos do índice, e `verify-package --json`
 aceitou cada um dos 46 pacotes. `skill materialize` recriou
