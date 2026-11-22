@@ -1328,8 +1328,15 @@ o commit e o SHA-256 do descritor versionado, conserva o alias do
 catálogo anterior e mantém a redistribuição pendente. A CLI Windows
 gravou `rec-34ef74a41688d823` sem achados e a consulta confirmou
 90 identidades com teto `inventoried`. A evidência refere-se ao
-descritor do Hub. As Skills do catálogo Stitch ainda aguardam
-reconciliação individual.
+descritor do Hub.
+
+O gerador `docs/operations/evidence/stitch-skill-reference-inventory.py`
+leu a versão Git fixa do catálogo legado. Preservou os 16 aliases,
+as referências upstream e os hashes declarados. Registrou Apache-2.0
+como declaração atribuída ao catálogo legado e manteve a redistribuição
+pendente. A CLI recebeu os 16 registros sem achados no recibo
+`rec-ac014046fca2368e`, totalizando 106 identidades. A operação
+recebeu referências e não materializou conteúdo.
 
 O MCP do Forge declara stdio e Node 22.12+ em `docs/mcp.md`.
 O exportador atual do Hub recusou esse transporte com erro que
