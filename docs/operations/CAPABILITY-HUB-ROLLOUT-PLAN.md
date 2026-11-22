@@ -1150,6 +1150,10 @@ CLI Windows de `e431eb5`. Os 459 caminhos removidos do Git, incluindo
 `git hash-object --no-filters` confirmou que os 459 arquivos
 materializados eram idênticos aos blobs de `3153c8b`.
 `git check-ignore --stdin` confirmou a exclusão dos 459 caminhos.
+`git ls-tree -r 3153c8b` confirmou modo `100644` nos 459 arquivos
+do piloto. O script de `upload-github-attachment` continua em modo
+`100755` na origem e fora desse corte. A comparação por blob não
+verifica permissões de execução.
 `pytest tools/test_agent_skills.py -q` passou com sete testes e
 88 subtestes. Os três arquivos remotos de documentação permaneceram
 idênticos aos de `3153c8b`, e `git status -sb` ficou limpo.
