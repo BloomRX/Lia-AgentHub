@@ -1305,6 +1305,23 @@ Os recibos são `rec-834d30b665aca6f0`, `rec-35612a5f13bfae00`,
 A consulta confirmou 89 identidades. Os sete registros têm
 evidência estática e mantêm distribuição pendente.
 
+A recontagem na instância ativa com `inventory state --json` confirmou
+89 registros e teto `inventoried`. O agrupamento abaixo usa o emissor
+atual do registro. Origens e emissores anteriores permanecem no histórico.
+
+| Emissor | Skills | Outras capacidades |
+| --- | ---: | --- |
+| Lia-Project | 51 | 1 CLI, 2 servidores MCP, 1 ferramenta MCP, 1 workflow |
+| Lia Forge | 2 | 1 servidor MCP, 1 pacote |
+| Lia Studio | 16 | 1 CLI |
+| Lia Model Lab | 9 históricas | Nenhuma registrada |
+| Lia Agent Hub | 1 | 1 CLI, 1 workflow |
+
+Plugins, perfis de agente, modelos/provedores e recursos têm tipos no
+contrato, mas ainda não aparecem nesse inventário. O catálogo separado
+do Stitch também precisa ser reconciliado com a projeção central antes
+de tratar a cobertura de MCP como completa.
+
 O MCP do Forge declara stdio e Node 22.12+ em `docs/mcp.md`.
 O exportador atual do Hub recusou esse transporte com erro que
 explica a limitação. O controle HTTP produziu um bloco revisável
