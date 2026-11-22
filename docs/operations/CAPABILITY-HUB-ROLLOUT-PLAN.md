@@ -1170,6 +1170,15 @@ presença das Skills migradas após a hidratação. Os commits consultados
 do Studio (`38a48d9`) e Forge (`4b4c714`) não têm workflows em
 `.github/workflows`.
 
+O commit local do piloto `807c0b1` adiciona
+`python tools/verify_hub_skills.py`. Execute a checagem depois dos
+bootstraps Eventa e AIRI, antes da suíte de Skills do DevFlow. A
+checagem compara as árvores das 28 Skills com os hashes dos pins.
+Em Windows, o ensaio recusou tanto a ausência de `SKILL.md` do Eventa
+quanto um arquivo extra. Após restaurar a árvore, 28 pins, sete
+testes e 88 subtestes passaram. A execução em runner remoto continua
+pendente de acesso ao canal privado e à CLI.
+
 Na regressão com a CLI Windows de `e431eb5`, `Get-FileHash`
 confirmou os 153 arquivos do índice, e `verify-package --json`
 aceitou cada um dos 46 pacotes. `skill materialize` recriou
