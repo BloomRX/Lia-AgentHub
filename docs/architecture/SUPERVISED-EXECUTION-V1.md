@@ -170,3 +170,20 @@ Invoke-HubExecution @{action = 'audit'; taskId = $taskId}
 
 O texto no exemplo é uma fixture. A operação executada é o validador real
 do Hub, em memória e sem baixar dependências ou chamar um serviço sintético.
+
+## Evidência de validação
+
+No Windows, `scripts/build_windows.ps1` executou a suíte completa e
+gerou os dois executáveis. A demonstração chamou uma cópia de
+`LiaAgentHubCli.exe` fora do checkout. O mesmo ID de tarefa apareceu
+na resposta final e na trilha `queued → running → completed`.
+O resultado trouxe as quatro contagens do validador real. SHA-256 da
+CLI usada: `bae46af66f702a9698a116fbc59ed205b60e908bc6d34159d4685abecafd7c81`.
+
+A regressão cobre recusa de autorização e isolamento entre consumidores
+pela CLI, cancelamento antes de iniciar, armazenamento indisponível e
+repetição idempotente. Testes controlados de adaptador usam relógio
+injetado para expiração, exceção injetada para falha interna e uma
+barreira de sincronização para confirmar o descarte de resultado após
+cancelamento em andamento. Esses três cenários usam fixtures. Nenhum
+serviço externo nem artefato executável importado participou do ensaio.
