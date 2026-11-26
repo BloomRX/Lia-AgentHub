@@ -193,3 +193,52 @@ def test_aviso_de_divergencia_na_exportacao(hub, imported, tmp_path):
     r = hub.export(imported["id"], target="private", destination=str(tmp_path))
     assert r["ok"]
     assert any("treeHash" in w or "difer" in w for w in r["warnings"])
+
+
+def test_file_evidence_lists_payload_without_claiming_license(hub, imported, tmp_path):
+    result = hub.export(imported["id"], target="private", destination=str(tmp_path))
+    assert result["ok"]
+    with zipfile.ZipFile(result["path"]) as archive:
+        manifest = json.loads(archive.read("manifest.json"))
+        provenance = json.loads(archive.read("provenance.json"))
+    expected = {entry["path"]: entry["sha256"] for entry in manifest["payload"]["files"]}
+    records = provenance["fileEvidence"]
+    assert {entry["path"]: entry["sha256"] for entry in records} == expected
+    assert all(entry["sourceScope"] == "capability-declared" for entry in records)
+    assert all(entry["licenseScope"] == "capability-declared" for entry in records)
+    assert all(entry["rightsVerifiedPerFile"] is False for entry in records)
+    assert "NÃO foram" in provenance["fileEvidenceNote"]
+    assert verify_package(result["path"])["ok"]
+
+
+def test_file_evidence_tamper_fails_verification(hub, imported, tmp_path):
+    result = hub.export(imported["id"], target="private", destination=str(tmp_path))
+    assert result["ok"]
+    with zipfile.ZipFile(result["path"]) as archive:
+        contents = {name: archive.read(name) for name in archive.namelist()}
+    provenance = json.loads(contents["provenance.json"])
+    provenance["fileEvidence"][0]["sha256"] = "0" * 64
+    contents["provenance.json"] = json.dumps(provenance).encode("utf-8")
+    tampered = tmp_path / "tampered-evidence.lia-capability"
+    with zipfile.ZipFile(tampered, "w") as archive:
+        for name, data in contents.items():
+            archive.writestr(name, data)
+    verification = verify_package(tampered)
+    assert not verification["ok"]
+    assert any("fileEvidence" in problem for problem in verification["problems"])
+
+
+def test_legacy_v1_package_without_file_evidence_stays_compatible(hub, imported, tmp_path):
+    result = hub.export(imported["id"], target="private", destination=str(tmp_path))
+    assert result["ok"]
+    with zipfile.ZipFile(result["path"]) as archive:
+        contents = {name: archive.read(name) for name in archive.namelist()}
+    provenance = json.loads(contents["provenance.json"])
+    del provenance["fileEvidence"]
+    del provenance["fileEvidenceNote"]
+    contents["provenance.json"] = json.dumps(provenance).encode("utf-8")
+    legacy = tmp_path / "legacy-v1.lia-capability"
+    with zipfile.ZipFile(legacy, "w") as archive:
+        for name, data in contents.items():
+            archive.writestr(name, data)
+    assert verify_package(legacy)["ok"]
