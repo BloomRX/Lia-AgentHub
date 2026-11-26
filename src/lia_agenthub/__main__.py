@@ -104,7 +104,8 @@ def _open_view(url: str, hub: AgentHub, log: logging.Logger) -> bool:
 #: Subcomandos da CLI. Se o primeiro argumento for um deles, `main` despacha
 #: para `cli.main` em vez de tentar abrir janela. Sem isso, `lia-agenthub
 #: validate x` seria interpretado como caminho e falharia de forma confusa.
-SUBCOMANDOS = {"diagnostico", "validate", "pack", "export", "index", "inventory", "skill", "verify-package"}
+SUBCOMANDOS = {"diagnostico", "validate", "pack", "export", "index", "inventory",
+               "skill", "verify-package", "execution"}
 
 
 def _despachar_cli(argv: list[str]) -> int | None:
@@ -135,7 +136,7 @@ def main(argv: list[str] | None = None) -> int:
 
     ap = argparse.ArgumentParser(
         prog="lia-agenthub",
-        description=f"{APP_NAME} — acervo local de capacidades. Nada é executado.")
+        description=f"{APP_NAME} — acervo local de capacidades. Conteúdo importado é passivo.")
     ap.add_argument("--version", action="version", version=f"{APP_NAME} {__version__}")
     ap.add_argument("--home", type=Path, default=None,
                     help="Raiz de dados alternativa (padrão: %%USERPROFILE%%\\Lia\\AgentHub)")

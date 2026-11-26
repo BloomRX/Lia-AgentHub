@@ -472,7 +472,7 @@ def build_parser(prog: str = "lia-agenthub") -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
         prog=prog,
         description="CLI de desenvolvimento do Lia Agent Hub. "
-                    "Nada é executado e nada é baixado.")
+                    "Conteúdo importado permanece passivo.")
     ap.add_argument("--home", help="raiz de dados alternativa")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
@@ -510,6 +510,7 @@ def build_parser(prog: str = "lia-agenthub") -> argparse.ArgumentParser:
     p.set_defaults(func=cmd_inventory)
 
     _skill_parser(sub)
+    _execution_parser(sub)
 
     p = sub.add_parser("verify-package", help="verifica integridade de um pacote")
     p.add_argument("arquivo")
@@ -517,6 +518,67 @@ def build_parser(prog: str = "lia-agenthub") -> argparse.ArgumentParser:
     p.set_defaults(func=cmd_verify_package)
 
     return ap
+
+
+def _execution_parser(sub) -> None:
+    command = sub.add_parser("execution", help="contrato local de execução supervisionada")
+    actions = command.add_subparsers(dest="execution_cmd", required=True)
+    actions.add_parser("call", help="lê uma chamada JSON pelo stdin")
+    actions.add_parser("init", help="operador: inicializa a autoridade local uma vez")
+    actions.add_parser("provision", help="operador: registra um consumidor").add_argument("consumer")
+    grant = actions.add_parser("grant", help="operador: emite autorização temporária")
+    grant.add_argument("consumer")
+    grant.add_argument("--ttl", required=True, type=int)
+    command.set_defaults(func=cmd_execution)
+
+
+def _unique_json_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON key")
+        result[key] = value
+    return result
+
+
+def cmd_execution(args) -> int:
+    import sqlite3
+
+    from .adapters.paths_resolver import resolve_locations
+    from .adapters.supervised_execution import Broker, ExecutionError
+
+    try:
+        locations = resolve_locations(Path(args.home) if args.home else None)
+        broker = Broker(locations.home / "SupervisedExecution")
+        if args.execution_cmd == "init":
+            result = broker.initialize()
+        else:
+            raw = sys.stdin.buffer.read(524289)
+            if len(raw) > 524288:
+                raise ExecutionError("invalid-request", "Solicitação excede o limite de transporte.")
+            try:
+                request = json.loads(raw.decode("utf-8"), object_pairs_hook=_unique_json_object)
+            except (ValueError, RecursionError) as exc:
+                raise ExecutionError("invalid-request", "JSON de solicitação inválido.") from exc
+            if args.execution_cmd == "call":
+                result = broker.call(request)
+            else:
+                if not isinstance(request, dict) or set(request) != {"operatorToken"}:
+                    raise ExecutionError("invalid-request", "Informe apenas operatorToken pelo stdin.")
+                broker.authorize_operator(request["operatorToken"])
+                if args.execution_cmd == "provision":
+                    result = broker.provision(args.consumer)
+                else:
+                    result = broker.grant(args.consumer, args.ttl)
+    except ExecutionError as exc:
+        _json({"schemaVersion": 1, "ok": False, "error": {"code": exc.code, "message": exc.message}})
+        return 1
+    except (OSError, sqlite3.Error):
+        _json({"schemaVersion": 1, "ok": False, "error": {
+            "code": "unavailable", "message": "Armazenamento de execução indisponível."}})
+        return 1
+    _json({"schemaVersion": 1, "ok": True, "result": result})
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:

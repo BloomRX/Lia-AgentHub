@@ -22,7 +22,7 @@ O Lia Agent Hub é um produto de escopo transversal: deve atender Game Developme
 
 O Hub **é** viável como aplicação independente — com um escopo mais estreito do que a visão inicial sugeria:
 
-> O Hub registra capacidades: dá a elas **identidade, origem, versão, licença, avaliação de risco e forma de pacote**. Ele **não** as executa, não as autoriza, não guarda credenciais e não orquestra nada.
+> O Hub registra capacidades: dá a elas **identidade, origem, versão, licença, avaliação de risco e forma de pacote**. O conteúdo importado permanece passivo. O [contrato de execução supervisionada v1](docs/architecture/SUPERVISED-EXECUTION-V1.md) oferece operações locais do próprio Hub, com autorização do operador e auditoria por tarefa.
 
 A auditoria encontrou **oito lacunas** que nenhum dos produtos Lia atende hoje — registro de proveniência, pipeline de intake, formato de pacote portátil, análise de licença, contrato de distribuição, detecção de conteúdo malicioso em prosa, versionamento de capacidade e catálogo de MCP. **Nenhuma exige executar código.**
 
