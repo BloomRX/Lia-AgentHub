@@ -426,3 +426,27 @@ Verificação explícita de cada regra do `GUIA-APP-NOVO.md` contra este documen
 - `BloomRX/Lia-Forge@arena/649f88bd-3dspritesheet`, `docs/lia-ecosystem-integration.md` — caminhos `LIA_HOME`, `SPRITEFORGE_PROJECT_ROOT`, `%LOCALAPPDATA%\Lia\Modelos`
 - `BloomRX/Lia-Studio@arena/01a0f4ab-lia-gamedev`, `app/lia/skills.py` — leitura de prefixo de 8 KB para catálogo; rejeição de symlink
 - `BloomRX/Lia-Project@arena/01a10290-lia-project`, `docs/research/lia-capability-catalog/03-ESQUEMA-E-DADOS.md` — wiki/índice derivado, estados de ciclo de vida
+
+
+## Evidência opcional por arquivo em pacotes v1 — proposta para revisão (2026-11-26)
+
+O arquivo `provenance.json` exportado pela variante candidata passa a incluir
+`fileEvidence[]`, com `path`, `sha256`, `sourceScope`,
+`licenseScope`, `capabilityLicenseClaim`, `licenseFileCandidates[]` e
+`rightsVerifiedPerFile: false`. O manifesto e os hashes existentes não mudam;
+o verificador aceita pacotes v1 legados que ainda não têm esse campo.
+
+As fontes e licenças **continuam declarações da capacidade inteira**. Uma licença
+encontrada na raiz ou em diretório ancestral é apenas candidata contextual
+para cada arquivo, e não concede permissão de redistribuição ao arquivo.
+Licenças de subárvores irmãs não são atribuídas automaticamente. O campo novo
+não converte confiança humana em confiança automática e não modifica a política
+de destino `private/self/shared/public`.
+
+O verificador checa completude, associação de cada hash ao manifesto e
+referências aos arquivos contidos no pacote. Como `provenance.json` não tem
+assinatura nem digest próprio autenticado, um terceiro ainda pode reescrever ou
+remover metadados de procedência. Este recurso fornece **rastreabilidade
+declarativa**, não prova criptográfica de autoria. Uma futura migração que
+torne a evidência obrigatória exigirá uma versão nova do contrato e testes
+de compatibilidade. Nenhuma Skill é executada por essa extensão.

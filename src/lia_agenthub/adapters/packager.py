@@ -108,6 +108,37 @@ def _texto_da_licenca(files: dict[str, bytes]) -> str:
     return (raiz or achados)[0][1]
 
 
+def _file_provenance_evidence(files: dict[str, bytes], per_file: list[dict],
+                              cap: Capability) -> list[dict]:
+    """Evidência por arquivo, SEM declarar que a licença do item cobre cada byte.
+
+    Arquivos LICENSE/COPYING no mesmo diretório ou em ancestrais são candidatos
+    contextuais, não permissão nem conclusão de auditoria. Não percorremos
+    diretórios irmãos para atribuir licença a uma Skill diferente.
+    """
+    licencas = [rel for rel, _ in _arquivos_de_licenca(files)]
+    records: list[dict] = []
+    for entry in per_file:
+        caminho = entry["path"]
+        ancestrais = {""}
+        pasta = caminho.rpartition("/")[0]
+        while pasta:
+            ancestrais.add(pasta)
+            pasta = pasta.rpartition("/")[0]
+        candidatos = [rel for rel in licencas
+                      if rel.rpartition("/")[0] in ancestrais]
+        records.append({
+            "path": caminho,
+            "sha256": entry["sha256"],
+            "sourceScope": "capability-declared",
+            "licenseScope": "capability-declared",
+            "capabilityLicenseClaim": cap.license.code,
+            "licenseFileCandidates": sorted(candidatos),
+            "rightsVerifiedPerFile": False,
+        })
+    return records
+
+
 def _manifest_for(cap: Capability, files: list[dict], target: Target,
                   exported_at: str) -> dict:
     return {
@@ -239,6 +270,11 @@ def export(cap_id: str, repo: Repository, destination: Path, *,
         zf.writestr(MANIFEST, json.dumps(manifest, ensure_ascii=False, indent=2))
         prov = {"schemaVersion": 1, "source": cap.source.as_dict(),
                 "hashes": manifest["hashes"],
+                "fileEvidence": _file_provenance_evidence(files, per_file, cap),
+                "fileEvidenceNote": (
+                    "Hash e caminhos verificam integridade. Licenças próximas são "
+                    "candidatas textuais; direitos por arquivo e autoria NÃO foram "
+                    "verificados. A licença do recurso é só declaração geral."),
                 "note": "Procedência declarada. Não é prova de autoria."}
         zf.writestr(PROVENANCE, json.dumps(prov, ensure_ascii=False, indent=2))
         if cap.license.notice_required:
@@ -338,6 +374,43 @@ def verify_package(path: str | Path) -> dict:
         for name in zf.namelist():
             if name.startswith("payload/") and name[len("payload/"):] not in declared:
                 problems.append(f"Arquivo não declarado no manifesto: `{name}`")
+
+        # Pacotes v1 legados não possuem fileEvidence: continuam legíveis.
+        # Quando houver evidência detalhada, nenhuma entrada pode contrariar
+        # o manifesto ou declarar um arquivo inexistente.
+        if PROVENANCE in zf.namelist():
+            try:
+                prov = json.loads(zf.read(PROVENANCE).decode("utf-8"))
+            except (ValueError, UnicodeError):
+                problems.append("provenance.json inválido")
+            else:
+                if not isinstance(prov, dict):
+                    problems.append("provenance.json não é objeto")
+                elif "fileEvidence" in prov:
+                    records = prov["fileEvidence"]
+                    if not isinstance(records, list) or len(records) != len(declared):
+                        problems.append("fileEvidence incompleto ou inválido")
+                    else:
+                        paths = []
+                        for record in records:
+                            if not isinstance(record, dict):
+                                problems.append("Registro fileEvidence inválido")
+                                continue
+                            rel, expected_hash = record.get("path"), record.get("sha256")
+                            if (not isinstance(rel, str) or rel not in declared or
+                                    expected_hash != declared.get(rel) or
+                                    record.get("rightsVerifiedPerFile") is not False or
+                                    record.get("sourceScope") != "capability-declared" or
+                                    record.get("licenseScope") != "capability-declared" or
+                                    not isinstance(record.get("licenseFileCandidates"), list)):
+                                problems.append("fileEvidence diverge do manifesto")
+                                continue
+                            paths.append(rel)
+                            for candidate in record["licenseFileCandidates"]:
+                                if not isinstance(candidate, str) or candidate not in declared:
+                                    problems.append("Licença referida ausente no pacote")
+                        if len(paths) != len(declared) or set(paths) != set(declared):
+                            problems.append("fileEvidence não cobre os arquivos declarados")
 
         computed_tree = tree_hash(real) if real else ""
         declared_tree = manifest.get("hashes", {}).get("treeHash", "")
