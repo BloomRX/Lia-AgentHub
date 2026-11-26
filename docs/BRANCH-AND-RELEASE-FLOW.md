@@ -39,4 +39,4 @@ Manter código e documentação canônicos em `main`, com integração coordenad
 
 ## Observação sobre a branch padrão
 
-A branch padrão permanece `main`. O [registro da consolidação de 2026-11-26](operations/BRANCH-CONSOLIDATION-2026-11-26.md) identifica o estado anterior, os backups e as ações ainda pendentes. A política nova não transforma a preparação documental em evidência de que refs remotas já foram alteradas.
+A branch padrão permanece `main`. O [registro da consolidação de 2026-11-26](operations/BRANCH-CONSOLIDATION-2026-11-26.md) identifica o estado anterior, o backup verificado e as quatro remoções confirmadas. O Hub permanece somente com `main`; o histórico retirado da lista de branches continua recuperável pelo bundle.

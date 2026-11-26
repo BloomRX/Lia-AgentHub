@@ -1,6 +1,6 @@
 # Consolidação de branches — Lia Agent Hub — 2026-11-26
 
-**Estado:** implementação promovida a `main` por fast-forward; **arquivamento por tags e remoção das refs antigas pendentes de execução**.
+**Estado:** concluída. A implementação foi promovida a `main` por fast-forward; as quatro branches Arena antigas foram removidas após backup completo verificado. O repositório permanece somente com `main`.
 
 **Autorização:** solicitação do responsável para concentrar os projetos de produto em `main`, com Codex como integrador e Arena somente em missões temporárias.
 
@@ -12,13 +12,13 @@
 
 Refs registradas no snapshot de **2026-11-26T08:37:35Z**:
 
-| Branch | SHA | Relação com a base `c81d850` | Destino previsto |
+| Branch | SHA | Relação com a base `c81d850` | Resultado da consolidação |
 |---|---|---|---|
-| `main` | `34a27f484e5f85987390a27fe7e0c0b3cd205bb2` | Ancestral; 192 commits atrás | Avançar por fast-forward para a implementação publicada e integrar esta documentação |
-| `arena/a92004be-lia-agenthub` | `c81d85013827402254c55177cf0e13613e2d59b1` | Base da implementação publicada | Integrar em `main`; remover a branch após preservação verificada |
-| `arena/b6febe41-lia-agenthub` | `3b234f5047ae584beed3eac319b3d38032420ce0` | Divergente: 1 commit exclusivo, 152 atrás | Preservar como histórico de design; remover a branch após preservação verificada |
-| `arena/db625478-lia-agenthub` | `b4e63eae800b2713dcda294e3c2dfe8d60eb0b04` | Divergente: 5 commits exclusivos, 192 atrás | Preservar como histórico de pesquisa; remover a branch após preservação verificada |
-| `arena/1a7ed773-lia-agenthub` | `bd4bfbb9ed8065be1e571940926d293689985682` | Divergente: 6 commits exclusivos, 192 atrás | Preservar histórico de pesquisa e revisão; remover a branch após preservação verificada |
+| `main` | `34a27f484e5f85987390a27fe7e0c0b3cd205bb2` | Ancestral; 192 commits atrás | Promovida por fast-forward; código e documentação canônicos em `main` |
+| `arena/a92004be-lia-agenthub` | `c81d85013827402254c55177cf0e13613e2d59b1` | Base da implementação publicada | Implementação integrada em `main`; branch removida, histórico no backup |
+| `arena/b6febe41-lia-agenthub` | `3b234f5047ae584beed3eac319b3d38032420ce0` | Divergente: 1 commit exclusivo, 152 atrás | Histórico de design preservado no backup; branch removida |
+| `arena/db625478-lia-agenthub` | `b4e63eae800b2713dcda294e3c2dfe8d60eb0b04` | Divergente: 5 commits exclusivos, 192 atrás | Histórico de pesquisa preservado no backup; branch removida |
+| `arena/1a7ed773-lia-agenthub` | `bd4bfbb9ed8065be1e571940926d293689985682` | Divergente: 6 commits exclusivos, 192 atrás | Histórico de pesquisa e revisão preservado no backup; branch removida |
 
 `bd4bfbb9` tem `b4e63eae` como pai direto. Seus seis arquivos adicionais de revisão já estão presentes na base com os mesmos hashes de blob; o [relatório de implementação](FINAL-IMPLEMENTATION-REPORT.md) registra o cherry-pick `47f5da7`. Isso não incorpora os treze arquivos de pesquisa herdados dessa linha.
 
@@ -68,16 +68,14 @@ Snapshot: **2026-11-26T08:37:35Z**. O pacote foi gerado fora do repositório ant
 
 Verificações executadas: `git fsck --full --strict` no mirror de origem, `git bundle verify`, conferência de todas as refs, clone mirror independente do bundle, igualdade integral das refs restauradas e novo `fsck` na restauração. O ZIP passou na verificação de CRC.
 
-Nenhuma tag foi criada até esta publicação. O backup não inclui trabalho não commitado de sessões locais.
+A preservação desta operação foi feita pelos bundles completos verificados; nenhuma tag nem release foi criada. Os links por SHA são referências de navegação, e o bundle é a cópia independente para recuperação. O backup não inclui trabalho não commitado de sessões locais.
 
-## Execução
+## Execução concluída
 
-Concluído: `main` avançou de `34a27f4` para `c81d850` por fast-forward, com comparação do SHA esperado e sem force-push. Os três checks de CI desse commit estavam aprovados: pytest em Ubuntu, pytest em Windows e verificação do pacote Windows. Esta publicação alinha as regras documentais ao fluxo autorizado.
+1. As refs foram reconferidas antes da remoção: os quatro tips Arena ainda coincidiam com o inventário do backup.
+2. `main` avançou de `34a27f4` para `c81d850` por fast-forward, com comparação do SHA esperado e sem force-push. Os três checks de CI desse commit estavam aprovados: pytest em Ubuntu, pytest em Windows e verificação do pacote Windows.
+3. `c73f8601d67e423973217fd964d668cc7749328a` alinhou README, AGENTS e o fluxo de branches à organização autorizada.
+4. As quatro branches Arena da tabela foram removidas pela interface autenticada do GitHub. A interface confirmou cada remoção; uma consulta posterior à API de branches confirmou somente `main`.
+5. A comparação das refs confirmou que o Research e a branch ativa do Studio permaneceram intactos. Esta atualização registra o fechamento, sem alterar código de produto.
 
-Ainda pendente:
-
-1. Reconsultar as refs remotas e comparar com os SHAs registrados antes de modificar qualquer uma.
-2. Criar e verificar tags de arquivo para os tips históricos, registrando seus nomes e SHAs neste documento; o bundle é a cópia independente já verificada.
-3. Remover as quatro branches Arena antigas após confirmar preservação e destino das entregas. Atualizar este estado somente com evidência da operação remota.
-
-Após a consolidação, novas missões partem da `main` atual conforme o [fluxo de branches e releases](../BRANCH-AND-RELEASE-FLOW.md). A integração não publica automaticamente uma versão do produto.
+Novas missões partem da `main` atual conforme o [fluxo de branches e releases](../BRANCH-AND-RELEASE-FLOW.md). A integração não publica automaticamente uma versão do produto.
