@@ -1,41 +1,42 @@
 # Fluxo de branches e releases
 
-**Status:** regra inicial de trabalho definida pelo responsável do projeto.
+**Status:** fluxo atualizado por solicitação do responsável do projeto em 2026-11-26. Substitui a regra inicial de Arena permanente e `main` apenas documental.
 
 ## Objetivo
 
-Manter a documentação inicial e as versões publicadas em `main`, enquanto o desenvolvimento ativo ocorre em uma branch de trabalho criada pela sessão Arena.
+Manter código e documentação canônicos em `main`, com integração coordenada pelo Codex e branches Arena temporárias quando uma missão específica precisar delas.
 
 ## Regras
 
 1. **`main`**
-   - Contém a documentação inicial do produto e decisões aceitas.
-   - É a linha estável e futura referência de versões lançadas.
-   - Não recebe implementação contínua nem commits rotineiros do Arena.
-   - Só recebe mudanças de release ou documentação estável aprovada.
+   - Contém a implementação integrada, a documentação vigente e as decisões aceitas.
+   - É a base de novas missões e a referência das versões lançadas.
+   - Recebe código e documentação dentro do escopo autorizado, após as verificações aplicáveis.
+   - A integração em `main` não equivale, por si só, a publicar uma release.
 
-2. **Branch inicial do Arena**
-   - O Arena cria sua própria branch a partir de `main` ao iniciar a primeira sessão de trabalho.
-   - A branch criada passa a ser a base ativa de desenvolvimento, após o usuário confirmar que ela é a branch correta.
+2. **Missões temporárias do Arena**
+   - Abrir uma sessão quando houver uma missão específica; sua branch parte da `main` atual.
+   - Cada sessão trabalha na própria branch, conforme o limite da plataforma.
    - A branch deve ter nome identificável, por exemplo `arena/<session-id>-lia-agenthub`.
-   - A primeira missão é Fase 0: pesquisa, auditoria e documentação; não implementação.
+   - O escopo vem da missão autorizada; uma nova sessão não reinicia automaticamente a Fase 0.
 
 3. **Sessões seguintes**
-   - Devem iniciar da branch ativa de desenvolvimento, não de `main`, salvo quando o usuário indicar outra base.
+   - Devem iniciar da `main` atual, salvo quando o usuário indicar outra base.
    - Cada agente trabalha apenas na branch atribuída à sua sessão.
    - Especialistas podem pesquisar outras branches, mas não modificá-las.
 
 4. **Codex e integração**
-   - Codex implementa somente depois da aprovação do escopo e da especificação.
+   - Codex é o integrador de código e documentação dentro do escopo aprovado.
    - Arena e Codex não devem editar simultaneamente os mesmos arquivos/branch.
    - Integrações entre branches devem ser sequenciais, revisadas e rastreáveis.
+   - Antes de remover uma branch de missão, registrar seu SHA e o destino da entrega; preservar conteúdo exclusivo em arquivo histórico verificável. A branch não permanece como linha paralela de desenvolvimento.
 
 5. **Release**
    - Uma versão só é lançada após revisão humana, testes aplicáveis, documentação e aprovação.
-   - A promoção da branch ativa de desenvolvimento para `main` ocorre por PR/revisão de release.
+   - Releases partem de `main`; branches de missão podem ser integradas antes do ciclo de release, conforme autorização e revisão aplicáveis.
    - Não fazer merge automático, force-push ou alteração da branch padrão sem autorização explícita.
    - Registrar versão/tag e notas de release após o aceite.
 
 ## Observação sobre a branch padrão
 
-A branch padrão do GitHub pode continuar apontando para `main`. A branch Arena ativa funciona como base de desenvolvimento por escolha explícita das sessões e do usuário; não é necessário tornar a branch Arena a branch padrão do repositório para seguir este fluxo.
+A branch padrão permanece `main`. O [registro da consolidação de 2026-11-26](operations/BRANCH-CONSOLIDATION-2026-11-26.md) identifica o estado anterior, os backups e as ações ainda pendentes. A política nova não transforma a preparação documental em evidência de que refs remotas já foram alteradas.

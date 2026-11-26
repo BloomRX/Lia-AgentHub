@@ -2,6 +2,8 @@
 
 **Plataforma independente para criar, descobrir, validar, organizar, versionar, empacotar e distribuir capacidades para agentes de IA.**
 
+**Base de trabalho:** `main` é a linha canônica de código e documentação. Codex integra as entregas autorizadas; sessões Arena são abertas para missões temporárias a partir da `main` atual. A [consolidação de branches de 2026-11-26](docs/operations/BRANCH-CONSOLIDATION-2026-11-26.md) registra os SHAs, o backup e a documentação histórica preservada. Consulte o [fluxo de branches](docs/BRANCH-AND-RELEASE-FLOW.md) antes de iniciar uma sessão.
+
 > **Estado atual: MVP funcional; expansão do registro central em andamento.**
 > M1–M8 do MVP e o intake v1 estão implementados. A última linha de base
 > executada antes da expansão registrou **823 testes aprovados e 2 ignorados**.
@@ -138,13 +140,13 @@ Três que merecem destaque porque a pesquisa mostrou que são fáceis de perder:
 - [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) — nenhum código de terceiros incorporado
 - [`.gitignore`](.gitignore) — higiene adaptada do kit Lia
 
-## Próximo passo
+## Decisões da Fase 0
 
-A Fase 1 depende de quatro decisões humanas (`D-13` escopo do MVP, `D-14` stack, `D-03` formato, `D-06` armazenamento) e de uma quinta que pode correr em paralelo: pesquisa de isolamento em Windows (`D-05`/`D-18`), que determina se o produto terá Test Lab algum dia.
+O plano inicial condicionava a Fase 1 a quatro decisões humanas (`D-13` escopo do MVP, `D-14` stack, `D-03` formato, `D-06` armazenamento) e a uma quinta que poderia correr em paralelo: pesquisa de isolamento em Windows (`D-05`/`D-18`), que determina se o produto terá Test Lab algum dia. Esse registro histórico não reinicia a Fase 0 nem bloqueia metas posteriores autorizadas pelo usuário.
 
 `D-16` — a **licença deste repositório** — continua aberta e é decisão humana. O `LICENSE` **não** foi criado, de propósito.
 
-A implementação só começa após revisão humana e aprovação explícita da especificação resultante.
+Novas implementações seguem o escopo aprovado para cada missão; Codex integra as entregas autorizadas em `main` conforme o fluxo atual.
 
 Consulte também [AGENTS.md](AGENTS.md) para as regras deste repositório, inclusive a distinção obrigatória entre `IMPLEMENTED`, `EXECUTED`, `VALIDATED`, `PROPOSED`, `PLANNED`, `RESEARCH` e `UNKNOWN`.
 

@@ -3,7 +3,7 @@
 ## Estado e autoridade
 
 - A documentação deste repositório define o escopo aprovado. A visão do produto é uma proposta de direção, não uma arquitetura final.
-- O estado inicial é **Fase 0 — pesquisa, auditoria e especificação**.
+- A **Fase 0 — pesquisa, auditoria e especificação** é histórica; o produto já contém implementação. Consultar `README.md` e os relatórios em `docs/operations/` para o estado e as evidências de cada entrega.
 - Não interpretar fases candidatas, recomendações de agentes ou código existente em outros repositórios como autorização de implementação.
 - Decisões humanas explícitas prevalecem sobre propostas de pesquisa.
 
@@ -15,7 +15,9 @@
 4. `docs/DECISION-REGISTER.md`
 5. `docs/BRANCH-AND-RELEASE-FLOW.md`
 
-## Restrições da Fase 0
+## Restrições para missões de pesquisa
+
+As restrições abaixo se aplicam a missões limitadas a pesquisa, como a Fase 0 original. Implementação e integração seguem o escopo autorizado pelo usuário; estas regras não anulam autorizações posteriores, incluindo a consolidação de branches de 2026-11-26.
 
 Permitido:
 - ler e comparar branches e documentos dos repositórios Lia;
@@ -54,8 +56,10 @@ Não chamar uma proposta de implementação. Não chamar smoke test com stub de 
 
 ## Protocolo de branches
 
-- `main` é a linha documental estável e futura linha de releases; não é a branch de desenvolvimento contínuo.
-- A sessão Arena deve criar sua própria branch de trabalho a partir de `main`. Após criada, essa branch será a base ativa do trabalho de desenvolvimento e das sessões subsequentes, conforme coordenação humana.
+- `main` é a linha canônica de código e documentação do Hub e a base das novas missões.
+- Codex é o integrador: compara as entregas, valida o escopo aplicável e integra o trabalho autorizado em `main`, de forma sequencial e rastreável.
+- Arena trabalha apenas em missões temporárias, na branch atribuída à sessão e criada a partir da `main` atual. Essa branch não se torna uma linha permanente de desenvolvimento.
+- Ao encerrar a missão, registrar o destino da entrega e preservar o histórico antes de remover sua branch. Não excluir trabalho exclusivo sem preservação e classificação explícitas.
 - Não mudar a branch padrão do GitHub nem renomear branches sem pedido explícito.
 - Não fazer commits de trabalho do Arena diretamente em `main`.
 - Não criar branches em nome de outros agentes nem presumir autoria a partir do nome de uma branch.
@@ -73,4 +77,4 @@ Todo relatório deve informar:
 6. incertezas, riscos e decisões humanas pendentes;
 7. recomendações priorizadas e próximos passos.
 
-O resultado da Fase 0 deve ser revisável por uma pessoa e suficiente para aprovar, ajustar ou rejeitar o escopo/MVP antes de qualquer implementação.
+O resultado de uma missão de pesquisa deve ser revisável por uma pessoa e suficiente para aprovar, ajustar ou rejeitar a ampliação de escopo proposta.
